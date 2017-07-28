@@ -8,38 +8,30 @@ import java.util.*
 object PositionIDConverter {
 
     fun convert(positionId: String): Array<Array<Int>> {
-        val anpBoard = Base64.getDecoder().decode(positionId)
-        return positionFromKey(anpBoard)
-    }
+        val board: Array<Array<Int>> = Array(2) { Array(25) { 0 } }
+        val decodedPositionId = Base64.getDecoder().decode(positionId)
 
-    private fun Byte.unsigned(): Int = this + 128 xor 0b10000000
-
-
-    fun positionFromKey(decoded: ByteArray): Array<Array<Int>> {
-        val anBoard: Array<Array<Int>> = Array(2) { Array(25) { 0 } }
-
-        var i: Int = 0
-        var j: Int = 0
-
-        for (a in 0..decoded.size - 1) {
-            var cur: Int = decoded[a].unsigned()
-            var k = 0
-            while (k < 8) {
-                if (cur and 0x1 != 0) {
-                    anBoard[i][j] = anBoard[i][j] + 1
+        var playerIndex: Int = 0
+        var boardIndex: Int = 0
+        decodedPositionId.map { b -> b.unsigned() }.forEach { element ->
+            var shiftedElement = element
+            for (k in 0..7) {
+                if (shiftedElement and 0x1 != 0) {
+                    board[playerIndex][boardIndex] = board[playerIndex][boardIndex] + 1
                 } else {
-                    j += 1
-                    if (j == 25) {
-                        i += 1
-                        j = 0
+                    boardIndex += 1
+                    if (boardIndex == 25) {
+                        playerIndex += 1
+                        boardIndex = 0
                     }
                 }
-                cur = cur shr 1
-                k += 1
+                shiftedElement = shiftedElement shr 1
             }
         }
 
-        return anBoard
+        return board
     }
+
+    private fun Byte.unsigned(): Int = this + 128 xor 0b10000000
 
 }

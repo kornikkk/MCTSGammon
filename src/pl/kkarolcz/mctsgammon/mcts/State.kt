@@ -2,60 +2,34 @@ package pl.kkarolcz.mctsgammon.mcts
 
 import java.util.*
 
-
 /**
- * Created by kkarolcz on 25.07.2017.
+ * Created by kkarolcz on 07.08.2017.
  */
-class State {
-    val board: Board
-    var playerNo: Int = 0
-    var visitCount: Int = 0
-    var winScore: Double = 0.0
+abstract class State<M : Move> : Cloneable {
+    private val random: Random = Random()
 
-    constructor(board: Board) {
-        this.board = board.clone()
+    protected abstract val result: Result
+    protected val moves: MutableList<M> = mutableListOf()
+
+    abstract val previousPlayerId: Int
+
+    public abstract override fun clone(): State<M>
+
+    fun hasMoves(): Boolean = moves.isEmpty()
+
+    abstract fun doMove(move: Move)
+
+    fun pollRandomMove(): M {
+        val move = moves.randomElement()
+        moves.remove(move)
+        return move
     }
 
-    constructor(state: State) {
-        this.board = state.board.clone()
-        this.playerNo = state.playerNo
-        this.visitCount = state.visitCount
-        this.winScore = state.winScore
+    fun rollout(): Result {
+        val newState = clone()
+        while (moves.isNotEmpty())
+            newState.doMove(moves.randomElement())
+        return newState.result
     }
 
-
-    internal val opponent: Int
-        get() = 3 - playerNo
-
-    val allPossibleStates: List<State>
-        get() {
-            val possibleStates = ArrayList<State>()
-            val availablePositions = this.board.getEmptyPositions()
-            availablePositions.forEach { p ->
-                val newState = State(this.board)
-                newState.playerNo = 3 - this.playerNo
-                newState.board.performMove(newState.playerNo, p)
-                possibleStates.add(newState)
-            }
-            return possibleStates
-        }
-
-    fun incrementVisit() {
-        this.visitCount++
-    }
-
-    fun addScore(score: Double) {
-        this.winScore += score
-    }
-
-    fun randomPlay() {
-        val availablePositions = this.board.getEmptyPositions()
-        val totalPossibilities = availablePositions.size
-        val selectRandom = (Math.random() * (totalPossibilities - 1 + 1)).toInt()
-        this.board.performMove(this.playerNo, availablePositions.get(selectRandom))
-    }
-
-    fun togglePlayer() {
-        this.playerNo = 3 - this.playerNo
-    }
 }

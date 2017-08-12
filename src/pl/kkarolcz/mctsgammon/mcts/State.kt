@@ -1,23 +1,23 @@
 package pl.kkarolcz.mctsgammon.mcts
 
-import java.util.*
+import pl.kkarolcz.mctsgammon.utils.randomElement
 
 /**
  * Created by kkarolcz on 07.08.2017.
  */
 abstract class State<M : Move> : Cloneable {
-    private val random: Random = Random()
-
-    protected abstract val result: Result
-    protected val moves: MutableList<M> = mutableListOf()
-
+    protected abstract val result: Result?
     abstract val previousPlayerId: Int
+    val currentPlayerId: Int
+        get() = 1 - previousPlayerId
 
     public abstract override fun clone(): State<M>
 
-    fun hasMoves(): Boolean = moves.isEmpty()
+    protected abstract val moves: MutableList<M>
 
-    abstract fun doMove(move: Move)
+    fun hasMoves(): Boolean = !moves.isEmpty()
+
+    abstract fun doMove(move: M)
 
     fun pollRandomMove(): M {
         val move = moves.randomElement()
@@ -25,10 +25,11 @@ abstract class State<M : Move> : Cloneable {
         return move
     }
 
-    fun rollout(): Result {
+    fun playout(): Result? {
         val newState = clone()
-        while (moves.isNotEmpty())
-            newState.doMove(moves.randomElement())
+        while (newState.moves.isNotEmpty()) {
+            newState.doMove(newState.pollRandomMove())
+        }
         return newState.result
     }
 

@@ -1,4 +1,4 @@
-package pl.kkarolcz.mctsgammon.mctsgammon
+package pl.kkarolcz.mctsgammon.mctsgammon.gnubackgammon
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

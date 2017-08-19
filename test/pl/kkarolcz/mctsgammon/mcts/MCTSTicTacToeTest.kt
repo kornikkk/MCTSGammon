@@ -1,6 +1,7 @@
 package pl.kkarolcz.mctsgammon.mcts
 
 import org.junit.Test
+import pl.kkarolcz.mctsgammon.mcts.node.selectionpolicies.UCTNodeSelectionPolicy
 import pl.kkarolcz.mctsgammon.utils.array2d
 import pl.kkarolcz.mctsgammon.utils.deepCopy
 
@@ -10,7 +11,7 @@ import pl.kkarolcz.mctsgammon.utils.deepCopy
 class MCTSTest {
     @Test
     fun `Test simple MCTS`() {
-        val root = MCTSNode(TicTacToeState())
+        val root = MCTSNode.createRootNode(UCTNodeSelectionPolicy(), TicTacToeState())
         for (i in 1..1000)
             root.monteCarloRound()
         root.wins

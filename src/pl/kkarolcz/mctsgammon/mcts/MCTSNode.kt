@@ -1,15 +1,17 @@
 package pl.kkarolcz.mctsgammon.mcts
 
-import pl.kkarolcz.mctsgammon.utils.randomElement
+import pl.kkarolcz.mctsgammon.mcts.node.selectionpolicies.NodeSelectionPolicy
 
 /**
  * Created by kkarolcz on 07.08.2017.
  */
-class MCTSNode<S : Move>(val state: State<S>, val parent: MCTSNode<S>? = null) : Cloneable {
-    private val children: MutableList<MCTSNode<S>> = mutableListOf()
+class MCTSNode<M : Move> private constructor(private val nodeSelectionPolicy: NodeSelectionPolicy,
+                                             private val state: State<M>) : Cloneable {
 
-    private var _visits: Double = 0.0
-    val visits: Double
+    private val children: MutableList<MCTSNode<M>> = mutableListOf()
+
+    private var _visits: Int = 0
+    val visits: Int
         get() = _visits
 
     private var _wins: Double = 0.0
@@ -19,9 +21,14 @@ class MCTSNode<S : Move>(val state: State<S>, val parent: MCTSNode<S>? = null) :
     val isFullyExpanded: Boolean
         get() = !state.hasMoves() || children.isEmpty() // TODO: ???
 
-    val bestMove: MCTSNode<S>?
-        get() = children.maxBy { node -> node.visits }
+    val bestMove: MCTSNode<M>?
+        get() = children.maxBy(MCTSNode<M>::visits)
 
+    companion object {
+        fun <M : Move> createRootNode(nodeSelectionPolicy: NodeSelectionPolicy, initialState: State<M>): MCTSNode<M> {
+            return MCTSNode(nodeSelectionPolicy, initialState)
+        }
+    }
 
     fun monteCarloRound() {
         val path = select().toMutableList()
@@ -34,28 +41,28 @@ class MCTSNode<S : Move>(val state: State<S>, val parent: MCTSNode<S>? = null) :
         path.forEach { node -> node.update(result) }
     }
 
-    private fun select(): List<MCTSNode<S>> {
+    private fun select(): List<MCTSNode<M>> {
         val path = mutableListOf(this)
         var node = this
         while (!node.state.hasMoves() && !node.children.isEmpty()) {
-            node = node.children.randomElement()
+            node = nodeSelectionPolicy.selectNode(node.children)
             path.add(node)
         }
 
         return path
     }
 
-    private fun expand(): MCTSNode<S> {
+    private fun expand(): MCTSNode<M> {
         val move = state.pollRandomMove()
         val newState = state.clone()
         newState.doMove(move)
 
-        val newNode = MCTSNode(newState, this)
+        val newNode = MCTSNode(nodeSelectionPolicy, newState)
         children.add(newNode)
         return newNode
     }
 
-    fun update(result: Result?) {
+    private fun update(result: Result?) {
         _visits += 1
         if (result?.get(state.currentPlayerId) == Result.PlayerResult.WIN)
             ++_wins

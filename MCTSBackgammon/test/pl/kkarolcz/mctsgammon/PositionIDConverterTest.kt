@@ -1,8 +1,7 @@
-package pl.kkarolcz.mctsgammon.mctsgammon.gnubackgammon
+package pl.kkarolcz.mctsgammon
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import pl.kkarolcz.mctsgammon.gnubackgammon.PositionIDConverter
 
 /**
  * Created by kkarolcz on 23.07.2017.

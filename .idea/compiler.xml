@@ -6,11 +6,19 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="MCTSBackgammon" />
+        <module name="MCTSCore" />
+        <module name="MCTSCoreTest" />
         <module name="MCTSGammon" />
+        <module name="Utils" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="MCTSBackgammon" target="1.5" />
+      <module name="MCTSCore" target="1.5" />
+      <module name="MCTSCoreTest" target="1.5" />
       <module name="MCTSGammon" target="1.5" />
+      <module name="Utils" target="1.5" />
     </bytecodeTargetLevel>
   </component>
 </project>

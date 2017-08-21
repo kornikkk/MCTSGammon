@@ -1,7 +1,7 @@
-package pl.kkarolcz.mctsgammon.mcts.node.selectionpolicies
+package pl.kkarolcz.mcts.node.selectionpolicies
 
-import pl.kkarolcz.mctsgammon.mcts.MCTSNode
-import pl.kkarolcz.mctsgammon.mcts.Move
+import pl.kkarolcz.mcts.MCTSNode
+import pl.kkarolcz.mcts.Move
 
 /**
  * Created by kkarolcz on 19.08.2017.

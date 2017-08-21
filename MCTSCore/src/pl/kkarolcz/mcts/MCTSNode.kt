@@ -1,6 +1,6 @@
-package pl.kkarolcz.mctsgammon.mcts
+package pl.kkarolcz.mcts
 
-import pl.kkarolcz.mctsgammon.mcts.node.selectionpolicies.NodeSelectionPolicy
+import pl.kkarolcz.mcts.node.selectionpolicies.NodeSelectionPolicy
 
 /**
  * Created by kkarolcz on 07.08.2017.
@@ -19,10 +19,13 @@ class MCTSNode<M : Move> private constructor(private val nodeSelectionPolicy: No
         get() = _wins
 
     val isFullyExpanded: Boolean
-        get() = !state.hasMoves() || children.isEmpty() // TODO: ???
+        get() = !state.hasMoves() && children.isEmpty()
 
-    val bestMove: MCTSNode<M>?
-        get() = children.maxBy(MCTSNode<M>::visits)
+    val bestMove: MCTSNode<M>
+        get() = children.maxBy(MCTSNode<M>::_visits) ?:
+                throw IllegalStateException("No moves available. Check isFullyExpanded() before call")
+
+    val result: Result? = state.result
 
     companion object {
         fun <M : Move> createRootNode(nodeSelectionPolicy: NodeSelectionPolicy, initialState: State<M>): MCTSNode<M> {
@@ -54,8 +57,9 @@ class MCTSNode<M : Move> private constructor(private val nodeSelectionPolicy: No
 
     private fun expand(): MCTSNode<M> {
         val move = state.pollRandomMove()
-        val newState = state.clone()
+        val newState = state.copy()
         newState.doMove(move)
+        newState.switchPlayer()
 
         val newNode = MCTSNode(nodeSelectionPolicy, newState)
         children.add(newNode)
@@ -64,7 +68,7 @@ class MCTSNode<M : Move> private constructor(private val nodeSelectionPolicy: No
 
     private fun update(result: Result?) {
         _visits += 1
-        if (result?.get(state.currentPlayerId) == Result.PlayerResult.WIN)
+        if (result?.get(state.previousPlayerId) == Result.PlayerResult.WIN)
             ++_wins
     }
 }

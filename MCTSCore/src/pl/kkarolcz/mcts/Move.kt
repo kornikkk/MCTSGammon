@@ -1,4 +1,4 @@
-package pl.kkarolcz.mctsgammon.mcts
+package pl.kkarolcz.mcts
 
 /**
  * Created by kkarolcz on 07.08.2017.

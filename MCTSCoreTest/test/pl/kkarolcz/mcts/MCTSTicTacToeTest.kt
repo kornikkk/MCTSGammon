@@ -66,7 +66,7 @@ private enum class CellState {
 
 class TicTacToeMove(val x: Int, val y: Int) : Move
 
-class TicTacToeState : State<TicTacToeMove> {
+class TicTacToeState : MCTSState<TicTacToeMove> {
     private val board: Array<Array<CellState>>
 
     override val moves: MutableList<TicTacToeMove>
@@ -96,7 +96,7 @@ class TicTacToeState : State<TicTacToeMove> {
         this.moves = findPossibleMoves()
     }
 
-    override fun copy(): State<TicTacToeMove> {
+    override fun clone(): MCTSState<TicTacToeMove> {
         return TicTacToeState(this)
     }
 

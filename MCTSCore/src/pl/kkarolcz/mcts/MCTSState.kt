@@ -5,7 +5,7 @@ import pl.kkarolcz.mctsgammon.utils.randomElement
 /**
  * Created by kkarolcz on 07.08.2017.
  */
-abstract class State<M : Move> : Cloneable {
+abstract class MCTSState<M : Move> : Cloneable {
     val currentPlayerId: Int
         get() = 1 - previousPlayerId
 
@@ -15,7 +15,7 @@ abstract class State<M : Move> : Cloneable {
 
     protected abstract val moves: MutableList<M>
 
-    abstract fun copy(): State<M>
+    public abstract override fun clone(): MCTSState<M>
 
     fun hasMoves(): Boolean = !moves.isEmpty()
 
@@ -28,11 +28,11 @@ abstract class State<M : Move> : Cloneable {
     }
 
     internal fun playout(): Result? {
-        var newState = copy()
+        var newState = clone()
         while (newState.moves.isNotEmpty()) {
             newState.doMove(newState.pollRandomMove())
             newState.switchPlayer()
-            newState = newState.copy()
+            newState = newState.clone()
         }
         return newState.result
     }

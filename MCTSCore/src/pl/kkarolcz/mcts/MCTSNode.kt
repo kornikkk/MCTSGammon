@@ -6,7 +6,7 @@ import pl.kkarolcz.mcts.node.selectionpolicies.NodeSelectionPolicy
  * Created by kkarolcz on 07.08.2017.
  */
 class MCTSNode<M : Move> private constructor(private val nodeSelectionPolicy: NodeSelectionPolicy,
-                                             private val state: State<M>) : Cloneable {
+                                             private val state: MCTSState<M>) : Cloneable {
 
     private val children: MutableList<MCTSNode<M>> = mutableListOf()
 
@@ -28,7 +28,7 @@ class MCTSNode<M : Move> private constructor(private val nodeSelectionPolicy: No
     val result: Result? = state.result
 
     companion object {
-        fun <M : Move> createRootNode(nodeSelectionPolicy: NodeSelectionPolicy, initialState: State<M>): MCTSNode<M> {
+        fun <M : Move> createRootNode(nodeSelectionPolicy: NodeSelectionPolicy, initialState: MCTSState<M>): MCTSNode<M> {
             return MCTSNode(nodeSelectionPolicy, initialState)
         }
     }
@@ -57,7 +57,7 @@ class MCTSNode<M : Move> private constructor(private val nodeSelectionPolicy: No
 
     private fun expand(): MCTSNode<M> {
         val move = state.pollRandomMove()
-        val newState = state.copy()
+        val newState = state.clone()
         newState.doMove(move)
         newState.switchPlayer()
 

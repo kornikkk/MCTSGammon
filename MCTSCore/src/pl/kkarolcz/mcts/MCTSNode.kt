@@ -33,6 +33,12 @@ class MCTSNode<M : Move> private constructor(private val nodeSelectionPolicy: No
         }
     }
 
+    override fun toString() = "" +
+            "Wins : $wins\n" +
+            "Visits: $visits\n" +
+            "State: \n" +
+            "$state"
+
     fun monteCarloRound() {
         val path = select().toMutableList()
         var leaf = path[path.size - 1]

@@ -17,9 +17,18 @@ abstract class MCTSState<M : Move> : Cloneable {
 
     public abstract override fun clone(): MCTSState<M>
 
+    override fun toString() = "" +
+            "Next Player ID: $currentPlayerId" +
+            "\nWinner Player ID: ${result?.winner() ?: "NONE"}"
+
     fun hasMoves(): Boolean = !moves.isEmpty()
 
-    abstract fun doMove(move: M)
+    fun doMove(move: M) {
+        moves.remove(move)
+        doMoveImpl(move)
+    }
+
+    abstract fun doMoveImpl(move: M)
 
     internal fun pollRandomMove(): M {
         val move = moves.randomElement()
@@ -28,11 +37,11 @@ abstract class MCTSState<M : Move> : Cloneable {
     }
 
     internal fun playout(): Result? {
-        var newState = clone()
-        while (newState.moves.isNotEmpty()) {
-            newState.doMove(newState.pollRandomMove())
+        val newState = clone()
+        while (newState.hasMoves()) {
+            val move = newState.pollRandomMove()
+            newState.doMoveImpl(move)
             newState.switchPlayer()
-            newState = newState.clone()
         }
         return newState.result
     }

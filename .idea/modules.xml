@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MCTSBackgammon/MCTSBackgammon.iml" filepath="$PROJECT_DIR$/MCTSBackgammon/MCTSBackgammon.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MCTSGammon/MCTSBackgammon.iml" filepath="$PROJECT_DIR$/MCTSGammon/MCTSBackgammon.iml" />
       <module fileurl="file://$PROJECT_DIR$/MCTSCore/MCTSCore.iml" filepath="$PROJECT_DIR$/MCTSCore/MCTSCore.iml" />
       <module fileurl="file://$PROJECT_DIR$/MCTSCoreTest/MCTSCoreTest.iml" filepath="$PROJECT_DIR$/MCTSCoreTest/MCTSCoreTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/MCTSGammon.iml" filepath="$PROJECT_DIR$/MCTSGammon.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MCTSGNUBackgammon/MCTSGNUBackgammon.iml" filepath="$PROJECT_DIR$/MCTSGNUBackgammon/MCTSGNUBackgammon.iml" />
       <module fileurl="file://$PROJECT_DIR$/Utils/Utils.iml" filepath="$PROJECT_DIR$/Utils/Utils.iml" />
     </modules>
   </component>

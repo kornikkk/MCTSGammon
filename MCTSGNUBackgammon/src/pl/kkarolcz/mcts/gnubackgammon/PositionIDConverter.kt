@@ -1,4 +1,4 @@
-package pl.kkarolcz.mctsgammon
+package pl.kkarolcz.mcts.gnubackgammon
 
 import java.util.*
 
@@ -11,8 +11,8 @@ object PositionIDConverter {
         val board: Array<Array<Int>> = Array(2) { Array(25) { 0 } }
         val decodedPositionId = Base64.getDecoder().decode(positionId)
 
-        var playerIndex: Int = 0
-        var boardIndex: Int = 0
+        var playerIndex = 0
+        var boardIndex = 0
         decodedPositionId.map { b -> b.unsigned() }.forEach { element ->
             var shiftedElement = element
             for (k in 0..7) {

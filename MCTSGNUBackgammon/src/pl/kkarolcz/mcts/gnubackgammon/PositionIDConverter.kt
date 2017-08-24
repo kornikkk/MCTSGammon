@@ -1,5 +1,7 @@
 package pl.kkarolcz.mcts.gnubackgammon
 
+import pl.kkarolcz.mcts.mctsbackgammon.BackgammonBoard
+import pl.kkarolcz.mcts.mctsbackgammon.BackgammonPlayer
 import java.util.*
 
 /**
@@ -7,8 +9,8 @@ import java.util.*
  */
 object PositionIDConverter {
 
-    fun convert(positionId: String): Array<Array<Int>> {
-        val board: Array<Array<Int>> = Array(2) { Array(25) { 0 } }
+    fun convert(positionId: String): BackgammonBoard {
+        val backgammonBoard = BackgammonBoard()
         val decodedPositionId = Base64.getDecoder().decode(positionId)
 
         var playerIndex = 0
@@ -17,7 +19,8 @@ object PositionIDConverter {
             var shiftedElement = element
             for (k in 0..7) {
                 if (shiftedElement and 0x1 != 0) {
-                    board[playerIndex][boardIndex] = board[playerIndex][boardIndex] + 1
+                    val playerCheckersOnBoard = backgammonBoard.getPlayerCheckers(playerFromIndex(playerIndex))
+                    playerCheckersOnBoard[boardIndex] = playerCheckersOnBoard[boardIndex] + 1
                 } else {
                     boardIndex += 1
                     if (boardIndex == 25) {
@@ -29,8 +32,10 @@ object PositionIDConverter {
             }
         }
 
-        return board
+        return backgammonBoard
     }
+
+    private fun playerFromIndex(playerIndex: Int) = BackgammonPlayer.fromInt(playerIndex)
 
     private fun Byte.unsigned(): Int = this + 128 xor 0b10000000
 

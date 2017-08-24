@@ -30,7 +30,6 @@ class MCTSTest {
             }
             if (node.result?.get(0) == Result.PlayerResult.WIN) ++wins
             else if (node.result == null) ++draws
-            node.toString()
         }
 
         // Tic Tac Toe is pretty simple to lose with random moves. Let's say 70% of wins is enough for test to pass
@@ -38,13 +37,6 @@ class MCTSTest {
         println("Draws: $draws")
         assertTrue { wins > 0.9 * maxGames }
     }
-}
-
-@Suppress("UNCHECKED_CAST")
-fun MCTSNode<TicTacToeMove>.getState(): TicTacToeState {
-    val state = javaClass.getDeclaredField("state")
-    state.isAccessible = true
-    return state.get(this) as TicTacToeState
 }
 
 @Suppress("UNCHECKED_CAST")

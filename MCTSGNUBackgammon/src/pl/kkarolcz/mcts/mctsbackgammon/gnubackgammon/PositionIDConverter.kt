@@ -1,7 +1,7 @@
 package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon
 
-import pl.kkarolcz.mcts.mctsbackgammon.BackgammonBoard
-import pl.kkarolcz.mcts.mctsbackgammon.BackgammonPlayerCheckers
+import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoard
+import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonPlayerCheckers
 import java.util.*
 
 /**

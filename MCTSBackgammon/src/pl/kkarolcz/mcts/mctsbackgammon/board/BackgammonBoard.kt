@@ -1,4 +1,6 @@
-package pl.kkarolcz.mcts.mctsbackgammon
+package pl.kkarolcz.mcts.mctsbackgammon.board
+
+import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonPlayer
 
 /**
  * Created by kkarolcz on 24.08.2017.

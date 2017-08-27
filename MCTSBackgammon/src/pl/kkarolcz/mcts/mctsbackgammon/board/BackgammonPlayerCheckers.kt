@@ -1,4 +1,4 @@
-package pl.kkarolcz.mcts.mctsbackgammon
+package pl.kkarolcz.mcts.mctsbackgammon.board
 
 /**
  * Created by kkarolcz on 24.08.2017.

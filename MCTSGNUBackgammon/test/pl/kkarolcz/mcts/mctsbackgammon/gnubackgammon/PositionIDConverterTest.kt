@@ -2,8 +2,8 @@ package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import pl.kkarolcz.mcts.mctsbackgammon.BackgammonBoardIndex
-import pl.kkarolcz.mcts.mctsbackgammon.BackgammonPlayer
+import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex
+import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonPlayer
 
 /**
  * Created by kkarolcz on 23.07.2017.

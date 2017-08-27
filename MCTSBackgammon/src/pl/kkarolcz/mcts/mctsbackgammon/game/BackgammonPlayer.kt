@@ -1,4 +1,4 @@
-package pl.kkarolcz.mcts.mctsbackgammon
+package pl.kkarolcz.mcts.mctsbackgammon.game
 
 /**
  * Created by kkarolcz on 24.08.2017.

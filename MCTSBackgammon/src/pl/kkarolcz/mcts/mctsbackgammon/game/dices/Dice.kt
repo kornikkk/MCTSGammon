@@ -1,4 +1,4 @@
-package pl.kkarolcz.mcts.mctsbackgammon
+package pl.kkarolcz.mcts.mctsbackgammon.game.dices
 
 class Dice(value: Int) {
     private val value: Int

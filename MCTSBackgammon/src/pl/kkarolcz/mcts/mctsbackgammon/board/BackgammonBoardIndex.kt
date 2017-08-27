@@ -1,4 +1,6 @@
-package pl.kkarolcz.mcts.mctsbackgammon
+package pl.kkarolcz.mcts.mctsbackgammon.board
+
+import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
 
 /**
  * Created by kkarolcz on 26.08.2017.
@@ -41,7 +43,7 @@ class BackgammonBoardIndex private constructor(private val index: Int) {
     fun isBearOff(): Boolean = index == BEAR_OFF_INDEX
 
     fun toOpponentsIndex(): BackgammonBoardIndex = when (index) {
-        BAR_INDEX -> BackgammonBoardIndex.bar()
+        BAR_INDEX -> bar()
         else -> BackgammonBoardIndex(MAX_INDEX + 1 - index)
     }
 

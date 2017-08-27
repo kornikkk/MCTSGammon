@@ -1,4 +1,4 @@
-package pl.kkarolcz.mctsgammon.utils
+package pl.kkarolcz.utils
 
 import java.util.*
 

@@ -3,11 +3,34 @@ package pl.kkarolcz.mcts.mctsbackgammon
 /**
  * Created by kkarolcz on 24.08.2017.
  */
-class BackgammonBoard {
-    // Player Index -> Board Index -> Number of checkers
-    private val board: Array<Array<Int>> = Array(2) { Array(25) { 0 } }
+class BackgammonBoard : Cloneable {
+    private val board: Array<BackgammonPlayerCheckers>
 
-    fun getPlayerCheckers(backgammonPlayer: BackgammonPlayer): Array<Int> {
+    companion object {
+        val SIZE = BackgammonBoardIndex.MAX_INDEX + 1
+    }
+
+    constructor(player1Checkers: BackgammonPlayerCheckers, player2Checkers: BackgammonPlayerCheckers) {
+        board = arrayOf(player1Checkers, player2Checkers)
+    }
+
+    constructor() {
+        board = Array(2) { BackgammonPlayerCheckers() }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private constructor(other: BackgammonBoard) {
+        val clonedBoard: Array<BackgammonPlayerCheckers?> = Array(2) { null }
+        other.board.forEachIndexed { playerIndex, playerCheckers -> clonedBoard[playerIndex] = playerCheckers.clone() }
+        this.board = clonedBoard as Array<BackgammonPlayerCheckers>
+    }
+
+    public override fun clone(): BackgammonBoard {
+        return BackgammonBoard(this)
+    }
+
+    fun getPlayerCheckers(backgammonPlayer: BackgammonPlayer): BackgammonPlayerCheckers {
         return board[backgammonPlayer.toInt()]
     }
+
 }

@@ -8,6 +8,13 @@
     <artifactId>mctscore-test</artifactId>
     <version>0.1</version>
 
+    <distributionManagement>
+        <repository>
+            <id>local-repo</id>
+            <url>file://${project.basedir}/../maven-repository</url>
+        </repository>
+    </distributionManagement>
+
     <properties>
         <kotlin.version>1.1.4-2</kotlin.version>
     </properties>
@@ -23,12 +30,18 @@
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jre8</artifactId>
             <version>${kotlin.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-test-junit</artifactId>
             <version>${kotlin.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>pl.kkarolcz.mcts</groupId>
+            <artifactId>mcts-core</artifactId>
+            <version>LATEST</version>
         </dependency>
     </dependencies>
 

@@ -1,6 +1,6 @@
 package pl.kkarolcz.mcts
 
-import pl.kkarolcz.mctsgammon.utils.randomElement
+import pl.kkarolcz.utils.randomElement
 
 /**
  * Created by kkarolcz on 07.08.2017.

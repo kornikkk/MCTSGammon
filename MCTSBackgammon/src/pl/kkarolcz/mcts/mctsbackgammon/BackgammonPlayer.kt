@@ -14,6 +14,11 @@ enum class BackgammonPlayer {
         }
     }
 
+    fun opponent(): BackgammonPlayer = when (this) {
+        PLAYER_ONE -> PLAYER_TWO
+        PLAYER_TWO -> PLAYER_ONE
+    }
+
     fun toInt(): Int = when (this) {
         PLAYER_ONE -> 0
         PLAYER_TWO -> 1

@@ -2,9 +2,9 @@ package pl.kkarolcz.mcts
 
 import org.junit.Test
 import pl.kkarolcz.mcts.node.selectionpolicies.UCTNodeSelectionPolicy
-import pl.kkarolcz.mctsgammon.utils.array2d
-import pl.kkarolcz.mctsgammon.utils.deepCopy
-import pl.kkarolcz.mctsgammon.utils.randomElement
+import pl.kkarolcz.utils.array2d
+import pl.kkarolcz.utils.copyOf
+import pl.kkarolcz.utils.randomElement
 import kotlin.test.assertTrue
 
 /**
@@ -90,7 +90,7 @@ class TicTacToeState : MCTSState<TicTacToeMove> {
     }
 
     private constructor (other: TicTacToeState) {
-        this.board = other.board.deepCopy()
+        this.board = other.board.copyOf()
         this.previousPlayerId = other.previousPlayerId
         this.moves = findPossibleMoves()
     }

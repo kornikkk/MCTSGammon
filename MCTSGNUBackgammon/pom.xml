@@ -4,9 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>pl.kkarolcz.mctsgammon</groupId>
-    <artifactId>mcts-gnubackgammon</artifactId>
+    <groupId>pl.kkarolcz.mcts.mctsbackgammon</groupId>
+    <artifactId>mcts-backgammon-gnubackgammon</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <distributionManagement>
+        <repository>
+            <id>local-repo</id>
+            <url>file://${project.basedir}/../maven-repository</url>
+        </repository>
+    </distributionManagement>
 
     <properties>
         <kotlin.version>1.1.4-2</kotlin.version>
@@ -30,9 +37,15 @@
             <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>pl.kkarolcz.mcts</groupId>
+            <artifactId>mctsbackgammon</artifactId>
+            <version>LATEST</version>
+        </dependency>
     </dependencies>
 
     <build>
+        <sourceDirectory>src</sourceDirectory>
         <testSourceDirectory>test</testSourceDirectory>
         <plugins>
             <plugin>

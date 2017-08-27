@@ -8,6 +8,13 @@
     <artifactId>mcts-core</artifactId>
     <version>0.1</version>
 
+    <distributionManagement>
+        <repository>
+            <id>local-repo</id>
+            <url>file://${project.basedir}/../maven-repository</url>
+        </repository>
+    </distributionManagement>
+
     <properties>
         <kotlin.version>1.1.4-2</kotlin.version>
     </properties>
@@ -19,10 +26,9 @@
             <version>${kotlin.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test-junit</artifactId>
-            <version>${kotlin.version}</version>
-            <scope>test</scope>
+            <groupId>pl.kkarolcz.utils</groupId>
+            <artifactId>utils</artifactId>
+            <version>LATEST</version>
         </dependency>
     </dependencies>
 

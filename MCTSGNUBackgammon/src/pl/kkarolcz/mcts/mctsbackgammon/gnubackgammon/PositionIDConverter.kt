@@ -1,7 +1,7 @@
-package pl.kkarolcz.mcts.gnubackgammon
+package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon
 
 import pl.kkarolcz.mcts.mctsbackgammon.BackgammonBoard
-import pl.kkarolcz.mcts.mctsbackgammon.BackgammonPlayer
+import pl.kkarolcz.mcts.mctsbackgammon.BackgammonPlayerCheckers
 import java.util.*
 
 /**
@@ -10,7 +10,8 @@ import java.util.*
 object PositionIDConverter {
 
     fun convert(positionId: String): BackgammonBoard {
-        val backgammonBoard = BackgammonBoard()
+        val player1CheckersArray = IntArray(BackgammonBoard.SIZE)
+        val player2CheckersArray = IntArray(BackgammonBoard.SIZE)
         val decodedPositionId = Base64.getDecoder().decode(positionId)
 
         var playerIndex = 0
@@ -19,7 +20,11 @@ object PositionIDConverter {
             var shiftedElement = element
             for (k in 0..7) {
                 if (shiftedElement and 0x1 != 0) {
-                    val playerCheckersOnBoard = backgammonBoard.getPlayerCheckers(playerFromIndex(playerIndex))
+                    val playerCheckersOnBoard = when (playerIndex) {
+                        0 -> player1CheckersArray
+                        1 -> player2CheckersArray
+                        else -> throw IllegalStateException("Wrong player index")
+                    }
                     playerCheckersOnBoard[boardIndex] = playerCheckersOnBoard[boardIndex] + 1
                 } else {
                     boardIndex += 1
@@ -32,10 +37,9 @@ object PositionIDConverter {
             }
         }
 
-        return backgammonBoard
+        return BackgammonBoard(BackgammonPlayerCheckers(player1CheckersArray),
+                BackgammonPlayerCheckers(player2CheckersArray))
     }
-
-    private fun playerFromIndex(playerIndex: Int) = BackgammonPlayer.fromInt(playerIndex)
 
     private fun Byte.unsigned(): Int = this + 128 xor 0b10000000
 

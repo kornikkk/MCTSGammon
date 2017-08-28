@@ -1,4 +1,4 @@
-package pl.kkarolcz.mcts.mctsbackgammon
+package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 
 import org.junit.Before
 import org.junit.Test
@@ -6,7 +6,6 @@ import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoard
 import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonPlayerCheckers
 import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonPlayer
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.SingleBackgammonMove
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull

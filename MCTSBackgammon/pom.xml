@@ -37,6 +37,11 @@
             <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>pl.kkarolcz.utils</groupId>
+            <artifactId>utils</artifactId>
+            <version>LATEST</version>
+        </dependency>
     </dependencies>
 
     <build>

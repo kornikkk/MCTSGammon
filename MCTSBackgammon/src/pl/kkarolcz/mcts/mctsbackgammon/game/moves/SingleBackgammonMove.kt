@@ -40,7 +40,7 @@ class SingleBackgammonMove internal constructor(val oldCheckerIndex: BackgammonB
 
 
         private fun bearOffMoves(board: BackgammonBoard, player: BackgammonPlayer, dice: Dice): SingleBackgammonMove =
-                board.getPlayerCheckers(player).firstOnHomeBoard()
+                board.getPlayerCheckers(player).firstForBearingOff(dice)
                         ?.let { oldIndex ->
                             SingleBackgammonMove(oldIndex, oldIndex.shiftForBearOff(dice) ?:
                                     throw IllegalStateException("For all checkers in home board at least one move should be possible"))

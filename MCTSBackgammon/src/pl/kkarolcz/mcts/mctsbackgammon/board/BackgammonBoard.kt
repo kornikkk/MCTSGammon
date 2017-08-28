@@ -1,6 +1,7 @@
 package pl.kkarolcz.mcts.mctsbackgammon.board
 
 import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonPlayer
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.SingleBackgammonMove
 
 /**
  * Created by kkarolcz on 24.08.2017.
@@ -16,10 +17,6 @@ class BackgammonBoard : Cloneable {
         board = arrayOf(player1Checkers, player2Checkers)
     }
 
-    constructor() {
-        board = Array(2) { BackgammonPlayerCheckers() }
-    }
-
     @Suppress("UNCHECKED_CAST")
     private constructor(other: BackgammonBoard) {
         val clonedBoard: Array<BackgammonPlayerCheckers?> = Array(2) { null }
@@ -33,6 +30,14 @@ class BackgammonBoard : Cloneable {
 
     fun getPlayerCheckers(backgammonPlayer: BackgammonPlayer): BackgammonPlayerCheckers {
         return board[backgammonPlayer.toInt()]
+    }
+
+    fun doMove(player: BackgammonPlayer, move: SingleBackgammonMove) {
+        getPlayerCheckers(player).doMove(move)
+    }
+
+    fun undoMove(player: BackgammonPlayer, move: SingleBackgammonMove) {
+        getPlayerCheckers(player).undoMove(move)
     }
 
 }

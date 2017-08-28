@@ -5,9 +5,14 @@ import java.util.*
 /**
  * Created by kkarolcz on 24.08.2017.
  */
-class BackgammonDices private constructor(val dice1Value: Dice, val dice2Value: Dice) {
+class BackgammonDices constructor(dice1Value: Dice, dice2Value: Dice) {
 
     val doubling = dice1Value == dice2Value
+
+    val values = when (doubling) {
+        true -> arrayListOf(dice1Value, dice1Value, dice2Value, dice2Value)
+        false -> arrayListOf(dice1Value, dice2Value)
+    }
 
     companion object {
         private val random = Random()
@@ -15,6 +20,5 @@ class BackgammonDices private constructor(val dice1Value: Dice, val dice2Value: 
 
         private fun throwSingleDice(): Dice = Dice(random.nextInt(6) + 1)
     }
-
 
 }

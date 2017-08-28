@@ -32,7 +32,7 @@ class BackgammonBoardIndex private constructor(private val index: Int) {
 
         fun bar() = BackgammonBoardIndex(BAR_INDEX)
 
-        fun bearOff() = BackgammonBoardIndex(BEAR_OFF_INDEX)
+        fun bearingOff() = BackgammonBoardIndex(BEAR_OFF_INDEX)
     }
 
 
@@ -60,7 +60,7 @@ class BackgammonBoardIndex private constructor(private val index: Int) {
 
     fun shiftForBearOff(dice: Dice): BackgammonBoardIndex? = when (index - dice.toInt()) {
         in (HOME_BOARD_START_INDEX + 1) downTo MIN_INDEX -> null
-        else -> bearOff()
+        else -> bearingOff()
     }
 
     override fun equals(other: Any?): Boolean {

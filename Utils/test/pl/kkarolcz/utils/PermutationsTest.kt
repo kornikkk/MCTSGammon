@@ -24,7 +24,7 @@ class PermutationsTest {
         var permutationsCount = 0
         permutations.forEach { permutation ->
             ++permutationsCount
-            assertTrue(containsPermutation(expected, permutation))
+            assertTrue(containsPermutation(expected, permutation.toList().toTypedArray()))
         }
 
         assertEquals(expected.size, permutationsCount)

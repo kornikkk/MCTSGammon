@@ -23,7 +23,7 @@ class PermutationIterator<T>(private val elements: Array<T>) : Iterator<Array<T>
     private var currentPermutation = 0L
 
     override fun hasNext(): Boolean {
-        return currentPermutation == permutationsCount
+        return currentPermutation < permutationsCount
     }
 
     override fun next(): Array<T> {

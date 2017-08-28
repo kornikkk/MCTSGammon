@@ -2,6 +2,7 @@ package pl.kkarolcz.utils
 
 import org.junit.Test
 import java.util.*
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
@@ -20,7 +21,13 @@ class PermutationsTest {
 
         val range = IntRange(1, 3)
         val permutations = permutations(range)
-        permutations.forEach { permutation -> assertTrue(containsPermutation(expected, permutation)) }
+        var permutationsCount = 0
+        permutations.forEach { permutation ->
+            ++permutationsCount
+            assertTrue(containsPermutation(expected, permutation))
+        }
+
+        assertEquals(expected.size, permutationsCount)
     }
 
     private fun containsPermutation(expected: Iterable<Array<Int>>, actual: Array<Int>): Boolean {

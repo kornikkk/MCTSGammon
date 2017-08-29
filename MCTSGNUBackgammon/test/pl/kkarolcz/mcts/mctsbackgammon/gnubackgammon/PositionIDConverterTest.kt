@@ -54,4 +54,11 @@ class PositionIDConverterTest {
         assertEquals(5, playerTwoCheckersOnBoard[BackgammonBoardIndex.of(12)])
         assertEquals(2, playerTwoCheckersOnBoard[BackgammonBoardIndex.of(23)])
     }
+
+    @Test
+    fun `Test random Position ID with bear off checkers`() {
+        val board = PositionIDConverter.convert("xHPwAQD4HHwADA")
+        val playerOneCheckersOnBoard = board.getPlayerCheckers(BackgammonPlayer.PLAYER_ONE)
+        assertEquals(2, playerOneCheckersOnBoard.bearOffCheckers)
+    }
 }

@@ -3,4 +3,4 @@ package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 /**
  * Created by kkarolcz on 24.08.2017.
  */
-class BackgammonMovesSequence(val moves: Sequence<SingleBackgammonMove>)
+class BackgammonMovesSequence(val singleMoves: Sequence<SingleBackgammonMove>)

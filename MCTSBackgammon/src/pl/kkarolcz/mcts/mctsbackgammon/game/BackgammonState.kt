@@ -1,5 +1,7 @@
 package pl.kkarolcz.mcts.mctsbackgammon.game
 
+import pl.kkarolcz.mcts.MCTSState
+import pl.kkarolcz.mcts.Result
 import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoard
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.BackgammonDices
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
@@ -10,57 +12,90 @@ import pl.kkarolcz.utils.permutations
 /**
  * Created by kkarolcz on 24.08.2017.
  */
-class BackgammonState : Cloneable {
-    val board: BackgammonBoard
-    val currentPlayer: BackgammonPlayer
-    val dices: BackgammonDices
+class BackgammonState : MCTSState<BackgammonMovesSequence> {
 
-    constructor(board: BackgammonBoard, currentPlayer: BackgammonPlayer, dices: BackgammonDices) {
+    override val result: Result?
+        get() {
+            val player1WinningResult = winningResult(BackgammonPlayer.PLAYER_ONE)
+            if (player1WinningResult != null) {
+                return player1WinningResult
+            }
+            val player2WinningResult = winningResult(BackgammonPlayer.PLAYER_TWO)
+            if (player2WinningResult != null) {
+                return player2WinningResult
+            }
+            return null
+        }
+
+    override var previousPlayerId: Int
+
+    private val currentPlayer: BackgammonPlayer = BackgammonPlayer.fromInt(currentPlayerId)
+    private val board: BackgammonBoard
+    private val dices: BackgammonDices
+
+    constructor(board: BackgammonBoard, previousPlayerId: BackgammonPlayer, dices: BackgammonDices) {
         this.board = board
-        this.currentPlayer = currentPlayer
+        this.previousPlayerId = previousPlayerId.toInt()
         this.dices = dices
     }
 
     private constructor(other: BackgammonState) {
         this.board = other.board.clone()
-        this.currentPlayer = other.currentPlayer
+        this.previousPlayerId = other.previousPlayerId
         this.dices = other.dices
     }
 
-    public override fun clone(): BackgammonState {
+    override fun clone(): BackgammonState {
         return BackgammonState(this)
     }
 
-    fun possibleMoves(): Sequence<BackgammonMovesSequence> {
+    override fun findPossibleMoves(): MutableList<BackgammonMovesSequence> {
         val finishedMovesSequences = mutableListOf<BackgammonMovesSequence>()
+        if (result != null) {
+            return finishedMovesSequences // Skip finding moves when result any player has already won
+        }
+
         when (dices.doubling) {
             true -> sequenceOf(dices.values.asSequence())
             false -> permutations(dices.values)
         }.forEach { singleDices ->
-            possibleMoves(finishedMovesSequences, emptySequence(), board, singleDices.toMutableList())
+            possibleMoveSequences(finishedMovesSequences, emptySequence(), board, singleDices.toMutableList())
 
         }
-        return finishedMovesSequences.asSequence()
+        return finishedMovesSequences
     }
 
-    private fun possibleMoves(finishedMovesSequences: MutableList<BackgammonMovesSequence>,
-                              movesSequence: Sequence<SingleBackgammonMove>,
-                              board: BackgammonBoard,
-                              nextDices: MutableList<Dice>) {
+    override fun doMoveImpl(move: BackgammonMovesSequence) {
+        move.singleMoves.forEach { board.doMove(currentPlayer, it) }
+    }
+
+    private fun possibleMoveSequences(finishedMovesSequences: MutableList<BackgammonMovesSequence>,
+                                      movesSequence: Sequence<SingleBackgammonMove>,
+                                      board: BackgammonBoard,
+                                      nextDices: MutableList<Dice>) {
 
         when (nextDices.isEmpty()) {
-            true -> finishedMovesSequences.add(BackgammonMovesSequence(movesSequence))
+            true -> finishedMovesSequences.add(BackgammonMovesSequence(movesSequence.toList()))
             else -> {
                 val dice = nextDices.removeAt(0)
                 val nextMoves = SingleBackgammonMove.possibleMoves(board, currentPlayer, dice)
                 nextMoves.forEach { move ->
                     board.doMove(currentPlayer, move)
                     val nextDicesCopy = ArrayList(nextDices)
-                    possibleMoves(finishedMovesSequences, movesSequence + move, board, nextDicesCopy)
+                    possibleMoveSequences(finishedMovesSequences, movesSequence + move, board, nextDicesCopy)
                     board.undoMove(currentPlayer, move)
                 }
             }
         }
     }
+
+    private fun winningResult(player: BackgammonPlayer): Result? =
+            when (board.getPlayerCheckers(player).anyLeft()) {
+                false -> Result(mapOf(
+                        Pair(player.toInt(), Result.PlayerResult.WIN),
+                        Pair(player.opponent().toInt(), Result.PlayerResult.LOSE)
+                ))
+                true -> null
+            }
 
 }

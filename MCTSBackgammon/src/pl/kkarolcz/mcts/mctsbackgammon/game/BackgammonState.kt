@@ -29,11 +29,12 @@ class BackgammonState : MCTSState<BackgammonMovesSequence> {
 
     override var previousPlayerId: Int
 
-    private val currentPlayer: BackgammonPlayer = BackgammonPlayer.fromInt(currentPlayerId)
+    private val currentPlayer: BackgammonPlayer
+        get() = BackgammonPlayer.fromInt(previousPlayerId).opponent()
     private val board: BackgammonBoard
-    private val dices: BackgammonDices
+    private val dices: BackgammonDices?
 
-    constructor(board: BackgammonBoard, previousPlayerId: BackgammonPlayer, dices: BackgammonDices) {
+    constructor(board: BackgammonBoard, previousPlayerId: BackgammonPlayer, dices: BackgammonDices?) {
         this.board = board
         this.previousPlayerId = previousPlayerId.toInt()
         this.dices = dices
@@ -55,12 +56,17 @@ class BackgammonState : MCTSState<BackgammonMovesSequence> {
             return finishedMovesSequences // Skip finding moves when result any player has already won
         }
 
-        when (dices.doubling) {
-            true -> sequenceOf(dices.values.asSequence())
-            false -> permutations(dices.values)
-        }.forEach { singleDices ->
-            possibleMoveSequences(finishedMovesSequences, emptySequence(), board, singleDices.toMutableList())
+        when (dices) {
+            null -> throw IllegalStateException("Cannot find moves when dice wasn't rolled yet")
+            else -> {
+                when (dices.doubling) {
+                    true -> sequenceOf(dices.values.asSequence())
+                    false -> permutations(dices.values)
+                }.forEach { singleDices ->
+                    possibleMoveSequences(finishedMovesSequences, emptySequence(), board, singleDices.toMutableList())
 
+                }
+            }
         }
         return finishedMovesSequences
     }
@@ -97,5 +103,23 @@ class BackgammonState : MCTSState<BackgammonMovesSequence> {
                 ))
                 true -> null
             }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as BackgammonState
+
+        if (previousPlayerId != other.previousPlayerId) return false
+        if (board != other.board) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = 0 + previousPlayerId
+        result = 31 * result + board.hashCode()
+        return result
+    }
 
 }

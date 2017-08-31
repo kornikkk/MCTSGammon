@@ -19,9 +19,16 @@ class SingleBackgammonMove internal constructor(val oldCheckerIndex: BackgammonB
                 true -> {
                     return when (playerCheckers.barEmpty()) {
                         true -> when (board.getPlayerCheckers(player).allInHomeBoard()) {
-                            true -> normalMoves(board, player, dice, BackgammonBoardIndex.HOME_BOARD_START_INDEX) +
-                                    bearOffMoves(board, player, dice)
-                            false -> normalMoves(board, player, dice)
+                            true -> {
+                                val normalMoves = normalMoves(board, player, dice, BackgammonBoardIndex.HOME_BOARD_START_INDEX)
+                                val bearOffMoves = bearOffMoves(board, player, dice)
+                                return when (bearOffMoves) {
+                                    null -> normalMoves
+                                    else -> normalMoves + bearOffMoves
+                                }
+                            }
+                            false
+                            -> normalMoves(board, player, dice)
                         }
                         false -> moveFromBar(board, player, dice)?.let { arrayListOf(it) } ?: emptyList()
                     }
@@ -39,13 +46,11 @@ class SingleBackgammonMove internal constructor(val oldCheckerIndex: BackgammonB
                 }
 
 
-        private fun bearOffMoves(board: BackgammonBoard, player: BackgammonPlayer, dice: Dice): SingleBackgammonMove =
+        private fun bearOffMoves(board: BackgammonBoard, player: BackgammonPlayer, dice: Dice): SingleBackgammonMove? =
                 board.getPlayerCheckers(player).firstForBearingOff(dice)
                         ?.let { oldIndex ->
-                            SingleBackgammonMove(oldIndex, oldIndex.shiftForBearOff(dice) ?:
-                                    throw IllegalStateException("For all checkers in home board at least one move should be possible"))
+                            oldIndex.shiftForBearOff(dice)?.let { SingleBackgammonMove(oldIndex, it) }
                         }
-                        ?: throw IllegalStateException("For all checkers in home board any checker should be found")
 
         private fun normalMoves(board: BackgammonBoard, player: BackgammonPlayer, dice: Dice,
                                 startIndex: Int = BackgammonBoardIndex.MAX_INDEX): Iterable<SingleBackgammonMove> {

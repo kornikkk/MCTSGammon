@@ -42,6 +42,11 @@
             <artifactId>utils</artifactId>
             <version>LATEST</version>
         </dependency>
+        <dependency>
+            <groupId>pl.kkarolcz.mcts</groupId>
+            <artifactId>mcts-core</artifactId>
+            <version>LATEST</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -2,6 +2,7 @@ package pl.kkarolcz.mcts.mctsbackgammon.board
 
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.SingleBackgammonMove
+import java.util.*
 
 /**
  * Created by kkarolcz on 24.08.2017.
@@ -14,10 +15,6 @@ class BackgammonPlayerCheckers : Cloneable {
         private val SIZE: Int = BackgammonBoard.SIZE
     }
 
-    constructor() {
-        checkers = IntArray(SIZE) { 0 }
-    }
-
     private constructor(other: BackgammonPlayerCheckers) {
         this.checkers = other.checkers.copyOf()
     }
@@ -25,9 +22,12 @@ class BackgammonPlayerCheckers : Cloneable {
     /**
      * @throws IllegalArgumentException if the board is of the wrong size
      */
-    constructor(checkers: IntArray) {
+    constructor(checkers: IntArray, bearOffCheckers: Int) {
         when (checkers.size) {
-            SIZE -> this.checkers = checkers
+            SIZE -> {
+                this.checkers = checkers
+                this.bearOffCheckers = bearOffCheckers
+            }
             else -> throw IllegalArgumentException("Wrong size of the board")
         }
 
@@ -94,6 +94,24 @@ class BackgammonPlayerCheckers : Cloneable {
             }
             else -> checkers[newIndex] -= 1
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as BackgammonPlayerCheckers
+
+        if (!Arrays.equals(checkers, other.checkers)) return false
+        if (bearOffCheckers != other.bearOffCheckers) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = Arrays.hashCode(checkers)
+        result = 31 * result + bearOffCheckers
+        return result
     }
 
 }

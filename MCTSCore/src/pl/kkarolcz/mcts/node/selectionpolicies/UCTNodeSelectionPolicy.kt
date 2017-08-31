@@ -1,7 +1,7 @@
 package pl.kkarolcz.mcts.node.selectionpolicies
 
+import pl.kkarolcz.mcts.MCTSMove
 import pl.kkarolcz.mcts.MCTSNode
-import pl.kkarolcz.mcts.Move
 import java.lang.Math.log
 import java.lang.Math.sqrt
 
@@ -17,13 +17,13 @@ class UCTNodeSelectionPolicy : NodeSelectionPolicy {
     /**
      * @throws IllegalArgumentException if childNodes is empty
      */
-    override fun <M : Move> selectNode(childNodes: Iterable<MCTSNode<M>>): MCTSNode<M> {
+    override fun <M : MCTSMove> selectNode(childNodes: Iterable<MCTSNode<M>>): MCTSNode<M> {
         val totalVisits = childNodes.map(MCTSNode<M>::visits).sum()
         return childNodes.maxBy { node -> countUCT(totalVisits, node) } ?:
                 throw IllegalArgumentException("Child nodes expected not empty")
     }
 
-    private fun <M : Move> countUCT(totalVisits: Int, node: MCTSNode<M>) =
+    private fun <M : MCTSMove> countUCT(totalVisits: Int, node: MCTSNode<M>) =
             // wi / ni + c * √(ln(t) / ni)
             node.wins / node.visits + C * sqrt(log(totalVisits.toDouble()) / node.visits)
 

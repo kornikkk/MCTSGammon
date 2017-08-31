@@ -81,7 +81,7 @@ class BackgammonStateTest {
     private fun assertContainsMovesSequence(possibleMoves: List<List<SingleBackgammonMove>>,
                                             vararg singleMovesSequence: SingleBackgammonMove) {
 
-        assertTrue(possibleMoves.any { singleMoves -> singleMoves.movesEqual(asList(*singleMovesSequence)) })
+        assertTrue(possibleMoves.any { singleMoves -> singleMoves == asList(*singleMovesSequence) })
     }
 
     private fun asList(vararg singleMovesSequence: SingleBackgammonMove) = singleMovesSequence.toList()
@@ -92,18 +92,15 @@ class BackgammonStateTest {
     private fun singleBearingOffMove(oldIndex: Int) =
             SingleBackgammonMove(BackgammonBoardIndex.of(oldIndex), BackgammonBoardIndex.bearingOff())
 
-    private fun List<SingleBackgammonMove>.movesEqual(other: List<SingleBackgammonMove>): Boolean {
-        if (size != other.size)
-            return false
-        return (0 until size).all { this[it] == other[it] }
-    }
 
     private fun getPossibleMoves(dices: BackgammonDices) =
-            buildState(dices).possibleMoves().map { backgammonMovesSequence -> backgammonMovesSequence.moves.toList() }.toList()
+            buildState(dices).findPossibleMoves().map { backgammonMovesSequence -> backgammonMovesSequence.singleMoves.toList() }.toList()
 
-    private fun buildState(dices: BackgammonDices) = BackgammonState(buildBoard(), BackgammonPlayer.PLAYER_ONE, dices)
+    private fun buildState(dices: BackgammonDices) = BackgammonState(buildBoard(), BackgammonPlayer.PLAYER_TWO, dices)
 
-    private fun buildBoard() = BackgammonBoard(BackgammonPlayerCheckers(player1Checkers), BackgammonPlayerCheckers(player2Checkers))
+    private fun buildBoard() = BackgammonBoard(
+            BackgammonPlayerCheckers(player1Checkers, 0),
+            BackgammonPlayerCheckers(player2Checkers, 0))
 
 
 }

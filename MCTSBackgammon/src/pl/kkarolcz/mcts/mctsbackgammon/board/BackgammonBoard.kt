@@ -2,6 +2,7 @@ package pl.kkarolcz.mcts.mctsbackgammon.board
 
 import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonPlayer
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.SingleBackgammonMove
+import java.util.*
 
 /**
  * Created by kkarolcz on 24.08.2017.
@@ -38,6 +39,21 @@ class BackgammonBoard : Cloneable {
 
     fun undoMove(player: BackgammonPlayer, move: SingleBackgammonMove) {
         getPlayerCheckers(player).undoMove(move)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as BackgammonBoard
+
+        if (!Arrays.deepEquals(board, other.board)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return Arrays.hashCode(board)
     }
 
 }

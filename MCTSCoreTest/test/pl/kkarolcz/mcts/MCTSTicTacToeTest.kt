@@ -26,7 +26,7 @@ class MCTSTest {
                     node.monteCarloRound()
                 node = node.bestMove // do best move found by MCTS
                 if (!node.isFullyExpanded)
-                    node = node.getChildren().randomElement() // random opponent's move
+                    node = node.children.randomElement() // random opponent's move
             }
             if (node.result?.get(0) == Result.PlayerResult.WIN) ++wins
             else if (node.result == null) ++draws
@@ -37,13 +37,6 @@ class MCTSTest {
         println("Draws: $draws")
         assertTrue { wins > 0.9 * maxGames }
     }
-}
-
-@Suppress("UNCHECKED_CAST")
-fun MCTSNode<TicTacToeMove>.getChildren(): List<MCTSNode<TicTacToeMove>> {
-    val state = javaClass.getDeclaredField("children")
-    state.isAccessible = true
-    return state.get(this) as List<MCTSNode<TicTacToeMove>>
 }
 
 private val WINNING_POSITIONS = arrayOf(
@@ -63,12 +56,19 @@ private enum class CellState {
     override fun toString(): String = if (this == NONE) " " else super.toString()
 }
 
-data class TicTacToeMove(val row: Int, val column: Int) : Move
+data class TicTacToeMove(val row: Int, val column: Int) : MCTSMove
 
 class TicTacToeState : MCTSState<TicTacToeMove> {
-    private val board: Array<Array<CellState>>
 
-    override val moves: MutableList<TicTacToeMove>
+    override fun equals(other: Any?): Boolean {
+        return false // Not needed in test implementation
+    }
+
+    override fun hashCode(): Int {
+        return 0 // Not needed in test implementation
+    }
+
+    private val board: Array<Array<CellState>>
 
     override val result: Result?
         get() {
@@ -86,13 +86,11 @@ class TicTacToeState : MCTSState<TicTacToeMove> {
     constructor() {
         board = array2d(3, 3) { CellState.NONE }
         this.previousPlayerId = 1
-        this.moves = findPossibleMoves()
     }
 
     private constructor (other: TicTacToeState) {
         this.board = other.board.copyOf()
         this.previousPlayerId = other.previousPlayerId
-        this.moves = findPossibleMoves()
     }
 
     override fun clone(): MCTSState<TicTacToeMove> {
@@ -104,7 +102,7 @@ class TicTacToeState : MCTSState<TicTacToeMove> {
                 board.joinToString("\n") { row -> "|${row.joinToString("|")}|" }
     }
 
-    private fun findPossibleMoves(): MutableList<TicTacToeMove> {
+    override fun findPossibleMoves(): MutableList<TicTacToeMove> {
         val moves: MutableList<TicTacToeMove> = mutableListOf()
         if (result == null) {
             for ((rowIndex, row) in board.withIndex()) {

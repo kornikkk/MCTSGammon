@@ -137,6 +137,8 @@ class SingleBackgammonMoveTest {
         assertNotNull(moves.find { move -> move.newCheckerIndex.toInt() == 1 })
     }
 
-    private fun buildBoard() = BackgammonBoard(BackgammonPlayerCheckers(player1Checkers), BackgammonPlayerCheckers(player2Checkers))
+    private fun buildBoard() = BackgammonBoard(
+            BackgammonPlayerCheckers(player1Checkers, 0),
+            BackgammonPlayerCheckers(player2Checkers, 0))
 
 }

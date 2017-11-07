@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/MCTSCore/MCTSCore.iml" filepath="$PROJECT_DIR$/MCTSCore/MCTSCore.iml" />
       <module fileurl="file://$PROJECT_DIR$/MCTSCoreTest/MCTSCoreTest.iml" filepath="$PROJECT_DIR$/MCTSCoreTest/MCTSCoreTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/MCTSGNUBackgammon/MCTSGNUBackgammon.iml" filepath="$PROJECT_DIR$/MCTSGNUBackgammon/MCTSGNUBackgammon.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MCTSGraph/MCTSGraph.iml" filepath="$PROJECT_DIR$/MCTSGraph/MCTSGraph.iml" />
       <module fileurl="file://$PROJECT_DIR$/Utils/Utils.iml" filepath="$PROJECT_DIR$/Utils/Utils.iml" />
     </modules>
   </component>

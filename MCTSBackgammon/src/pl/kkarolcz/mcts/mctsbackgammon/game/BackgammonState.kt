@@ -32,7 +32,7 @@ class BackgammonState : MCTSState<BackgammonMovesSequence> {
     private val currentPlayer: BackgammonPlayer
         get() = BackgammonPlayer.fromInt(previousPlayerId).opponent()
     private val board: BackgammonBoard
-    private val dices: BackgammonDices?
+    private var dices: BackgammonDices?
 
     constructor(board: BackgammonBoard, previousPlayerId: BackgammonPlayer, dices: BackgammonDices?) {
         this.board = board
@@ -50,24 +50,34 @@ class BackgammonState : MCTSState<BackgammonMovesSequence> {
         return BackgammonState(this)
     }
 
+    override fun beforeSwitchPlayer() {
+        dices = BackgammonDices.throwDices()
+    }
+
     override fun findPossibleMoves(): MutableList<BackgammonMovesSequence> {
         val finishedMovesSequences = mutableListOf<BackgammonMovesSequence>()
         if (result != null) {
-            return finishedMovesSequences // Skip finding moves when result any player has already won
+            return finishedMovesSequences // Skip finding moves if any player has already won
         }
 
-        when (dices) {
+        val currentDices = dices
+        when (currentDices) {
             null -> throw IllegalStateException("Cannot find moves when dice wasn't rolled yet")
             else -> {
-                when (dices.doubling) {
-                    true -> sequenceOf(dices.values.asSequence())
-                    false -> permutations(dices.values)
+                when (currentDices.doubling) {
+                    true -> sequenceOf(currentDices.values.asSequence())
+                    false -> permutations(currentDices.values)
                 }.forEach { singleDices ->
                     possibleMoveSequences(finishedMovesSequences, emptySequence(), board, singleDices.toMutableList())
 
                 }
             }
         }
+
+        if (finishedMovesSequences.isEmpty() && board.getPlayerCheckers(currentPlayer).anyLeft()) {
+            finishedMovesSequences.add(BackgammonMovesSequence.notPossibleMove())
+        }
+
         return finishedMovesSequences
     }
 
@@ -81,7 +91,7 @@ class BackgammonState : MCTSState<BackgammonMovesSequence> {
                                       nextDices: MutableList<Dice>) {
 
         when (nextDices.isEmpty()) {
-            true -> finishedMovesSequences.add(BackgammonMovesSequence(movesSequence.toList()))
+            true -> finishedMovesSequences.add(BackgammonMovesSequence(movesSequence))
             else -> {
                 val dice = nextDices.removeAt(0)
                 val nextMoves = SingleBackgammonMove.possibleMoves(board, currentPlayer, dice)
@@ -90,6 +100,9 @@ class BackgammonState : MCTSState<BackgammonMovesSequence> {
                     val nextDicesCopy = ArrayList(nextDices)
                     possibleMoveSequences(finishedMovesSequences, movesSequence + move, board, nextDicesCopy)
                     board.undoMove(currentPlayer, move)
+                }
+                if (nextMoves.isEmpty()) {
+                    finishedMovesSequences.add(BackgammonMovesSequence(movesSequence))
                 }
             }
         }

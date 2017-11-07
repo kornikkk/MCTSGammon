@@ -43,18 +43,43 @@ class BackgammonPlayerCheckers : Cloneable {
      */
     operator fun get(index: BackgammonBoardIndex) = checkers[index.toInt()]
 
+    /**
+     * @Unsafe
+     * Unsafe! Only for performance purposes
+     */
+    operator fun get(index: Int) = checkers[index]
+
     fun barEmpty(): Boolean = checkers[BackgammonBoardIndex.BAR_INDEX] == 0
 
     fun anyLeft(): Boolean = checkers.any { checkersOnPoint -> checkersOnPoint > 0 }
 
-    fun allInHomeBoard(): Boolean = checkers.withIndex()
-            .none { (index, value) -> index > BackgammonBoardIndex.HOME_BOARD_START_INDEX && value > 0 }
+    fun allInHomeBoard(): Boolean {
+        // For performance purposes
+        for (i in BackgammonBoardIndex.HOME_BOARD_START_INDEX..BackgammonBoardIndex.MAX_INDEX) {
+            if (checkers[i] > 0) {
+                return false
+            }
+        }
+        return true
+//        return (0..checkers.size).none { it > BackgammonBoardIndex.HOME_BOARD_START_INDEX || checkers[it] > 0 }
+//       return checkers.withIndex()
+//                .none { (index, value) -> index > BackgammonBoardIndex.HOME_BOARD_START_INDEX && value > 0 }
+    }
 
-    fun firstForBearingOff(dice: Dice): BackgammonBoardIndex? =
-            (BackgammonBoardIndex.HOME_BOARD_START_INDEX downTo BackgammonBoardIndex.MIN_INDEX)
-                    .filter { BackgammonBoardIndex.of(it).shiftForBearOff(dice) != null }
-                    .firstOrNull { checkers[it] > 0 }
-                    ?.let { BackgammonBoardIndex.of(it) }
+    fun firstForBearingOff(dice: Dice): BackgammonBoardIndex? {
+        for (i in BackgammonBoardIndex.HOME_BOARD_START_INDEX downTo BackgammonBoardIndex.MIN_INDEX) {
+            if (BackgammonBoardIndex.shiftForBearOff(i, dice) == BackgammonBoardIndex.NO_INDEX)
+                continue
+
+            if (checkers[i] > 0)
+                return BackgammonBoardIndex.of(i)
+        }
+        return null
+//        return (BackgammonBoardIndex.HOME_BOARD_START_INDEX downTo BackgammonBoardIndex.MIN_INDEX)
+//                .filter { BackgammonBoardIndex.of(it).shiftForBearOff(dice) != null }
+//                .firstOrNull { checkers[it] > 0 }
+//                ?.let { BackgammonBoardIndex.of(it) }
+    }
 
     fun doMove(move: SingleBackgammonMove) {
         val oldIndex = move.oldCheckerIndex.toInt()
@@ -113,5 +138,4 @@ class BackgammonPlayerCheckers : Cloneable {
         result = 31 * result + bearOffCheckers
         return result
     }
-
 }

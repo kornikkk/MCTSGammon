@@ -11,6 +11,7 @@ import kotlin.test.assertTrue
  * Created by kkarolcz on 10.08.2017.
  */
 class MCTSTest {
+
     @Test
     fun `Test simple MCTS`() {
         val maxGames = 100
@@ -100,6 +101,10 @@ class TicTacToeState : MCTSState<TicTacToeMove> {
     override fun toString(): String {
         return super.toString() + "\n" +
                 board.joinToString("\n") { row -> "|${row.joinToString("|")}|" }
+    }
+
+    override fun beforeSwitchPlayer() {
+        // Nothing to do here
     }
 
     override fun findPossibleMoves(): MutableList<TicTacToeMove> {

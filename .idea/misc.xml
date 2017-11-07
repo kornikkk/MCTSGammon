@@ -3,10 +3,11 @@
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
+        <option value="$PROJECT_DIR$/Utils/pom.xml" />
         <option value="$PROJECT_DIR$/MCTSCore/pom.xml" />
         <option value="$PROJECT_DIR$/MCTSCoreTest/pom.xml" />
+        <option value="$PROJECT_DIR$/MCTSGraph/pom.xml" />
         <option value="$PROJECT_DIR$/MCTSBackgammon/pom.xml" />
-        <option value="$PROJECT_DIR$/Utils/pom.xml" />
         <option value="$PROJECT_DIR$/MCTSGNUBackgammon/pom.xml" />
       </list>
     </option>

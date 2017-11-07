@@ -5,10 +5,10 @@ import pl.kkarolcz.mcts.MCTSMove
 /**
  * Created by kkarolcz on 24.08.2017.
  */
-class BackgammonMovesSequence(val singleMoves: List<SingleBackgammonMove>) : MCTSMove {
+class BackgammonMovesSequence(val singleMoves: Sequence<SingleBackgammonMove>) : MCTSMove {
 
     companion object {
-        fun notPossibleMove() = BackgammonMovesSequence(emptyList())
+        fun notPossibleMove() = BackgammonMovesSequence(emptySequence())
     }
 
     override fun equals(other: Any?): Boolean {

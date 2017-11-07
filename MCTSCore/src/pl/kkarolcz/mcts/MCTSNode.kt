@@ -16,8 +16,8 @@ class MCTSNode<M : MCTSMove> private constructor(private val nodeSelectionPolicy
     val visits: Int
         get() = _visits
 
-    private var _wins: Double = 0.0
-    val wins: Double
+    private var _wins: Int = 0
+    val wins: Int
         get() = _wins
 
     val isFullyExpanded: Boolean
@@ -36,11 +36,7 @@ class MCTSNode<M : MCTSMove> private constructor(private val nodeSelectionPolicy
         }
     }
 
-    override fun toString() = "" +
-            "Wins : $wins\n" +
-            "Visits: $visits\n" +
-            "State: \n" +
-            "$state"
+    override fun toString() = "$wins / $visits"
 
     fun monteCarloRound() {
         val path = select().toMutableList()

@@ -14,7 +14,7 @@ class GNUBackgammonMCTS : GNUBackgammonReceiver {
     private lateinit var currentNode: MCTSNode<BackgammonMovesSequence>
 
     companion object {
-        val SIMULATIONS_LIMIT = 1000
+        val SIMULATIONS_LIMIT = 10000
     }
 
     override fun onBoardInfoReceived(boardInfo: BoardInfo, response: (String) -> Unit) {

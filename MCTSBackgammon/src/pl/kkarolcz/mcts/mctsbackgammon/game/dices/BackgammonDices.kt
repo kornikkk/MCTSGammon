@@ -9,7 +9,7 @@ class BackgammonDices constructor(dice1Value: Dice, dice2Value: Dice) {
 
     val doubling = dice1Value == dice2Value
 
-    val values = when (doubling) {
+    val values: List<Dice> = when (doubling) {
         true -> arrayListOf(dice1Value, dice1Value, dice2Value, dice2Value)
         false -> arrayListOf(dice1Value, dice2Value)
     }

@@ -12,7 +12,7 @@ class SingleBackgammonMove internal constructor(val oldCheckerIndex: BackgammonB
                                                 val newCheckerIndex: BackgammonBoardIndex) {
 
     companion object {
-        fun possibleMoves(board: BackgammonBoard, player: BackgammonPlayer, dice: Dice): Iterable<SingleBackgammonMove> {
+        fun possibleMoves(board: BackgammonBoard, player: BackgammonPlayer, dice: Dice): List<SingleBackgammonMove> {
             val playerCheckers = board.getPlayerCheckers(player)
 
             return when (playerCheckers.anyLeft()) {
@@ -27,8 +27,7 @@ class SingleBackgammonMove internal constructor(val oldCheckerIndex: BackgammonB
                                     else -> normalMoves + bearOffMoves
                                 }
                             }
-                            false
-                            -> normalMoves(board, player, dice)
+                            false -> normalMoves(board, player, dice)
                         }
                         false -> moveFromBar(board, player, dice)?.let { arrayListOf(it) } ?: emptyList()
                     }
@@ -53,22 +52,27 @@ class SingleBackgammonMove internal constructor(val oldCheckerIndex: BackgammonB
                         }
 
         private fun normalMoves(board: BackgammonBoard, player: BackgammonPlayer, dice: Dice,
-                                startIndex: Int = BackgammonBoardIndex.MAX_INDEX): Iterable<SingleBackgammonMove> {
+                                startIndex: Int = BackgammonBoardIndex.MAX_INDEX): List<SingleBackgammonMove> {
 
             val playerCheckers = board.getPlayerCheckers(player)
             val opponentCheckers = board.getPlayerCheckers(player.opponent())
 
-            return (startIndex downTo BackgammonBoardIndex.MIN_INDEX)
-                    .map { BackgammonBoardIndex.of(it) }
-                    .filter { playerCheckers[it] > 0 } // Skip points without player's checkers
-                    .mapNotNull { it.shift(dice)?.let { newIndex -> Pair(it, newIndex) } } // Map with an index after move
-                    .map { (oldIndex, newIndex) -> Triple(oldIndex, newIndex, opponentCheckers[newIndex.toOpponentsIndex()]) }
-                    .mapNotNull { (oldIndex, newIndex, opponentCheckersOnPoint) ->
-                        when (opponentCheckersOnPoint) {
-                            in 0..1 -> SingleBackgammonMove(oldIndex, newIndex) // Empty point or hit on opponent
-                            else -> null
-                        }
-                    }
+            val moves = mutableListOf<SingleBackgammonMove>()
+            for (oldIndex in BackgammonBoardIndex.MIN_INDEX..startIndex) {
+                val checkersOnPoint = playerCheckers[oldIndex]
+                if (checkersOnPoint < 1)
+                    continue
+
+                val newIndex = BackgammonBoardIndex.shift(oldIndex, dice)
+                if (newIndex == BackgammonBoardIndex.NO_INDEX)
+                    continue
+
+                val opponentsCheckers = opponentCheckers[BackgammonBoardIndex.toOpponentsIndex(newIndex)]
+                if (opponentsCheckers <= 1) {
+                    moves.add(SingleBackgammonMove(BackgammonBoardIndex.of(oldIndex), BackgammonBoardIndex.of(newIndex)))
+                }
+            }
+            return moves
         }
 
     }

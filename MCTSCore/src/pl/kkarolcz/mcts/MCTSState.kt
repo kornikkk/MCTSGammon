@@ -48,16 +48,19 @@ abstract class MCTSState<M : MCTSMove> : Cloneable {
     }
 
     fun switchPlayer() {
+        beforeSwitchPlayer()
         previousPlayerId = currentPlayerId
         updatePossibleMoves()
     }
+
+    abstract fun beforeSwitchPlayer()
 
     fun updatePossibleMoves() {
         moves.clear()
         moves.addAll(findPossibleMoves())
     }
 
-    abstract fun findPossibleMoves(): MutableList<M>
+    abstract fun findPossibleMoves(): Iterable<M>
 
     abstract override fun equals(other: Any?): Boolean
 

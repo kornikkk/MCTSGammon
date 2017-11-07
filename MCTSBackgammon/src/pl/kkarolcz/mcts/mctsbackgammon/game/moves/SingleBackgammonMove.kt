@@ -15,25 +15,27 @@ class SingleBackgammonMove internal constructor(val oldCheckerIndex: BackgammonB
         fun possibleMoves(board: BackgammonBoard, player: BackgammonPlayer, dice: Dice): List<SingleBackgammonMove> {
             val playerCheckers = board.getPlayerCheckers(player)
 
-            return when (playerCheckers.anyLeft()) {
-                true -> {
-                    return when (playerCheckers.barEmpty()) {
-                        true -> when (board.getPlayerCheckers(player).allInHomeBoard()) {
-                            true -> {
-                                val normalMoves = normalMoves(board, player, dice, BackgammonBoardIndex.HOME_BOARD_START_INDEX)
-                                val bearOffMoves = bearOffMoves(board, player, dice)
-                                return when (bearOffMoves) {
-                                    null -> normalMoves
-                                    else -> normalMoves + bearOffMoves
-                                }
-                            }
-                            false -> normalMoves(board, player, dice)
-                        }
-                        false -> moveFromBar(board, player, dice)?.let { arrayListOf(it) } ?: emptyList()
-                    }
-                }
-                false -> emptyList()
+            if (!playerCheckers.anyLeft()) {
+                return emptyList()
             }
+
+            if (!playerCheckers.barEmpty()) {
+                val movesFromBar = moveFromBar(board, player, dice)
+                if (movesFromBar != null) {
+                    return arrayListOf(movesFromBar)
+                }
+                return emptyList()
+            }
+
+            val normalMoves = normalMoves(board, player, dice, BackgammonBoardIndex.HOME_BOARD_START_INDEX)
+            if (board.getPlayerCheckers(player).allInHomeBoard()) {
+                val bearOffMove = bearOffMove(board, player, dice)
+                if (bearOffMove != null) {
+                    return normalMoves + bearOffMove
+                }
+            }
+
+            return normalMoves(board, player, dice)
         }
 
         private fun moveFromBar(board: BackgammonBoard, player: BackgammonPlayer, dice: Dice): SingleBackgammonMove? =
@@ -45,11 +47,16 @@ class SingleBackgammonMove internal constructor(val oldCheckerIndex: BackgammonB
                 }
 
 
-        private fun bearOffMoves(board: BackgammonBoard, player: BackgammonPlayer, dice: Dice): SingleBackgammonMove? =
-                board.getPlayerCheckers(player).firstForBearingOff(dice)
-                        ?.let { oldIndex ->
-                            oldIndex.shiftForBearOff(dice)?.let { SingleBackgammonMove(oldIndex, it) }
-                        }
+        private fun bearOffMove(board: BackgammonBoard, player: BackgammonPlayer, dice: Dice): SingleBackgammonMove? {
+            val oldIndex = board.getPlayerCheckers(player).firstForBearingOff(dice)
+            if (oldIndex != null) {
+                val newIndex = oldIndex.shiftForBearOff(dice)
+                if (newIndex != null) {
+                    return SingleBackgammonMove(oldIndex, newIndex)
+                }
+            }
+            return null
+        }
 
         private fun normalMoves(board: BackgammonBoard, player: BackgammonPlayer, dice: Dice,
                                 startIndex: Int = BackgammonBoardIndex.MAX_INDEX): List<SingleBackgammonMove> {

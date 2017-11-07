@@ -61,12 +61,10 @@ class BackgammonPlayerCheckers : Cloneable {
             }
         }
         return true
-//        return (0..checkers.size).none { it > BackgammonBoardIndex.HOME_BOARD_START_INDEX || checkers[it] > 0 }
-//       return checkers.withIndex()
-//                .none { (index, value) -> index > BackgammonBoardIndex.HOME_BOARD_START_INDEX && value > 0 }
     }
 
     fun firstForBearingOff(dice: Dice): BackgammonBoardIndex? {
+        // For performance purposes
         for (i in BackgammonBoardIndex.HOME_BOARD_START_INDEX downTo BackgammonBoardIndex.MIN_INDEX) {
             if (BackgammonBoardIndex.shiftForBearOff(i, dice) == BackgammonBoardIndex.NO_INDEX)
                 continue
@@ -75,10 +73,6 @@ class BackgammonPlayerCheckers : Cloneable {
                 return BackgammonBoardIndex.of(i)
         }
         return null
-//        return (BackgammonBoardIndex.HOME_BOARD_START_INDEX downTo BackgammonBoardIndex.MIN_INDEX)
-//                .filter { BackgammonBoardIndex.of(it).shiftForBearOff(dice) != null }
-//                .firstOrNull { checkers[it] > 0 }
-//                ?.let { BackgammonBoardIndex.of(it) }
     }
 
     fun doMove(move: SingleBackgammonMove) {
@@ -90,15 +84,13 @@ class BackgammonPlayerCheckers : Cloneable {
         }
 
         checkers[oldIndex] -= 1
-        when (newIndex) {
-            BackgammonBoardIndex.BEAR_OFF_INDEX -> {
-                if (!allInHomeBoard()) {
-                    throw IllegalStateException("Cannot bear off if not all checkers are in the home board")
-                }
-                ++bearOffCheckers
+        if (newIndex == BackgammonBoardIndex.BEAR_OFF_INDEX) {
+            if (!allInHomeBoard()) {
+                throw IllegalStateException("Cannot bear off if not all checkers are in the home board")
             }
-            else -> checkers[newIndex] += 1
-        }
+            ++bearOffCheckers
+        } else
+            checkers[newIndex] += 1
     }
 
     fun undoMove(move: SingleBackgammonMove) {
@@ -110,15 +102,13 @@ class BackgammonPlayerCheckers : Cloneable {
         }
 
         checkers[oldIndex] += 1
-        when (newIndex) {
-            BackgammonBoardIndex.BEAR_OFF_INDEX -> {
-                if (bearOffCheckers == 0) {
-                    throw IllegalStateException("Cannot undo bear off if there are no bear off checkers")
-                }
-                --bearOffCheckers
+        if (newIndex == BackgammonBoardIndex.BEAR_OFF_INDEX) {
+            if (bearOffCheckers == 0) {
+                throw IllegalStateException("Cannot undo bear off if there are no bear off checkers")
             }
-            else -> checkers[newIndex] -= 1
-        }
+            --bearOffCheckers
+        } else
+            checkers[newIndex] -= 1
     }
 
     override fun equals(other: Any?): Boolean {

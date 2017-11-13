@@ -28,6 +28,7 @@ class BackgammonStateTest {
     @Test
     fun `Test single checker possible moves`() {
         player1Checkers[23] = 1
+        player2Checkers[1] = 1
         val possibleMoves = getPossibleMoves(BackgammonDices(Dice(1), Dice(2)))
 
         assertEquals(2, possibleMoves.size)
@@ -39,6 +40,7 @@ class BackgammonStateTest {
     @Test
     fun `Test single checker possible moves for doubling cube`() {
         player1Checkers[23] = 1
+        player2Checkers[1] = 1
         val possibleMoves = getPossibleMoves(BackgammonDices(Dice(1), Dice(1)))
 
         assertEquals(1, possibleMoves.size)
@@ -59,6 +61,7 @@ class BackgammonStateTest {
     @Test
     fun `Test bear off moves`() {
         player1Checkers[1] = 2
+        player2Checkers[1] = 1
         val possibleMoves = getPossibleMoves(BackgammonDices(Dice(2), Dice(1)))
 
         assertEquals(2, possibleMoves.size)
@@ -70,6 +73,7 @@ class BackgammonStateTest {
     fun `Test bear off and normal moves`() {
         player1Checkers[3] = 1
         player1Checkers[2] = 1
+        player2Checkers[1] = 1
         val possibleMoves = getPossibleMoves(BackgammonDices(Dice(3), Dice(2)))
 
         assertEquals(3, possibleMoves.size)
@@ -94,7 +98,7 @@ class BackgammonStateTest {
 
 
     private fun getPossibleMoves(dices: BackgammonDices) =
-            buildState(dices).findPossibleMoves().map { backgammonMovesSequence -> backgammonMovesSequence.singleMoves.toList() }.toList()
+            buildState(dices).findPossibleMoves().map { backgammonMovesSequence -> backgammonMovesSequence.singleMoves }.toList()
 
     private fun buildState(dices: BackgammonDices) = BackgammonState(buildBoard(), BackgammonPlayer.PLAYER_TWO, dices)
 

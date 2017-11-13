@@ -4,11 +4,11 @@ import pl.kkarolcz.mcts.node.selectionpolicies.NodeSelectionPolicy
 
 /**
  * Created by kkarolcz on 07.08.2017.
- * @param origin may be null if it's opponent's move or root node
+ * @param originMove may be null if it's opponent's move or root node
  */
 class MCTSNode<M : MCTSMove> private constructor(private val nodeSelectionPolicy: NodeSelectionPolicy,
                                                  private val state: MCTSState<M>,
-                                                 val origin: M?) : Cloneable {
+                                                 val originMove: M?) : Cloneable {
 
     val children: MutableList<MCTSNode<M>> = mutableListOf()
 
@@ -21,7 +21,7 @@ class MCTSNode<M : MCTSMove> private constructor(private val nodeSelectionPolicy
         get() = _wins
 
     val isFullyExpanded: Boolean
-        get() = !state.hasMoves() && children.isEmpty()
+        get() = !state.hasUntriedMoves() && children.isEmpty()
 
     val bestMove: MCTSNode<M>
         get() = children.maxBy(MCTSNode<M>::_visits) ?:
@@ -39,9 +39,10 @@ class MCTSNode<M : MCTSMove> private constructor(private val nodeSelectionPolicy
     override fun toString() = "$wins / $visits"
 
     fun monteCarloRound() {
-        val path = select().toMutableList()
+        val path = select()
         var leaf = path[path.size - 1]
-        if (leaf.state.hasMoves()) {
+
+        if (leaf.state.hasUntriedMoves()) {
             leaf = leaf.expand()
             path.add(leaf)
         }
@@ -58,10 +59,10 @@ class MCTSNode<M : MCTSMove> private constructor(private val nodeSelectionPolicy
         return MCTSNode(nodeSelectionPolicy, state, null)
     }
 
-    private fun select(): List<MCTSNode<M>> {
+    private fun select(): MutableList<MCTSNode<M>> {
         val path = mutableListOf(this)
         var node = this
-        while (!node.state.hasMoves() && !node.children.isEmpty()) {
+        while (!node.state.hasUntriedMoves() && !node.children.isEmpty()) {
             node = nodeSelectionPolicy.selectNode(node.children)
             path.add(node)
         }
@@ -70,11 +71,14 @@ class MCTSNode<M : MCTSMove> private constructor(private val nodeSelectionPolicy
     }
 
     private fun expand(): MCTSNode<M> {
-        val move = state.pollRandomMove()
         val newState = state.clone()
-        newState.doMove(move)
+
+        val move = state.pollRandomMove()
+        if (move != null) {
+            newState.doMove(move)
+        }
+
         newState.switchPlayer()
-        //TODO update possible moves??? Do not do that in cloning???
 
         val newNode = MCTSNode(nodeSelectionPolicy, newState, move)
         children.add(newNode)

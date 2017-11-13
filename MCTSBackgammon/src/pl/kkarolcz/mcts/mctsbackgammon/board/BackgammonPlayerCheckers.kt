@@ -55,7 +55,7 @@ class BackgammonPlayerCheckers : Cloneable {
 
     fun allInHomeBoard(): Boolean {
         // For performance purposes
-        for (i in BackgammonBoardIndex.HOME_BOARD_START_INDEX..BackgammonBoardIndex.MAX_INDEX) {
+        for (i in BackgammonBoardIndex.HOME_BOARD_START_INDEX + 1..BackgammonBoardIndex.MAX_INDEX) {
             if (checkers[i] > 0) {
                 return false
             }

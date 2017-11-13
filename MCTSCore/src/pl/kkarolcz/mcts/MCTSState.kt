@@ -15,52 +15,72 @@ abstract class MCTSState<M : MCTSMove> : Cloneable {
 
     protected val moves: MutableList<M> = mutableListOf()
 
+    private var hasNotPossibleMove = false
+
     public abstract override fun clone(): MCTSState<M>
 
     override fun toString() = "" +
             "Next Player ID: $currentPlayerId" +
             "\nWinner Player ID: ${result?.winner() ?: "NONE"}"
 
-    fun hasMoves(): Boolean = !moves.isEmpty()
+    fun hasUntriedMoves(): Boolean = hasNotPossibleMove || moves.isNotEmpty()
 
     fun doMove(move: M) {
         moves.remove(move)
         doMoveImpl(move)
     }
 
-    abstract fun doMoveImpl(move: M)
+    abstract protected fun doMoveImpl(move: M)
 
-    internal fun pollRandomMove(): M {
-        val move = moves.randomElement()
-        moves.remove(move)
-        return move
+    /**
+     * Return random possible move if present or null for not possible move
+     */
+    internal fun pollRandomMove(): M? {
+        if (moves.isNotEmpty()) {
+            val move = moves.randomElement()
+            moves.remove(move)
+            return move
+        }
+        if (hasNotPossibleMove) {
+            hasNotPossibleMove = false
+            return null
+        }
+
+        throw IllegalStateException("Check if has not possible move or any untried moves are present before call")
     }
 
     internal fun playout(): Result? {
         val newState = clone()
         newState.updatePossibleMoves()
-        while (newState.hasMoves()) {
+
+        while (newState.result == null && newState.hasUntriedMoves()) {
             val move = newState.pollRandomMove()
-            newState.doMoveImpl(move) //TODO update possible moves and don't do that in cloning??? Or do that twice??
+            if (move != null)
+                newState.doMoveImpl(move)
+
             newState.switchPlayer()
         }
         return newState.result
     }
 
-    fun switchPlayer() {
+    internal fun switchPlayer() {
         beforeSwitchPlayer()
         previousPlayerId = currentPlayerId
         updatePossibleMoves()
     }
 
-    abstract fun beforeSwitchPlayer()
-
-    fun updatePossibleMoves() {
+    internal fun updatePossibleMoves() {
         moves.clear()
-        moves.addAll(findPossibleMoves())
+        val possibleMoves = findPossibleMoves()
+        hasNotPossibleMove = possibleMoves.isEmpty()
+        if (!hasNotPossibleMove)
+            moves.addAll(possibleMoves)
     }
 
-    abstract fun findPossibleMoves(): Iterable<M>
+
+    abstract fun beforeSwitchPlayer()
+
+    abstract fun findPossibleMoves(): List<M>
 
     abstract override fun equals(other: Any?): Boolean
 

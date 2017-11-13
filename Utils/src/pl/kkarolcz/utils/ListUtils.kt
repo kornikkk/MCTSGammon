@@ -7,4 +7,6 @@ import java.util.*
  */
 private val random: Random = Random()
 
-fun <T> List<T>.randomElement() = this[random.nextInt(size)]
+fun <T> List<T>.randomElement(): T {
+    return this[random.nextInt(size)]
+}

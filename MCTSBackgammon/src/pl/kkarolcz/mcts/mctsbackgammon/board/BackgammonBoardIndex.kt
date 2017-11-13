@@ -26,9 +26,10 @@ class BackgammonBoardIndex private constructor(private val index: Int) {
                 .reversed()
                 .map(::BackgammonBoardIndex)
 
-        fun of(index: Int): BackgammonBoardIndex = when (index) {
-            in MIN_INDEX..MAX_INDEX -> BackgammonBoardIndex(index)
-            else -> throw IllegalArgumentException("Index")
+        fun of(index: Int): BackgammonBoardIndex {
+            if (index == BAR_INDEX || index == BEAR_OFF_INDEX || index in MIN_INDEX..MAX_INDEX)
+                return BackgammonBoardIndex(index)
+            throw IllegalArgumentException("Index")
         }
 
         fun bar() = BackgammonBoardIndex(BAR_INDEX)
@@ -43,9 +44,8 @@ class BackgammonBoardIndex private constructor(private val index: Int) {
                 return MAX_INDEX + 1 - dice.toInt()
 
             val shiftedIndex = index - dice.toInt()
-            if (shiftedIndex >= MIN_INDEX && shiftedIndex <= MAX_INDEX) {
+            if (shiftedIndex in MIN_INDEX..MAX_INDEX)
                 return shiftedIndex
-            }
 
             return NO_INDEX
         }

@@ -20,31 +20,33 @@ class SingleBackgammonMove internal constructor(val oldCheckerIndex: BackgammonB
             }
 
             if (!playerCheckers.barEmpty()) {
-                val movesFromBar = moveFromBar(board, player, dice)
-                if (movesFromBar != null) {
-                    return arrayListOf(movesFromBar)
+                val moveFromBar = moveFromBar(board, player, dice)
+                if (moveFromBar != null) {
+                    return listOf(moveFromBar)
                 }
                 return emptyList()
             }
 
-            val normalMoves = normalMoves(board, player, dice, BackgammonBoardIndex.HOME_BOARD_START_INDEX)
             if (board.getPlayerCheckers(player).allInHomeBoard()) {
+                val normalHomeBoardMoves = normalMoves(board, player, dice, BackgammonBoardIndex.HOME_BOARD_START_INDEX)
                 val bearOffMove = bearOffMove(board, player, dice)
                 if (bearOffMove != null) {
-                    return normalMoves + bearOffMove
+                    return normalHomeBoardMoves + bearOffMove
                 }
             }
 
             return normalMoves(board, player, dice)
         }
 
-        private fun moveFromBar(board: BackgammonBoard, player: BackgammonPlayer, dice: Dice): SingleBackgammonMove? =
-                BackgammonBoardIndex.bar().shift(dice)?.let { endIndex ->
-                    when (board.getPlayerCheckers(player.opponent())[endIndex.toOpponentsIndex()]) {
-                        in 0..1 -> SingleBackgammonMove(BackgammonBoardIndex.bar(), endIndex)
-                        else -> null
-                    }
-                }
+        private fun moveFromBar(board: BackgammonBoard, player: BackgammonPlayer, dice: Dice): SingleBackgammonMove? {
+            val newIndex = BackgammonBoardIndex.shift(BackgammonBoardIndex.BAR_INDEX, dice)
+            if (newIndex != BackgammonBoardIndex.NO_INDEX) {
+                val opponentCheckers = board.getPlayerCheckers(player.opponent())
+                if (opponentCheckers[BackgammonBoardIndex.toOpponentsIndex(newIndex)] <= 1)
+                    return SingleBackgammonMove(BackgammonBoardIndex.bar(), BackgammonBoardIndex.of(newIndex))
+            }
+            return null
+        }
 
 
         private fun bearOffMove(board: BackgammonBoard, player: BackgammonPlayer, dice: Dice): SingleBackgammonMove? {
@@ -66,14 +68,17 @@ class SingleBackgammonMove internal constructor(val oldCheckerIndex: BackgammonB
 
             val moves = mutableListOf<SingleBackgammonMove>()
             for (oldIndex in BackgammonBoardIndex.MIN_INDEX..startIndex) {
+                // Test for any checkers on point
                 val checkersOnPoint = playerCheckers[oldIndex]
-                if (checkersOnPoint < 1)
+                if (checkersOnPoint == 0)
                     continue
 
+                // Check if move is even possible
                 val newIndex = BackgammonBoardIndex.shift(oldIndex, dice)
                 if (newIndex == BackgammonBoardIndex.NO_INDEX)
                     continue
 
+                // Check if it's possible to do the move on empty point on single opponent's checker
                 val opponentsCheckers = opponentCheckers[BackgammonBoardIndex.toOpponentsIndex(newIndex)]
                 if (opponentsCheckers <= 1) {
                     moves.add(SingleBackgammonMove(BackgammonBoardIndex.of(oldIndex), BackgammonBoardIndex.of(newIndex)))

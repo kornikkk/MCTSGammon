@@ -6,4 +6,5 @@ package pl.kkarolcz.mcts
 interface MCTSMove {
     override fun equals(other: Any?): Boolean
     override fun hashCode(): Int
+
 }

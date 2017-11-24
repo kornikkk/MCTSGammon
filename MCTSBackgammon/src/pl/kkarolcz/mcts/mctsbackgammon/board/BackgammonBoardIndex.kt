@@ -3,104 +3,105 @@ package pl.kkarolcz.mcts.mctsbackgammon.board
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
 
 /**
- * Created by kkarolcz on 26.08.2017.
- */
-
-/**
  * @throws IllegalArgumentException if index if out of 1..24 range
  */
-class BackgammonBoardIndex private constructor(private val index: Int) {
+class BackgammonBoardIndex {
 
     companion object {
-        internal val NO_INDEX = Int.MIN_VALUE
-        internal val BEAR_OFF_INDEX = -1
-        internal val BAR_INDEX = 0
-        internal val MIN_INDEX = 1
-        internal val MAX_INDEX = 24
-        internal val HOME_BOARD_START_INDEX = 6
+        const val NO_INDEX: Byte = -1
+        const val BEAR_OFF_INDEX: Byte = 0
+        const val BAR_INDEX: Byte = 25
+        const val HOME_BOARD_START_INDEX: Byte = 6
 
-        /**
-         * Indices in range 6..1
-         */
-        internal val HOME_BOARD_INDICES = IntRange(MIN_INDEX, HOME_BOARD_START_INDEX)
-                .reversed()
-                .map(::BackgammonBoardIndex)
+        private const val MIN_INDEX: Byte = 1
+        private const val MAX_INDEX: Byte = 24
 
-        fun of(index: Int): BackgammonBoardIndex {
-            if (index == BAR_INDEX || index == BEAR_OFF_INDEX || index in MIN_INDEX..MAX_INDEX)
-                return BackgammonBoardIndex(index)
-            throw IllegalArgumentException("Index")
+        fun isOnBoard(index: Byte) = index in MIN_INDEX..MAX_INDEX
+
+        fun toOpponentsIndex(index: Byte): Byte {
+            if (index == BAR_INDEX)
+                return BAR_INDEX
+            return (MAX_INDEX + 1 - index).toByte()
         }
 
-        fun bar() = BackgammonBoardIndex(BAR_INDEX)
+//        fun shiftFromBar(diceValue: Byte): Byte {
+//            return (BAR_INDEX - diceValue).toByte()
+//        }
 
-        fun bearingOff() = BackgammonBoardIndex(BEAR_OFF_INDEX)
+        //TODO: Remove?
+        fun shiftFromBar(index: Byte, dice: Dice): Byte {
+            return (BAR_INDEX - dice.toByte()).toByte()
+        }
 
-        /**
-         * Unsafe method with better performance. Normally use the non-static, public method
-         */
-        internal fun shift(index: Int, dice: Dice): Int {
-            if (index == BAR_INDEX)
-                return MAX_INDEX + 1 - dice.toInt()
 
-            val shiftedIndex = index - dice.toInt()
+        fun shift(index: Byte, diceValue: Byte): Byte {
+            val shiftedIndex = (index - diceValue).toByte()
             if (shiftedIndex in MIN_INDEX..MAX_INDEX)
                 return shiftedIndex
 
             return NO_INDEX
         }
 
-        /**
-         * Unsafe method with better performance. Normally use the non-static, public method
-         */
-        internal fun shiftForBearOff(index: Int, dice: Dice): Int {
-            val newIndex = index - dice.toInt()
+        //TODO: Remove?
+        fun shift(index: Byte, dice: Dice): Byte {
+            val shiftedIndex = (index - dice.toByte()).toByte()
+            if (shiftedIndex in MIN_INDEX..MAX_INDEX)
+                return shiftedIndex
+
+            return NO_INDEX
+        }
+
+        fun shiftForBearOff(index: Byte, dice: Dice): Byte {
+            val newIndex = index - dice.toByte()
             if (newIndex < MIN_INDEX)
                 return BEAR_OFF_INDEX
             return NO_INDEX
         }
 
-        /**
-         * Unsafe method with better performance. Normally use the non-static, public method
-         */
-        internal fun toOpponentsIndex(index: Int): Int {
-            if (index == BAR_INDEX)
-                return BAR_INDEX
-            return MAX_INDEX + 1 - index
-        }
-
-        private fun internalOf(index: Int): BackgammonBoardIndex? = when (index) {
-            NO_INDEX -> null
-            else -> BackgammonBoardIndex(index)
-        }
     }
 
-
-    fun toInt(): Int = index
-
-    fun isBar(): Boolean = index == BAR_INDEX
-
-    fun isBearOff(): Boolean = index == BEAR_OFF_INDEX
-
-    fun toOpponentsIndex(): BackgammonBoardIndex = BackgammonBoardIndex(toOpponentsIndex(index))
-
-    fun shift(dice: Dice): BackgammonBoardIndex? = internalOf(shift(index, dice))
-
-    fun shiftForBearOff(dice: Dice): BackgammonBoardIndex? = internalOf(shiftForBearOff(index, dice))
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as BackgammonBoardIndex
-
-        if (index != other.index) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return index
-    }
+//
+//        /**
+//         * Unsafe method with better performance. Normally use the non-static, public method
+//         */
+//        internal fun toOpponentsIndex(index: Int): Int {
+//            if (index == BAR_INDEX)
+//                return BAR_INDEX
+//            return MAX_INDEX + 1 - index
+//        }
+//
+//        private fun internalOf(index: Int): BackgammonBoardIndex? = when (index) {
+//            NO_INDEX -> null
+//            else -> OLD_BackgammonBoardIndex(index)
+//        }
+//    }
+//
+//
+//    fun toInt(): Int = index
+//
+//    fun isBar(): Boolean = index == BAR_INDEX
+//
+//    fun isBearOff(): Boolean = index == BEAR_OFF_INDEX
+//
+//    fun toOpponentsIndex(): BackgammonBoardIndex = OLD_BackgammonBoardIndex(toOpponentsIndex(index))
+//
+//    fun shift(dice: Dice): BackgammonBoardIndex? = internalOf(shift(index, dice))
+//
+//    fun shiftForBearOff(dice: Dice): BackgammonBoardIndex? = internalOf(shiftForBearOff(index, dice))
+//
+//    override fun equals(other: Any?): Boolean {
+//        if (this === other) return true
+//        if (javaClass != other?.javaClass) return false
+//
+//        other as BackgammonBoardIndex
+//
+//        if (index != other.index) return false
+//
+//        return true
+//    }
+//
+//    override fun hashCode(): Int {
+//        return index
+//    }
 
 }

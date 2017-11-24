@@ -1,5 +1,7 @@
 package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.server
 
+import pl.kkarolcz.utils.ByteMath
+
 /**
  * Created by kkarolcz on 29.08.2017.
  */
@@ -14,11 +16,11 @@ class BoardInfoDecoder private constructor() {
             decodedBoardInfo.matchLength = encoded[3].toInt()
             decodedBoardInfo.player1Score = encoded[4].toInt()
             decodedBoardInfo.player2Score = encoded[5].toInt()
-            decodedBoardInfo.player1Bar = encoded[6].toInt()
+            decodedBoardInfo.player1Bar = encoded[6].toByte()
 
             decodeCheckers(encoded, decodedBoardInfo)
 
-            decodedBoardInfo.player2Bar = encoded[31].toInt()
+            decodedBoardInfo.player2Bar = encoded[31].toByte()
             decodedBoardInfo.playerTurn = encoded[32].toInt()
             decodedBoardInfo.player1Dice1 = encoded[33].toInt()
             decodedBoardInfo.player1Dice2 = encoded[34].toInt()
@@ -32,10 +34,10 @@ class BoardInfoDecoder private constructor() {
             decodedBoardInfo.direction = encoded[42].toInt()
             decodedBoardInfo.home = encoded[43].toInt()
             decodedBoardInfo.bar = encoded[44].toInt()
-            decodedBoardInfo.player1OnHome = encoded[45].toInt()
-            decodedBoardInfo.player2OnHome = encoded[46].toInt()
-            decodedBoardInfo.player1OnBar = encoded[47].toInt()
-            decodedBoardInfo.player2OnBar = encoded[48].toInt()
+            decodedBoardInfo.player1OnHome = encoded[45].toByte()
+            decodedBoardInfo.player2OnHome = encoded[46].toByte()
+            decodedBoardInfo.player1OnBar = encoded[47].toByte()
+            decodedBoardInfo.player2OnBar = encoded[48].toByte()
             decodedBoardInfo.canMove = encoded[49].toInt()
             decodedBoardInfo.forcedMove = encoded[50].toInt()
             decodedBoardInfo.didCrawford = encoded[51].toInt()
@@ -46,13 +48,13 @@ class BoardInfoDecoder private constructor() {
 
         private fun decodeCheckers(encoded: List<String>, boardInfo: BoardInfo) {
             (7..30).forEachIndexed { indexOnBoard, indexInEncoded ->
-                val encodedCheckersOnPoint = encoded[indexInEncoded].toInt()
+                val encodedCheckersOnPoint = encoded[indexInEncoded].toByte()
                 when (getPlayerPieces(encodedCheckersOnPoint)) {
                     PlayerPieces.O -> {
-                        boardInfo.whiteCheckers[indexOnBoard] = Math.abs(encodedCheckersOnPoint)
+                        boardInfo.whiteCheckers[indexOnBoard] = ByteMath.abs(encodedCheckersOnPoint)
                     }
                     PlayerPieces.X -> {
-                        boardInfo.blackCheckers[indexOnBoard] = Math.abs(encodedCheckersOnPoint)
+                        boardInfo.blackCheckers[indexOnBoard] = ByteMath.abs(encodedCheckersOnPoint)
                     }
                     PlayerPieces.BOTH -> {
                         // Skip. Array is already filled with zeroes
@@ -61,7 +63,7 @@ class BoardInfoDecoder private constructor() {
             }
         }
 
-        private fun getPlayerPieces(encodedCheckersOnPoint: Int): PlayerPieces {
+        private fun getPlayerPieces(encodedCheckersOnPoint: Byte): PlayerPieces {
             if (encodedCheckersOnPoint > 0)
                 return PlayerPieces.O
             else if (encodedCheckersOnPoint < 0)

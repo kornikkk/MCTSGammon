@@ -53,14 +53,16 @@ abstract class MCTSState<M : MCTSMove> : Cloneable {
         val newState = clone()
         newState.updatePossibleMoves()
 
-        while (newState.result == null && newState.hasUntriedMoves()) {
+        var newStateResult = newState.result
+        while (newStateResult == null && newState.hasUntriedMoves()) {
             val move = newState.pollRandomMove()
             if (move != null)
                 newState.doMoveImpl(move)
 
             newState.switchPlayer()
+            newStateResult = newState.result
         }
-        return newState.result
+        return newStateResult
     }
 
     internal fun switchPlayer() {

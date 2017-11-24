@@ -23,4 +23,9 @@ enum class BackgammonPlayer {
         PLAYER_ONE -> 0
         PLAYER_TWO -> 1
     }
+
+    override fun toString(): String = when (this) {
+        PLAYER_ONE -> "MCTS"
+        PLAYER_TWO -> "Opponent"
+    }
 }

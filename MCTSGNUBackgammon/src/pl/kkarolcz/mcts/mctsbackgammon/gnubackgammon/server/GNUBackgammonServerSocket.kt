@@ -34,7 +34,7 @@ class GNUBackgammonServerSocket(private val gnuBackgammonInterface: GNUBackgammo
 
     private fun handleData(data: String, writer: PrintWriter) {
         if (data.startsWith("board")) {
-            println("INFO: Board received...: $data")
+            println("INFO: BackgammonBoard received...: $data")
 
             val boardInfo = BoardInfoDecoder.decode(data)
             when {

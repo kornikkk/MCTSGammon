@@ -14,7 +14,7 @@ class GNUBackgammonMCTS : GNUBackgammonReceiver {
     private lateinit var currentNode: MCTSNode<BackgammonMovesSequence>
 
     companion object {
-        val SIMULATIONS_LIMIT = 10000
+        val SIMULATIONS_LIMIT = 500
     }
 
     override fun onBoardInfoReceived(boardInfo: BoardInfo, response: (String) -> Unit) {
@@ -37,7 +37,7 @@ class GNUBackgammonMCTS : GNUBackgammonReceiver {
     private fun playRound(callback: (String) -> Unit) {
         for (i in 1..SIMULATIONS_LIMIT)
             currentNode.monteCarloRound()
-
+        // GraphGenerator.drawGraph(GraphGenerator.generateGraph(currentNode))
         currentNode = currentNode.bestMove
         callback(convertToGNUBackgammonMove(currentNode.originMove))
     }

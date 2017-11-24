@@ -82,6 +82,15 @@ object GraphGenerator {
         frame.defaultCloseOperation = WindowConstants.DISPOSE_ON_CLOSE
     }
 
+    fun <V, E> exportGraph(graph: DirectedGraph<V, E>, file: File) {
+        val exporter = DOTExporter(StringComponentNameProvider(), StringComponentNameProvider<V>(),
+                StringComponentNameProvider<E>())
+        if (!file.exists()) {
+            file.createNewFile()
+        }
+        exporter.exportGraph(graph, file)
+    }
+
     fun generateGraph() {
         val graph = DefaultDirectedGraph<String, DefaultEdge>(DefaultEdge::class.java)
         graph.addVertex("TEST")

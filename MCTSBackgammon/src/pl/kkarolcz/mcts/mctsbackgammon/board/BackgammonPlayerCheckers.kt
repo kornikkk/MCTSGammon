@@ -1,115 +1,47 @@
 package pl.kkarolcz.mcts.mctsbackgammon.board
 
-import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.SingleBackgammonMove
-import java.util.*
+import com.carrotsearch.hppc.ByteByteHashMap
+import com.carrotsearch.hppc.ByteByteMap
+import com.carrotsearch.hppc.ByteHashSet
+import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.BAR_INDEX
+import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.BEAR_OFF_INDEX
+import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.HOME_BOARD_START_INDEX
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.BackgammonMove
+import pl.kkarolcz.utils.ByteMath.ZERO_BYTE
 
 /**
- * Created by kkarolcz on 24.08.2017.
+ * Created by kkarolcz on 19.11.2017.
  */
-class BackgammonPlayerCheckers : Cloneable {
-    private val checkers: IntArray
-    var bearOffCheckers: Int = 0
 
-    companion object {
-        private val SIZE: Int = BackgammonBoard.SIZE
+class BackgammonPlayerCheckers : Cloneable {
+    private val towers: ByteByteMap
+    val nonHomeTowers: ByteHashSet
+    private var _barCheckers: Byte
+    private var _bearOffCheckers: Byte
+
+    val barCheckers: Byte get() = _barCheckers
+
+    val bearOffCheckers: Byte get() = _bearOffCheckers
+
+    val canBearOff: Boolean get() = nonHomeTowers.size() == 0 && _barCheckers == ZERO_BYTE
+
+    val anyLeftOnBoard: Boolean get() = _barCheckers != ZERO_BYTE || !towers.isEmpty
+
+    constructor() {
+        this.towers = ByteByteHashMap()
+        this.nonHomeTowers = ByteHashSet()
+        this._barCheckers = 0
+        this._bearOffCheckers = 0
     }
 
     private constructor(other: BackgammonPlayerCheckers) {
-        this.checkers = other.checkers.copyOf()
+        this.towers = ByteByteHashMap(other.towers)
+        this.nonHomeTowers = ByteHashSet(other.nonHomeTowers)
+        this._barCheckers = other._barCheckers
+        this._bearOffCheckers = other._bearOffCheckers
     }
 
-    /**
-     * @throws IllegalArgumentException if the board is of the wrong size
-     */
-    constructor(checkers: IntArray, bearOffCheckers: Int) {
-        when (checkers.size) {
-            SIZE -> {
-                this.checkers = checkers
-                this.bearOffCheckers = bearOffCheckers
-            }
-            else -> throw IllegalArgumentException("Wrong size of the board")
-        }
-
-    }
-
-    public override fun clone(): BackgammonPlayerCheckers {
-        return BackgammonPlayerCheckers(this)
-    }
-
-
-    /**
-     * Notice that board is indexed like in Backgammon!!! from 1 to 24
-     */
-    operator fun get(index: BackgammonBoardIndex) = checkers[index.toInt()]
-
-    /**
-     * @Unsafe
-     * Unsafe! Only for performance purposes
-     */
-    operator fun get(index: Int) = checkers[index]
-
-    fun barEmpty(): Boolean = checkers[BackgammonBoardIndex.BAR_INDEX] == 0
-
-    fun anyLeft(): Boolean = checkers.any { checkersOnPoint -> checkersOnPoint > 0 }
-
-    fun allInHomeBoard(): Boolean {
-        // For performance purposes
-        for (i in BackgammonBoardIndex.HOME_BOARD_START_INDEX + 1..BackgammonBoardIndex.MAX_INDEX) {
-            if (checkers[i] > 0) {
-                return false
-            }
-        }
-        return true
-    }
-
-    fun firstForBearingOff(dice: Dice): BackgammonBoardIndex? {
-        // For performance purposes
-        for (i in BackgammonBoardIndex.HOME_BOARD_START_INDEX downTo BackgammonBoardIndex.MIN_INDEX) {
-            if (BackgammonBoardIndex.shiftForBearOff(i, dice) == BackgammonBoardIndex.NO_INDEX)
-                continue
-
-            if (checkers[i] > 0)
-                return BackgammonBoardIndex.of(i)
-        }
-        return null
-    }
-
-    fun doMove(move: SingleBackgammonMove) {
-        val oldIndex = move.oldCheckerIndex.toInt()
-        val newIndex = move.newCheckerIndex.toInt()
-
-        if (checkers[oldIndex] == 0) {
-            throw IllegalStateException("Cannot move checkers from empty point")
-        }
-
-        checkers[oldIndex] -= 1
-        if (newIndex == BackgammonBoardIndex.BEAR_OFF_INDEX) {
-            if (!allInHomeBoard()) {
-                throw IllegalStateException("Cannot bear off if not all checkers are in the home board")
-            }
-            ++bearOffCheckers
-        } else
-            checkers[newIndex] += 1
-    }
-
-    fun undoMove(move: SingleBackgammonMove) {
-        val oldIndex = move.oldCheckerIndex.toInt()
-        val newIndex = move.newCheckerIndex.toInt()
-
-        if (newIndex != -1 && checkers[newIndex] == 0) { // skip check for bear off move
-            throw IllegalStateException("Cannot undo move from empty point")
-        }
-
-        checkers[oldIndex] += 1
-        if (newIndex == BackgammonBoardIndex.BEAR_OFF_INDEX) {
-            if (bearOffCheckers == 0) {
-                throw IllegalStateException("Cannot undo bear off if there are no bear off checkers")
-            }
-            --bearOffCheckers
-        } else
-            checkers[newIndex] -= 1
-    }
+    public override fun clone() = BackgammonPlayerCheckers(this)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -117,15 +49,104 @@ class BackgammonPlayerCheckers : Cloneable {
 
         other as BackgammonPlayerCheckers
 
-        if (!Arrays.equals(checkers, other.checkers)) return false
-        if (bearOffCheckers != other.bearOffCheckers) return false
+        if (towers != other.towers) return false
+        if (_barCheckers != other._barCheckers) return false
+        if (_bearOffCheckers != other._bearOffCheckers) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = Arrays.hashCode(checkers)
-        result = 31 * result + bearOffCheckers
+        var result = towers.hashCode()
+        result = 31 * result + _barCheckers
+        result = 31 * result + _bearOffCheckers
         return result
     }
+
+    fun put(index: Byte, checkersOnPoint: Byte) {
+        if (towers.containsKey(index))
+            throw IllegalStateException("Checkers on point already set")
+
+        when (index) {
+            BAR_INDEX -> _barCheckers = checkersOnPoint
+            BEAR_OFF_INDEX -> _bearOffCheckers = checkersOnPoint
+            else -> {
+                if (checkersOnPoint > 0) {
+                    if (index > HOME_BOARD_START_INDEX)
+                        nonHomeTowers.add(index)
+                    towers.put(index, checkersOnPoint)
+                }
+            }
+        }
+    }
+
+    fun get(index: Byte): Byte {
+        return when (index) {
+            BAR_INDEX -> _barCheckers
+            BEAR_OFF_INDEX -> _bearOffCheckers
+            else -> towers.getOrDefault(index, 0)
+        }
+    }
+
+    fun maxIndexTower(): Tower? {
+        val found = towers.maxBy { cursor -> cursor.key } ?: return null
+        return Tower(found.key, found.value)
+    }
+
+    fun towerIterator() = object : Iterator<Tower> {
+        private val mapIterator = towers.iterator()
+        override fun hasNext() = mapIterator.hasNext()
+
+        override fun next(): Tower {
+            val cursor = mapIterator.next()
+            return Tower(cursor.key, cursor.value)
+        }
+    }
+
+    fun isOccupied(index: Byte): Boolean = get(index) > 0
+
+    fun isNotOccupiedOrCanBeHit(index: Byte): Boolean = get(index) <= 1
+
+    fun move(move: BackgammonMove) {
+        val checkers = get(move.oldIndex)
+        if (checkers == 0.toByte()) throw IllegalStateException("No checkers to move")
+        remove(move.oldIndex)
+        add(move.newIndex)
+    }
+
+    private fun remove(index: Byte) {
+        when (index) {
+            BAR_INDEX -> _barCheckers--
+            BEAR_OFF_INDEX -> _bearOffCheckers--
+            else -> {
+                val checkers = towers.getOrDefault(index, 0)
+                if (checkers > 1) // Decrement if 2 or more. 2 -> 1, 3 -> 2, ...
+                    towers.addTo(index, -1)
+                else { // Remove if only 1
+                    if (index > HOME_BOARD_START_INDEX)
+                        nonHomeTowers.remove(index)
+                    towers.remove(index)
+                }
+            }
+        }
+    }
+
+    private fun add(index: Byte) {
+        when (index) {
+            BAR_INDEX -> _barCheckers++
+            BEAR_OFF_INDEX -> _bearOffCheckers++
+            else -> {
+                if (towers.containsKey(index))
+                    towers.addTo(index, 1)
+                else {
+                    if (index > HOME_BOARD_START_INDEX)
+                        nonHomeTowers.add(index)
+                    towers.put(index, 1)
+                }
+            }
+        }
+    }
+
+    class Tower(val index: Byte, val checkers: Byte)
+
 }

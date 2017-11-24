@@ -1,16 +1,20 @@
 package pl.kkarolcz.mcts.mctsbackgammon.game.dices
 
-class Dice(value: Int) {
-    private val value: Int
+class Dice(value: Byte) {
+    private val value: Byte
 
     init {
         when (value) {
-            in 1..6 -> this.value = value
+            in POSSIBLE_VALUES -> this.value = value
             else -> throw IllegalArgumentException("Possible range is 1..6")
         }
     }
 
-    fun toInt() = value
+    companion object {
+        val POSSIBLE_VALUES: ByteArray = byteArrayOf(1, 2, 3, 4, 5, 6)
+    }
+
+    fun toByte(): Byte = value
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -24,6 +28,6 @@ class Dice(value: Int) {
     }
 
     override fun hashCode(): Int {
-        return value
+        return value.toInt()
     }
 }

@@ -39,17 +39,12 @@ class MCTSNode<M : MCTSMove> private constructor(private val nodeSelectionPolicy
     override fun toString() = "$wins / $visits"
 
     fun monteCarloRound() {
-        val path = select()
-        var leaf = path[path.size - 1]
+        val path = selectAndExpand()
 
-        if (leaf.state.hasUntriedMoves()) {
-            leaf = leaf.expand()
-            path.add(leaf)
-        }
-        val result = leaf.state.playout()
+        val lastNode = path.last()
+        val result = lastNode.state.playout()
         path.forEach { node -> node.update(result) }
     }
-
     fun findOrCreateChildNode(state: MCTSState<M>): MCTSNode<M> {
         val node = children.find { childNode -> childNode.state == state }
         if (node != null)
@@ -59,10 +54,20 @@ class MCTSNode<M : MCTSMove> private constructor(private val nodeSelectionPolicy
         return MCTSNode(nodeSelectionPolicy, state, null)
     }
 
+    private fun selectAndExpand(): List<MCTSNode<M>> {
+        val path = select()
+        val leaf = path.last()
+
+        if (!leaf.isFullyExpanded) {
+            path.add(leaf.expand())
+        }
+        return path
+    }
+
     private fun select(): MutableList<MCTSNode<M>> {
         val path = mutableListOf(this)
         var node = this
-        while (!node.state.hasUntriedMoves() && !node.children.isEmpty()) {
+        while (!node.state.hasUntriedMoves() && node.children.isNotEmpty()) {
             node = nodeSelectionPolicy.selectNode(node.children)
             path.add(node)
         }
@@ -72,8 +77,8 @@ class MCTSNode<M : MCTSMove> private constructor(private val nodeSelectionPolicy
 
     private fun expand(): MCTSNode<M> {
         val newState = state.clone()
-
         val move = state.pollRandomMove()
+
         if (move != null) {
             newState.doMove(move)
         }
@@ -86,8 +91,9 @@ class MCTSNode<M : MCTSMove> private constructor(private val nodeSelectionPolicy
     }
 
     private fun update(result: Result?) {
-        _visits += 1
-        if (result?.get(state.previousPlayerId) == Result.PlayerResult.WIN)
-            ++_wins
+        _visits++
+        if (result?.get(state.currentPlayerId) == Result.PlayerResult.WIN)
+            _wins++
     }
+
 }

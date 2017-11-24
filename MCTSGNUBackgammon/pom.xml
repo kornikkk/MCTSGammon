@@ -44,11 +44,15 @@
             <artifactId>mctsbackgammon</artifactId>
             <version>LATEST</version>
         </dependency>
+        <dependency>
+            <groupId>pl.kkarolcz.mcts</groupId>
+            <artifactId>mcts-graph</artifactId>
+            <version>LATEST</version>
+        </dependency>
     </dependencies>
 
     <build>
         <sourceDirectory>src</sourceDirectory>
-        <testSourceDirectory>test</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
@@ -60,13 +64,6 @@
                         <phase>compile</phase>
                         <goals>
                             <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>test-compile</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>test-compile</goal>
                         </goals>
                     </execution>
                 </executions>

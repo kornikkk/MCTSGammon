@@ -1,11 +1,12 @@
 package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.mcts
 
 import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoard
+import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.BAR_INDEX
+import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.BEAR_OFF_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonPlayerCheckers
 import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonPlayer
 import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonState
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.BackgammonDices
-import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.server.BoardInfo
 
 /**
@@ -13,34 +14,34 @@ import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.server.BoardInfo
  */
 fun BoardInfo.convertToBackgammonState(): BackgammonState {
     val player1Checkers = when (colour) {
-        BoardInfo.Colour.BLACK -> convertToPlayerCheckers(whiteCheckers, player1Bar, player1OnHome, direction == -1)
-        BoardInfo.Colour.WHITE -> convertToPlayerCheckers(blackCheckers, player1Bar, player1OnHome, direction == -1)
+        BoardInfo.Colour.BLACK -> convertToPlayerCheckers(whiteCheckers, player2Bar, player2OnHome, direction == -1)
+        BoardInfo.Colour.WHITE -> convertToPlayerCheckers(blackCheckers, player2Bar, player2OnHome, direction == -1)
     }
     // Opposite colour for opponent
     val player2Checkers = when (colour) {
-        BoardInfo.Colour.BLACK -> convertToPlayerCheckers(blackCheckers, player2Bar, player2OnHome, direction == 1)
-        BoardInfo.Colour.WHITE -> convertToPlayerCheckers(whiteCheckers, player2Bar, player2OnHome, direction == 1)
+        BoardInfo.Colour.BLACK -> convertToPlayerCheckers(blackCheckers, player1Bar, player1OnHome, direction == 1)
+        BoardInfo.Colour.WHITE -> convertToPlayerCheckers(whiteCheckers, player1Bar, player1OnHome, direction == 1)
     }
     val board = BackgammonBoard(player1Checkers, player2Checkers)
     val currentPlayer = getCurrentPlayer()
     return BackgammonState(board, currentPlayer.opponent(), getBackgammonDices(currentPlayer))
 }
 
-private fun convertToPlayerCheckers(checkersArray: Array<Int>, onBarCheckers: Int, onHomeCheckers: Int, reversed: Boolean):
+private fun convertToPlayerCheckers(checkersArray: ByteArray, onBarCheckers: Byte, onHomeCheckers: Byte, reversed: Boolean):
         BackgammonPlayerCheckers {
+    val playerCheckers = BackgammonPlayerCheckers()
 
-    val checkersWithBarArray = IntArray(BackgammonBoard.SIZE)
+    playerCheckers.put(BAR_INDEX, Math.abs(onBarCheckers.toInt()).toByte())
+    playerCheckers.put(BEAR_OFF_INDEX, onHomeCheckers)
 
-    checkersWithBarArray[0] = Math.abs(onBarCheckers)
     for (i in 1 until BackgammonBoard.SIZE) {
         when (reversed) {
-            false -> checkersWithBarArray[i] = checkersArray[i - 1]
-            true -> checkersWithBarArray[BackgammonBoard.SIZE - i] = checkersArray[i - 1]
+            false -> playerCheckers.put(i.toByte(), checkersArray[i - 1])
+            true -> playerCheckers.put((BackgammonBoard.SIZE - i).toByte(), checkersArray[i - 1])
         }
     }
 
-
-    return BackgammonPlayerCheckers(checkersWithBarArray, onHomeCheckers)
+    return playerCheckers
 }
 
 
@@ -71,14 +72,16 @@ private fun BoardInfo.getBackgammonDices(currentPlayer: BackgammonPlayer): Backg
         when (currentPlayer) {
             BackgammonPlayer.PLAYER_ONE -> {
                 when {
-                    player1Dice1 > 0 && player1Dice2 > 0 -> BackgammonDices(Dice(player1Dice1), Dice(player1Dice2))
+                    player1Dice1 > 0 && player1Dice2 > 0 -> dicesOf(player1Dice1, player1Dice2)
                     else -> null
                 }
             }
             BackgammonPlayer.PLAYER_TWO -> {
                 when {
-                    player2Dice1 > 0 && player2Dice2 > 0 -> BackgammonDices(Dice(player2Dice1), Dice(player2Dice2))
+                    player2Dice1 > 0 && player2Dice2 > 0 -> dicesOf(player2Dice1, player2Dice2)
                     else -> null
                 }
             }
         }
+
+private fun dicesOf(value1: Int, value2: Int) = BackgammonDices(value1.toByte(), value2.toByte())

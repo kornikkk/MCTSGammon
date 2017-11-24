@@ -1,24 +1,26 @@
 package pl.kkarolcz.mcts.mctsbackgammon.game.dices
 
-import java.util.*
+import pl.kkarolcz.utils.combinations
 
 /**
  * Created by kkarolcz on 24.08.2017.
  */
-class BackgammonDices constructor(dice1Value: Dice, dice2Value: Dice) {
+class BackgammonDices constructor(val first: Byte, val second: Byte) {
 
-    val doubling = dice1Value == dice2Value
+    val doubling = first == second
 
-    val values: List<Dice> = when (doubling) {
-        true -> arrayListOf(dice1Value, dice1Value, dice2Value, dice2Value)
-        false -> arrayListOf(dice1Value, dice2Value)
+    val values = when (doubling) {
+        true -> arrayOf(first, first, second, second)
+        false -> arrayOf(first, second)
+    }
+
+    val valuesOLD: List<Dice> = when (doubling) {
+        true -> arrayListOf(Dice(first), Dice(first), Dice(second), Dice(second))
+        false -> arrayListOf(Dice(first), Dice(second))
     }
 
     companion object {
-        private val random = Random()
-        fun throwDices() = BackgammonDices(throwSingleDice(), throwSingleDice())
-
-        private fun throwSingleDice(): Dice = Dice(random.nextInt(6) + 1)
+        private val POSSIBLE_VALUES_COMBINATIONS = combinations(Dice.POSSIBLE_VALUES.toList().toTypedArray(), 2)
+        val POSSIBLE_COMBINATIONS = this.POSSIBLE_VALUES_COMBINATIONS.map { (dice1, dice2) -> BackgammonDices(dice1, dice2) }
     }
-
 }

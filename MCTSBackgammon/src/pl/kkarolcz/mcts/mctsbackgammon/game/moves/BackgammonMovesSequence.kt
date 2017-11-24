@@ -3,22 +3,9 @@ package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 import pl.kkarolcz.mcts.MCTSMove
 
 /**
- * Created by kkarolcz on 24.08.2017.
+ * Created by kkarolcz on 19.11.2017.
  */
-class BackgammonMovesSequence(val singleMoves: List<SingleBackgammonMove>) : MCTSMove {
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as BackgammonMovesSequence
-
-        if (singleMoves != other.singleMoves) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return singleMoves.hashCode()
-    }
+//TODO: Can be changed to array of new indices and start index
+data class BackgammonMovesSequence(val moves: List<BackgammonMove>) : MCTSMove {
+    constructor(vararg moves: BackgammonMove?) : this(moves.filterNotNull())
 }

@@ -17,13 +17,13 @@ abstract class AbstractFullMovesSearch(board: BackgammonBoard, currentPlayer: Ba
     protected val fullMoves = mutableListOf<BackgammonMovesSequence>()
 
     fun findAll(): List<BackgammonMovesSequence> {
-        findAllNormalMoves()
+        allMoves()
         return fullMoves
     }
 
-    abstract fun findAllNormalMoves()
+    abstract fun allMoves()
 
-    protected fun findSingleMoveFromBar(diceValue: Byte): BackgammonMove? {
+    protected fun partialBarMove(diceValue: Byte): BackgammonMove? {
         val newIndex = BackgammonBoardIndex.shift(BAR_INDEX, diceValue) // No need to check NO_INDEX
 
         if (opponentCheckers.isNotOccupiedOrCanBeHit(BackgammonBoardIndex.toOpponentsIndex(newIndex)))
@@ -43,12 +43,30 @@ abstract class AbstractFullMovesSearch(board: BackgammonBoard, currentPlayer: Ba
 
 
     //TODO BEAR OFF MOVES
-    protected fun findPartialMove(currentIndex: Byte, diceValue: Byte): Byte {
-        val newIndex = BackgammonBoardIndex.shift(currentIndex, diceValue)
+    protected fun findPartialMove(index: Byte, dice: Byte): Byte {
+        val newIndex = BackgammonBoardIndex.shift(index, dice)
         if (opponentCheckers.isNotOccupiedOrCanBeHit(BackgammonBoardIndex.toOpponentsIndex(newIndex))) {
             return newIndex
         }
         return NO_INDEX
     }
 
+
+    protected fun firstForBearingOff(homeTowersIndices: Collection<Byte>, dice: Byte): BackgammonMove? {
+        var greaterThanDiceFound = false
+        for (index in homeTowersIndices) {
+            if (index == dice)
+                return BackgammonMove(index, BackgammonBoardIndex.BEAR_OFF_INDEX)
+
+            if (index > dice) {
+                greaterThanDiceFound = true
+                continue
+            }
+            if (!greaterThanDiceFound && index < dice)
+                return BackgammonMove(index, BackgammonBoardIndex.BEAR_OFF_INDEX)
+
+            break
+        }
+        return null
+    }
 }

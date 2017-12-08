@@ -18,6 +18,8 @@ class BackgammonBoardIndex {
 
         fun isOnBoard(index: Byte) = index in MIN_INDEX..MAX_INDEX
 
+        fun isOnHomeBoard(index: Byte) = index in MIN_INDEX..HOME_BOARD_START_INDEX
+
         fun toOpponentsIndex(index: Byte): Byte {
             if (index == BAR_INDEX)
                 return BAR_INDEX
@@ -34,11 +36,18 @@ class BackgammonBoardIndex {
         }
 
 
-        fun shift(index: Byte, diceValue: Byte): Byte {
-            val shiftedIndex = (index - diceValue).toByte()
+        fun shift(index: Byte, dice: Byte): Byte {
+            val shiftedIndex = (index - dice).toByte()
             if (shiftedIndex in MIN_INDEX..MAX_INDEX)
                 return shiftedIndex
 
+            return NO_INDEX
+        }
+
+        fun shiftForBearOff(index: Byte, dice: Byte): Byte {
+            val newIndex = index - dice
+            if (newIndex < MIN_INDEX)
+                return BEAR_OFF_INDEX
             return NO_INDEX
         }
 

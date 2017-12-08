@@ -2,11 +2,17 @@ package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 
 import org.junit.Before
 import org.junit.Test
-import pl.kkarolcz.mcts.mctsbackgammon.board.*
+import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoard
+import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex
 import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.BAR_INDEX
+import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.BEAR_OFF_INDEX
+import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonPlayerCheckers
 import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonPlayer
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.BackgammonDices
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.nondoubling.FullMovesSearchForNotDoubling
+import java.util.*
 import kotlin.test.assertEquals
+import kotlin.test.fail
 
 /**
  * Created by kkarolcz on 27.08.2017.
@@ -28,6 +34,7 @@ class BackgammonMoveTest {
     @Test
     fun `Test move from bar on an empty point and then locked`() {
         player1Checkers.put(BAR_INDEX, 1)
+        player2Checkers.put(toOpponentsIndex(BAR_INDEX - 1), 2)
         player2Checkers.put(toOpponentsIndex(BAR_INDEX - 6 - 1), 2)
 
         val barMove = move(BAR_INDEX, 19)
@@ -38,9 +45,12 @@ class BackgammonMoveTest {
     fun `Test move from bar on an empty point and then further`() {
         player1Checkers.put(BAR_INDEX, 1)
 
-        val moveFromBar = move(BAR_INDEX, BAR_INDEX - 6)
-        val nextMove = move(19, 19 - 3)
-        assertAllMovesFound(dices(6, 3), movesSequence(moveFromBar, nextMove))
+        val moveFromBar1 = move(BAR_INDEX, BAR_INDEX - 6)
+        val nextMove1 = move(BAR_INDEX - 6, BAR_INDEX - 6 - 3)
+
+        val moveFromBar2 = move(BAR_INDEX, BAR_INDEX - 3)
+        val nextMove2 = move(BAR_INDEX - 3, BAR_INDEX - 3 - 6)
+        assertAllMovesFound(dices(6, 3), movesSequence(moveFromBar1, nextMove1), movesSequence(moveFromBar2, nextMove2))
     }
 
     @Test
@@ -82,20 +92,62 @@ class BackgammonMoveTest {
         player2Checkers.put(toOpponentsIndex(10 - 4), 2)
 
         assertAllMovesFound(dices(5, 4),
+                // Sequences from 24
                 movesSequence(move(24, 24 - 5), move(24 - 5, 24 - 5 - 4)),
                 movesSequence(move(24, 24 - 4), move(24 - 4, 24 - 4 - 5)),
+
+                // Sequences from 22
                 movesSequence(move(22, 22 - 5), move(22 - 5, 22 - 5 - 4)),
                 movesSequence(move(22, 22 - 4), move(22 - 4, 22 - 4 - 5)),
-                movesSequence(move(22, 22 - 5), move(22, 22 - 4)),
+
+                // Sequences from 10 (one possible point is blocked by opponent)
                 movesSequence(move(10, 10 - 5), move(10 - 5, 10 - 5 - 4)),
+
+                // Moves from the same tower
+                movesSequence(move(22, 22 - 5), move(22, 22 - 4)),
+                movesSequence(move(22, 22 - 4), move(22, 22 - 5)),
+
+                // Combinations of single moves
                 movesSequence(move(24, 24 - 5), move(22, 22 - 4)),
+                movesSequence(move(24, 24 - 4), move(22, 22 - 5)),
+                movesSequence(move(24, 24 - 4), move(10, 10 - 5)),
+
                 movesSequence(move(22, 22 - 5), move(24, 24 - 4)),
+                movesSequence(move(22, 22 - 4), move(24, 24 - 5)),
+                movesSequence(move(22, 22 - 4), move(10, 10 - 5)),
+
                 movesSequence(move(10, 10 - 5), move(24, 24 - 4)),
                 movesSequence(move(10, 10 - 5), move(22, 22 - 4))
         )
     }
 
-//    @Test
+    @Test
+    fun testPerformance() {
+        val random = Random()
+        for (i in 1..100_000) {
+            val player1Checkers = BackgammonPlayerCheckers()
+            val player1RandomCheckers = ByteArray(26)
+
+            val player2Checkers = BackgammonPlayerCheckers()
+            val player2RandomCheckers = ByteArray(26)
+
+            for (j in 1..15) {
+                player1RandomCheckers[random.nextInt(26)] = 1
+                player2RandomCheckers[random.nextInt(26)] = 1
+            }
+            for (j in 0..25) {
+                val pointIndex = j.toByte()
+                player1Checkers.put(pointIndex, player1RandomCheckers[j])
+                player2Checkers.put(pointIndex, player2RandomCheckers[j])
+            }
+
+            val board = BackgammonBoard(player1Checkers, player2Checkers)
+            val dices = dices(1 + random.nextInt(6), 1 + random.nextInt(6))
+            FullMovesSearchForNotDoubling(board, BackgammonPlayer.PLAYER_ONE, dices).findAll()
+        }
+    }
+
+    //    @Test
 //    fun `Test hit move not possible on 2 of opponent's checkers on point`() {
 //        player1Checkers.put(24, 1)
 //        player1Checkers.put(6, 2)
@@ -105,32 +157,35 @@ class BackgammonMoveTest {
 //        assertEquals(0, moves.count(), "Wrong number of possible moves. Should be empty")
 //    }
 //
-//    @Test
-//    fun `Test bear off move for new index just out of the board`() {
-//        player1Checkers.put(6, 1)
+    @Test
+    fun `Test bear off move for new index just out of the board`() {
+        player1Checkers.put(5, 1)
+
+        val possibleMove = move(5, BEAR_OFF_INDEX)
+
+        assertAllMovesFound(dices(6, 5), movesSequence(possibleMove))
+    }
+
+    //
 //
-//        val moves = possibleMoves(buildBoard(), BackgammonPlayer.PLAYER_ONE, Dice(6))
-//        assertEquals(-1, moves.first().newCheckerIndex.toInt())
-//    }
-//
-//
-//    @Test
-//    fun `Test bear off move for new index farther out of the board`() {
-//        player1Checkers.put(2, 1)
-//
-//        val moves = possibleMoves(buildBoard(), BackgammonPlayer.PLAYER_ONE, Dice(6))
-//        assertEquals(-1, moves.first().newCheckerIndex.toInt())
-//    }
-//
-//    @Test
-//    fun `Test bear off move not possible because not checkers are in the home board`() {
-//        player1Checkers.put(24, 1)
-//        player1Checkers.put(2, 1)
-//
-//        val moves = possibleMoves(buildBoard(), BackgammonPlayer.PLAYER_ONE, Dice(6))
-//        assertEquals(1, moves.count(), "Wrong number of possible moves")
-//        assertNotNull(moves.find { move -> move.newCheckerIndex.toInt() == 18 })
-//    }
+    @Test
+    fun `Test bear off move for new index farther out of the board`() {
+        player1Checkers.put(2, 1)
+
+        val possibleMove = move(2, BEAR_OFF_INDEX)
+        assertAllMovesFound(dices(6, 5), movesSequence(possibleMove))
+    }
+
+    @Test
+    fun `Test bear off move not possible because not all checkers are in the home board`() {
+        player1Checkers.put(24, 1)
+        player2Checkers.put(toOpponentsIndex(24 - 4), 2)
+        player2Checkers.put(toOpponentsIndex(24 - 2), 2)
+
+        player1Checkers.put(2, 1)
+
+        assertNoMovesFound(dices(4, 2))
+    }
 //
 //    @Test
 //    fun `Test bear off not possible and normal moves not found`() {
@@ -189,26 +244,31 @@ class BackgammonMoveTest {
 //        assertNotNull(movesFor4.find { move -> move.newCheckerIndex.toInt() == 1 })
 //    }
 
-    fun assertNoMovesFound(dices: BackgammonDices) {
+    private fun assertNoMovesFound(dices: BackgammonDices) {
         val searcher = FullMovesSearchForNotDoubling(board, BackgammonPlayer.PLAYER_ONE, dices)
         assertEquals(searcher.findAll(), emptyList())
     }
 
-    fun assertAllMovesFound(dices: BackgammonDices, vararg expectedMoves: BackgammonMovesSequence) {
+    private fun assertAllMovesFound(dices: BackgammonDices, vararg expectedMoves: BackgammonMovesSequence) {
         val searcher = FullMovesSearchForNotDoubling(board, BackgammonPlayer.PLAYER_ONE, dices)
-        assertEquals(expectedMoves.toSet(), searcher.findAll().toSet())
+        val expectedSet = expectedMoves.toMutableSet()
+        val actualSet = searcher.findAll().toMutableSet()
+        if (expectedSet != actualSet && !actualSet.containsAll(expectedSet)) {
+            expectedSet.removeAll(actualSet)
+            fail("Not found moves: $expectedSet")
+        }
+        if (expectedSet != actualSet && !expectedSet.containsAll(actualSet)) {
+            actualSet.removeAll(expectedMoves)
+            fail("Not expected moves: $actualSet")
+        }
     }
 
-    fun dices(firstDice: Byte, secondDice: Byte) = BackgammonDices(firstDice, secondDice)
+    private fun dices(firstDice: Number, secondDice: Number) = BackgammonDices(firstDice.toByte(), secondDice.toByte())
 
-    fun move(oldIndex: Number, newIndex: Number) = BackgammonMove(oldIndex.toByte(), newIndex.toByte())
+    private fun move(oldIndex: Number, newIndex: Number) = BackgammonMove(oldIndex.toByte(), newIndex.toByte())
 
-    fun movesSequence(vararg moves: BackgammonMove) = BackgammonMovesSequence(moves.toList())
+    private fun movesSequence(vararg moves: BackgammonMove) = BackgammonMovesSequence(moves.toList())
 
-    fun toOpponentsIndex(index: Number) = BackgammonBoardIndex.toOpponentsIndex(index.toByte())
-
-    private fun buildBoard() = OLD_BackgammonBoard(
-            OLD_BackgammonPlayerCheckers(byteArrayOf(), 0),
-            OLD_BackgammonPlayerCheckers(byteArrayOf(), 0))
+    private fun toOpponentsIndex(index: Number) = BackgammonBoardIndex.toOpponentsIndex(index.toByte())
 
 }

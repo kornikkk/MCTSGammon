@@ -2,12 +2,15 @@ package pl.kkarolcz.mcts.mctsbackgammon.board
 
 import com.carrotsearch.hppc.ByteByteHashMap
 import com.carrotsearch.hppc.ByteByteMap
-import com.carrotsearch.hppc.ByteHashSet
 import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.BAR_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.BEAR_OFF_INDEX
-import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.HOME_BOARD_START_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.BackgammonMove
 import pl.kkarolcz.utils.ByteMath.ZERO_BYTE
+import pl.kkarolcz.utils.clearBit
+import pl.kkarolcz.utils.setBit
+import pl.kkarolcz.utils.setBitsFromMostSignificant
+import java.lang.Integer.bitCount
+import java.lang.Integer.numberOfLeadingZeros
 
 /**
  * Created by kkarolcz on 19.11.2017.
@@ -15,28 +18,33 @@ import pl.kkarolcz.utils.ByteMath.ZERO_BYTE
 
 class BackgammonPlayerCheckers : Cloneable {
     private val towers: ByteByteMap
-    val nonHomeTowers: ByteHashSet
+    private var towersMask: Int // Bit mask of all towers
+    private val nonHomeTowersMask: Int get() = towersMask shr 6 shl 6 // Remove 6 least significant bits (home board)
+    private val homeTowersMask: Int get() = towersMask shl 26 shr 26 // Preserve 6 least significant bits (home board)
     private var _barCheckers: Byte
     private var _bearOffCheckers: Byte
 
     val barCheckers: Byte get() = _barCheckers
 
-    val bearOffCheckers: Byte get() = _bearOffCheckers
+    val numberOfNonHomeTowers: Int get() = bitCount(nonHomeTowersMask)
+    val firstNonHomeTowerIndex: Byte get() = (31 - numberOfLeadingZeros(nonHomeTowersMask)).toByte()
 
-    val canBearOff: Boolean get() = nonHomeTowers.size() == 0 && _barCheckers == ZERO_BYTE
+    val canBearOff: Boolean get() = nonHomeTowersMask == 0 && _barCheckers == ZERO_BYTE
+
+    val bearOffCheckers: Byte get() = _bearOffCheckers
 
     val anyLeftOnBoard: Boolean get() = _barCheckers != ZERO_BYTE || !towers.isEmpty
 
     constructor() {
         this.towers = ByteByteHashMap()
-        this.nonHomeTowers = ByteHashSet()
+        this.towersMask = 0x000000000000000000000000 //All 24 board points. Some of them will be always 0
         this._barCheckers = 0
         this._bearOffCheckers = 0
     }
 
     private constructor(other: BackgammonPlayerCheckers) {
         this.towers = ByteByteHashMap(other.towers)
-        this.nonHomeTowers = ByteHashSet(other.nonHomeTowers)
+        this.towersMask = other.nonHomeTowersMask
         this._barCheckers = other._barCheckers
         this._bearOffCheckers = other._bearOffCheckers
     }
@@ -72,8 +80,7 @@ class BackgammonPlayerCheckers : Cloneable {
             BEAR_OFF_INDEX -> _bearOffCheckers = checkersOnPoint
             else -> {
                 if (checkersOnPoint > 0) {
-                    if (index > HOME_BOARD_START_INDEX)
-                        nonHomeTowers.add(index)
+                    towersMask = setBit(towersMask, index - 1)
                     towers.put(index, checkersOnPoint)
                 }
             }
@@ -103,6 +110,10 @@ class BackgammonPlayerCheckers : Cloneable {
         }
     }
 
+    fun homeTowersIndices(): Collection<Byte> = setBitsFromMostSignificant(homeTowersMask)
+            .map { i -> (i + 1).toByte() }
+            .toList()
+
     fun isOccupied(index: Byte): Boolean = get(index) > 0
 
     fun isNotOccupiedOrCanBeHit(index: Byte): Boolean = get(index) <= 1
@@ -123,8 +134,7 @@ class BackgammonPlayerCheckers : Cloneable {
                 if (checkers > 1) // Decrement if 2 or more. 2 -> 1, 3 -> 2, ...
                     towers.addTo(index, -1)
                 else { // Remove if only 1
-                    if (index > HOME_BOARD_START_INDEX)
-                        nonHomeTowers.remove(index)
+                    towersMask = clearBit(towersMask, index - 1)
                     towers.remove(index)
                 }
             }
@@ -139,8 +149,7 @@ class BackgammonPlayerCheckers : Cloneable {
                 if (towers.containsKey(index))
                     towers.addTo(index, 1)
                 else {
-                    if (index > HOME_BOARD_START_INDEX)
-                        nonHomeTowers.add(index)
+                    towersMask = setBit(towersMask, index - 1)
                     towers.put(index, 1)
                 }
             }

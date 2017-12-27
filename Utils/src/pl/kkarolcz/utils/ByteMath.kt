@@ -7,6 +7,7 @@ import java.lang.Byte.MIN_VALUE
  */
 object ByteMath {
     val ZERO_BYTE: Byte = 0
+    val ONE_BYTE: Byte = 1
 
     fun abs(byte: Byte): Byte {
         if (byte == MIN_VALUE) throw ArithmeticException("abs called on Byte.MIN_VALUE")

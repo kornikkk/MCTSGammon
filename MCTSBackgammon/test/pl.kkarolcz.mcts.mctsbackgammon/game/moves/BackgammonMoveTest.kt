@@ -9,7 +9,6 @@ import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.BEAR
 import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonPlayerCheckers
 import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonPlayer
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.BackgammonDices
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.nondoubling.FullMovesSearchForNotDoubling
 import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.fail
@@ -143,8 +142,9 @@ class BackgammonMoveTest {
 
             val board = BackgammonBoard(player1Checkers, player2Checkers)
             val dices = dices(1 + random.nextInt(6), 1 + random.nextInt(6))
-            FullMovesSearchForNotDoubling(board, BackgammonPlayer.PLAYER_ONE, dices).findAll()
+            FullMovesSearchNonDoubling(board, BackgammonPlayer.PLAYER_ONE, dices).findAll()
         }
+        return
     }
 
     //    @Test
@@ -245,12 +245,12 @@ class BackgammonMoveTest {
 //    }
 
     private fun assertNoMovesFound(dices: BackgammonDices) {
-        val searcher = FullMovesSearchForNotDoubling(board, BackgammonPlayer.PLAYER_ONE, dices)
-        assertEquals(searcher.findAll(), emptyList())
+        val searcher = FullMovesSearchNonDoubling(board, BackgammonPlayer.PLAYER_ONE, dices)
+        assertEquals(emptyList(), searcher.findAll())
     }
 
     private fun assertAllMovesFound(dices: BackgammonDices, vararg expectedMoves: BackgammonMovesSequence) {
-        val searcher = FullMovesSearchForNotDoubling(board, BackgammonPlayer.PLAYER_ONE, dices)
+        val searcher = FullMovesSearchNonDoubling(board, BackgammonPlayer.PLAYER_ONE, dices)
         val expectedSet = expectedMoves.toMutableSet()
         val actualSet = searcher.findAll().toMutableSet()
         if (expectedSet != actualSet && !actualSet.containsAll(expectedSet)) {

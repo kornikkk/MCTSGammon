@@ -1,4 +1,4 @@
-package pl.kkarolcz.mcts.mctsbackgammon.game.moves.nondoubling
+package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 
 import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoard
 import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.BEAR_OFF_INDEX
@@ -6,16 +6,14 @@ import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.NO_I
 import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.isOnHomeBoard
 import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonPlayer
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.BackgammonDices
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.AbstractFullMovesSearch
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.BackgammonMove
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.BackgammonMovesSequence
+import pl.kkarolcz.utils.ByteMath.ONE_BYTE
 import pl.kkarolcz.utils.singletonOrEmptyList
 import java.util.*
 
 /**
  * Created by kkarolcz on 21.11.2017.
  */
-class FullMovesSearchForNotDoubling(board: BackgammonBoard, currentPlayer: BackgammonPlayer, dices: BackgammonDices)
+class FullMovesSearchNonDoubling(board: BackgammonBoard, currentPlayer: BackgammonPlayer, dices: BackgammonDices)
     : AbstractFullMovesSearch(board, currentPlayer, dices) {
 
     private var moveFromBarFirstDice: BackgammonMove? = null
@@ -43,7 +41,7 @@ class FullMovesSearchForNotDoubling(board: BackgammonBoard, currentPlayer: Backg
         }
 
         // Find sequences of a bar checker and the preceding normal move
-        if (playerCheckers.barCheckers == 1.toByte()) {
+        if (playerCheckers.barCheckers == ONE_BYTE) {
             findStandardPartialMoves()
 
             findStandardFullMoves(singletonOrEmptyList(moveFromBarFirstDice), partialMovesSecondDice, dices.second, false)
@@ -201,7 +199,7 @@ class FullMovesSearchForNotDoubling(board: BackgammonBoard, currentPlayer: Backg
 
         if (previousMove != null) {
             // Remove the tower if it's empty after move
-            if (playerCheckers.get(previousMove.oldIndex) == 1.toByte())
+            if (playerCheckers.get(previousMove.oldIndex) == ONE_BYTE)
                 indices.remove(previousMove.oldIndex)
 
             // Add new tower if previous move was not bearing off

@@ -13,8 +13,8 @@ class BackgammonBoardIndex {
         const val BAR_INDEX: Byte = 25
         const val HOME_BOARD_START_INDEX: Byte = 6
 
-        private const val MIN_INDEX: Byte = 1
-        private const val MAX_INDEX: Byte = 24
+        const val MIN_INDEX: Byte = 1
+        const val MAX_INDEX: Byte = 24
 
         fun isOnBoard(index: Byte) = index in MIN_INDEX..MAX_INDEX
 

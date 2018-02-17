@@ -67,102 +67,110 @@ class FullMovesSearchDoubling(board: BackgammonBoard, currentPlayer: BackgammonP
     }
 
     private fun findFullMovesRecursive() {
-        findFullMovesRecursive(FullMoveBuilder(), partialMoves, SequencesList(), diceLeft)
+        findFullMovesRecursive(RecursionState(FullMoveBuilder(), partialMoves, SequencesForPartialMoves()), diceLeft)
     }
 
-    private fun findFullMovesRecursive(fullMoveBuilder: FullMoveBuilder, partialMoves: List<BackgammonMove>,
-                                       sequences: SequencesList, diceLeft: Int) {
+    private fun findFullMovesRecursive(recursionState: RecursionState, diceLeft: Int) {
+        val fullMoveBuilder = recursionState.fullMoveBuilder
+        val partialMoves = recursionState.partialMoves
+        val sequences = recursionState.sequences
 
         //TODO handle situation when dice left
         if (diceLeft == 0) {
             //TODO Choose only maximum length (example: 3 moves should not be chosen if 4 moves were found
             fullMoves.add(fullMoveBuilder.build())
+            return
         }
 
         //TODO bear off
 
-
         //TODO That works wrong. Something should be cloned
         for (sequence in sequences) {
-            findFullMovesWithSequence(fullMoveBuilder.clone(), partialMoves, sequences, diceLeft, sequence)
+            findFullMovesWithSequence(recursionState.clone(), diceLeft, sequence.key)
         }
 
         for (partialMove in partialMoves) {
-            findFullMovesWithPartialMove(fullMoveBuilder.clone(), partialMoves, sequences.clone(), diceLeft, partialMove)
+            findFullMovesWithPartialMove(recursionState.clone(), diceLeft, partialMove)
         }
+
+
         //TODO handle situation when dice left
     }
 
-    private fun findFullMovesWithSequence(fullMoveBuilder: FullMoveBuilder, partialMoves: List<BackgammonMove>,
-                                          sequences: SequencesList, diceLeft: Int, sequence: SequenceForPartialMove) {
-
-        val sequentialMove = sequence.poll()
+    private fun findFullMovesWithSequence(recursionState: RecursionState, diceLeft: Int, sequenceKey: BackgammonMove) {
+        val sequentialMove = recursionState.sequences.getSequence(sequenceKey)?.poll()
         if (sequentialMove != null) {
-            fullMoveBuilder.append(sequentialMove)
+            recursionState.fullMoveBuilder.append(sequentialMove)
         }
 
-        findFullMovesRecursive(fullMoveBuilder.clone(), partialMoves, sequences.clone(), diceLeft - 1)
+        //TODO Maybe that should be cloned earlier?
+        findFullMovesRecursive(recursionState, diceLeft - 1)
     }
 
-    private fun findFullMovesWithPartialMove(fullMoveBuilder: FullMoveBuilder, partialMoves: List<BackgammonMove>,
-                                             sequences: SequencesList, diceLeft: Int, partialMove: BackgammonMove) {
-        fullMoveBuilder.append(partialMove)
+    private fun findFullMovesWithPartialMove(recursionState: RecursionState, diceLeft: Int, partialMove: BackgammonMove) {
+        recursionState.fullMoveBuilder.append(partialMove)
 
-        val sequencesCopy = sequences.clone()
         val sequenceForPartialMove = sequentialMoves.getSequence(partialMove)
         if (sequenceForPartialMove != null) {
-            sequencesCopy.add(sequenceForPartialMove)
+            recursionState.sequences.add(sequenceForPartialMove)
         }
 
-        val partialMovesCopy = partialMoves.toMutableList()
-        partialMovesCopy.remove(partialMove)
+        recursionState.partialMoves.remove(partialMove)
 
-        findFullMovesRecursive(fullMoveBuilder.clone(), partialMovesCopy, sequencesCopy, diceLeft - 1)
+        findFullMovesRecursive(recursionState, diceLeft - 1)
     }
 
-    private class SequencesList : Cloneable, Iterable<SequenceForPartialMove> {
+    private class RecursionState(fullMoveBuilder: FullMoveBuilder, partialMoves: MutableList<BackgammonMove>,
+                                 sequences: SequencesForPartialMoves) : Cloneable {
 
-        private val list = mutableListOf<SequenceForPartialMove>()
+        val fullMoveBuilder: FullMoveBuilder = fullMoveBuilder.clone()
+        val partialMoves: MutableList<BackgammonMove> = partialMoves.toMutableList()
+        val sequences: SequencesForPartialMoves = sequences.clone()
 
-        constructor()
-
-        private constructor(other: SequencesList) {
-            other.list.filterNot { it.isEmpty() }.forEach { add(it) }
-        }
-
-        override fun iterator(): Iterator<SequenceForPartialMove> = list.iterator()
-
-        public override fun clone(): SequencesList {
-            return SequencesList(this)
-        }
-
-        fun isEmpty(): Boolean = list.isEmpty()
-
-        fun add(sequence: SequenceForPartialMove) {
-            list.add(sequence.clone())
+        public override fun clone(): RecursionState {
+            return RecursionState(fullMoveBuilder, partialMoves, sequences)
         }
 
     }
 
-
-    private class SequencesForPartialMoves {
-        private val sequentialMoves = mutableMapOf<BackgammonMove, SequenceForPartialMove>()
+    private class SequencesForPartialMoves : Cloneable, Iterable<SequenceForPartialMove> {
+        private val map = mutableMapOf<BackgammonMove, SequenceForPartialMove>()
 
         fun addToSequence(partialMove: BackgammonMove, nextMove: BackgammonMove) {
-            sequentialMoves.computeIfAbsent(partialMove) { SequenceForPartialMove() }.add(nextMove)
+            map.computeIfAbsent(partialMove) { SequenceForPartialMove(partialMove) }.add(nextMove)
         }
 
         fun getSequence(partialMove: BackgammonMove): SequenceForPartialMove? {
-            return sequentialMoves.getOrDefault(partialMove, null)
+            return map.getOrDefault(partialMove, null)
+        }
+
+        fun add(sequence: SequenceForPartialMove) {
+            map.put(sequence.key, sequence.clone())
+        }
+
+        override fun iterator(): Iterator<SequenceForPartialMove> = map.values.iterator()
+
+        public override fun clone(): SequencesForPartialMoves {
+            val copy = SequencesForPartialMoves()
+            for (entry in map) {
+                if (!entry.value.isEmpty()) {
+                    copy.map.put(entry.key, entry.value.clone())
+                }
+            }
+            return copy
         }
     }
 
     private class SequenceForPartialMove : Cloneable {
+        val key: BackgammonMove
         private val sequence = LinkedList<BackgammonMove>()
 
-        constructor()
+        constructor(key: BackgammonMove) {
+            this.key = key
+        }
 
         private constructor(other: SequenceForPartialMove) {
+            this.key = other.key
             sequence.addAll(other.sequence)
         }
 

@@ -6,29 +6,36 @@ import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.BAR_
 import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.NO_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.toOpponentsIndex
 import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonPlayer
-import pl.kkarolcz.mcts.mctsbackgammon.game.dices.BackgammonDices
+import pl.kkarolcz.mcts.mctsbackgammon.game.dices.BackgammonDice
 
 /**
  * Created by kkarolcz on 19.11.2017.
  */
-abstract class AbstractFullMovesSearch(board: BackgammonBoard, currentPlayer: BackgammonPlayer, protected val dices: BackgammonDices) {
+abstract class AbstractFullMovesSearch(board: BackgammonBoard, currentPlayer: BackgammonPlayer, protected val dice: BackgammonDice) {
 
     protected val playerCheckers = board.getPlayerCheckers(currentPlayer)
     protected val opponentCheckers = board.getPlayerCheckers(currentPlayer.opponent())
     protected val fullMoves = mutableListOf<BackgammonMovesSequence>()
 
     fun findAll(): List<BackgammonMovesSequence> {
-        allMoves()
+        findAllImpl()
         return fullMoves
     }
 
-    abstract fun allMoves()
+    protected abstract fun findAllImpl()
 
-    protected fun partialBarMove(diceValue: Byte): BackgammonMove? {
+    protected fun findPartialBarMove(diceValue: Byte): BackgammonMove? {
         val newIndex = BackgammonBoardIndex.shift(BAR_INDEX, diceValue) // No need to check NO_INDEX
 
         if (opponentCheckers.isNotOccupiedOrCanBeHit(toOpponentsIndex(newIndex)))
-            return BackgammonMove(BAR_INDEX, newIndex)
+            return BackgammonMove.create(BAR_INDEX, newIndex)
+        return null
+    }
+
+    protected fun findStandardPartialMoveForTower(index: Byte, diceValue: Byte): BackgammonMove? {
+        val newIndex = findMove(index, diceValue)
+        if (newIndex != NO_INDEX)
+            return BackgammonMove.create(index, newIndex)
         return null
     }
 
@@ -44,7 +51,7 @@ abstract class AbstractFullMovesSearch(board: BackgammonBoard, currentPlayer: Ba
 
 
     //TODO BEAR OFF MOVES
-    protected fun findPartialMove(index: Byte, dice: Byte): Byte {
+    protected fun findMove(index: Byte, dice: Byte): Byte {
         val newIndex = BackgammonBoardIndex.shift(index, dice)
         if (newIndex != NO_INDEX && opponentCheckers.isNotOccupiedOrCanBeHit(toOpponentsIndex(newIndex))) {
             return newIndex
@@ -57,14 +64,14 @@ abstract class AbstractFullMovesSearch(board: BackgammonBoard, currentPlayer: Ba
         var greaterThanDiceFound = false
         for (index in homeTowersIndices) {
             if (index == dice)
-                return BackgammonMove(index, BackgammonBoardIndex.BEAR_OFF_INDEX)
+                return BackgammonMove.create(index, BackgammonBoardIndex.BEAR_OFF_INDEX)
 
             if (index > dice) {
                 greaterThanDiceFound = true
                 continue
             }
             if (!greaterThanDiceFound && index < dice)
-                return BackgammonMove(index, BackgammonBoardIndex.BEAR_OFF_INDEX)
+                return BackgammonMove.create(index, BackgammonBoardIndex.BEAR_OFF_INDEX)
 
             break
         }

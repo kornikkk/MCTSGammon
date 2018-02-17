@@ -39,7 +39,7 @@ class GNUBackgammonServerSocket(private val gnuBackgammonInterface: GNUBackgammo
             val boardInfo = BoardInfoDecoder.decode(data)
             when {
                 requestForDicesRequired(boardInfo) -> {
-                    println("INFO: No dices. Requesting for dices roll...")
+                    println("INFO: No dice. Requesting for dice roll...")
                     writer.println("roll")
                 }
                 else -> gnuBackgammonInterface.onBoardInfoReceived(boardInfo, { response ->

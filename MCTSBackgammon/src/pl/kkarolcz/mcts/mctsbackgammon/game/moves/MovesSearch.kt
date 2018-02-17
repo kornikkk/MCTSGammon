@@ -41,7 +41,7 @@ private fun moveFromBar(opponentCheckers: BackgammonPlayerCheckers, dice: Dice):
         return null
 
     if (opponentCheckers.isNotOccupiedOrCanBeHit(toOpponentsIndex(newIndex)))
-        return BackgammonMove(BAR_INDEX, newIndex)
+        return BackgammonMove.create(BAR_INDEX, newIndex)
 
     return null
 }
@@ -56,7 +56,7 @@ private fun normalMoves(playerCheckers: BackgammonPlayerCheckers, opponentChecke
         if (continueSearchForBearOff) {
             val bearOffNewIndex = shiftForBearOff(tower.index, dice)
             if (bearOffNewIndex != NO_INDEX) {
-                moves.add(BackgammonMove(tower.index, bearOffNewIndex))
+                moves.add(BackgammonMove.create(tower.index, bearOffNewIndex))
                 continueSearchForBearOff = false
             }
         }
@@ -69,7 +69,7 @@ private fun normalMoves(playerCheckers: BackgammonPlayerCheckers, opponentChecke
             continue
 
         if (opponentCheckers.isNotOccupiedOrCanBeHit(toOpponentsIndex(newIndex))) {
-            moves.add(BackgammonMove(tower.index, newIndex))
+            moves.add(BackgammonMove.create(tower.index, newIndex))
         }
     }
 

@@ -5,7 +5,7 @@ import pl.kkarolcz.utils.combinations
 /**
  * Created by kkarolcz on 24.08.2017.
  */
-class BackgammonDices constructor(val first: Byte, val second: Byte) {
+class BackgammonDice constructor(val first: Byte, val second: Byte) {
 
     val doubling = first == second
 
@@ -21,6 +21,6 @@ class BackgammonDices constructor(val first: Byte, val second: Byte) {
 
     companion object {
         private val POSSIBLE_VALUES_COMBINATIONS = combinations(Dice.POSSIBLE_VALUES.toList().toTypedArray(), 2)
-        val POSSIBLE_COMBINATIONS = this.POSSIBLE_VALUES_COMBINATIONS.map { (dice1, dice2) -> BackgammonDices(dice1, dice2) }
+        val POSSIBLE_COMBINATIONS = this.POSSIBLE_VALUES_COMBINATIONS.map { (dice1, dice2) -> BackgammonDice(dice1, dice2) }
     }
 }

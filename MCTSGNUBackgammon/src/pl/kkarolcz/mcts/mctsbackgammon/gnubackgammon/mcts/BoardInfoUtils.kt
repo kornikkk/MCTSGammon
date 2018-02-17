@@ -6,7 +6,7 @@ import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.BEAR
 import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonPlayerCheckers
 import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonPlayer
 import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonState
-import pl.kkarolcz.mcts.mctsbackgammon.game.dices.BackgammonDices
+import pl.kkarolcz.mcts.mctsbackgammon.game.dices.BackgammonDice
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.server.BoardInfo
 
 /**
@@ -68,7 +68,7 @@ private fun BoardInfo.getColourTurn(): BoardInfo.Colour? = when (playerTurn) {
     else -> null
 }
 
-private fun BoardInfo.getBackgammonDices(currentPlayer: BackgammonPlayer): BackgammonDices? =
+private fun BoardInfo.getBackgammonDices(currentPlayer: BackgammonPlayer): BackgammonDice? =
         when (currentPlayer) {
             BackgammonPlayer.PLAYER_ONE -> {
                 when {
@@ -84,4 +84,4 @@ private fun BoardInfo.getBackgammonDices(currentPlayer: BackgammonPlayer): Backg
             }
         }
 
-private fun dicesOf(value1: Int, value2: Int) = BackgammonDices(value1.toByte(), value2.toByte())
+private fun dicesOf(value1: Int, value2: Int) = BackgammonDice(value1.toByte(), value2.toByte())

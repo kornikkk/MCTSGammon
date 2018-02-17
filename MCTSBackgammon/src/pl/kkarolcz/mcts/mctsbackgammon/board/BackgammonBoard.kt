@@ -83,7 +83,7 @@ class BackgammonBoard : Cloneable {
         val opponentCheckers = getPlayerCheckers(opponent)
         val opponentsIndex = toOpponentsIndex(move.newIndex)
         if (isOnBoard(move.newIndex) && opponentCheckers.isOccupied(opponentsIndex)) {
-            val opponentsMove = BackgammonMove(opponentsIndex, BAR_INDEX)
+            val opponentsMove = BackgammonMove.create(opponentsIndex, BAR_INDEX)
             opponentCheckers.move(opponentsMove)
             return opponentsMove
         }

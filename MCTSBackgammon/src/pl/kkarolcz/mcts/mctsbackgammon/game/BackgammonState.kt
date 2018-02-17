@@ -3,7 +3,7 @@ package pl.kkarolcz.mcts.mctsbackgammon.game
 import pl.kkarolcz.mcts.MCTSState
 import pl.kkarolcz.mcts.Result
 import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoard
-import pl.kkarolcz.mcts.mctsbackgammon.game.dices.BackgammonDices
+import pl.kkarolcz.mcts.mctsbackgammon.game.dices.BackgammonDice
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.BackgammonMove
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.BackgammonMovesSequence
@@ -33,18 +33,18 @@ class BackgammonState : MCTSState<BackgammonMovesSequence> {
     private val currentPlayer: BackgammonPlayer
         get() = BackgammonPlayer.fromInt(previousPlayerId).opponent()
     private val board: BackgammonBoard
-    private var dices: BackgammonDices?
+    private var dice: BackgammonDice?
 
-    constructor(board: BackgammonBoard, previousPlayerId: BackgammonPlayer, dices: BackgammonDices?) {
+    constructor(board: BackgammonBoard, previousPlayerId: BackgammonPlayer, dice: BackgammonDice?) {
         this.board = board
         this.previousPlayerId = previousPlayerId.toInt()
-        this.dices = dices
+        this.dice = dice
     }
 
     private constructor(other: BackgammonState) {
         this.board = other.board.clone()
         this.previousPlayerId = other.previousPlayerId
-        this.dices = other.dices
+        this.dice = other.dice
     }
 
     override fun clone(): BackgammonState {
@@ -52,7 +52,7 @@ class BackgammonState : MCTSState<BackgammonMovesSequence> {
     }
 
     override fun beforeSwitchPlayer() {
-        dices = null//BackgammonDices.throwDices()
+        dice = null//BackgammonDice.throwDices()
     }
 
     override fun findPossibleMoves(): MutableList<BackgammonMovesSequence> {
@@ -61,11 +61,11 @@ class BackgammonState : MCTSState<BackgammonMovesSequence> {
             return finishedMovesSequences // Skip finding moves if any player has already won
         }
 
-        val currentDices = dices
+        val currentDices = dice
         if (currentDices != null)
             findPossibleMovesForDices(finishedMovesSequences, currentDices)
         else {
-            BackgammonDices.POSSIBLE_COMBINATIONS.forEach { combination ->
+            BackgammonDice.POSSIBLE_COMBINATIONS.forEach { combination ->
                 findPossibleMovesForDices(finishedMovesSequences, combination)
             }
         }
@@ -73,10 +73,10 @@ class BackgammonState : MCTSState<BackgammonMovesSequence> {
         return finishedMovesSequences
     }
 
-    private fun findPossibleMovesForDices(finishedMovesSequences: MutableList<BackgammonMovesSequence>, dices: BackgammonDices) {
-        when (dices.doubling) {
-            true -> sequenceOf(dices.valuesOLD.asSequence())
-            false -> permutations(dices.valuesOLD)
+    private fun findPossibleMovesForDices(finishedMovesSequences: MutableList<BackgammonMovesSequence>, dice: BackgammonDice) {
+        when (dice.doubling) {
+            true -> sequenceOf(dice.valuesOLD.asSequence())
+            false -> permutations(dice.valuesOLD)
         }.forEach { singleDices ->
             possibleMoveSequences(finishedMovesSequences, emptyList(), board, singleDices.toMutableList())
 

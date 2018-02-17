@@ -32,7 +32,7 @@ class FullMovesSearchDoubling(board: BackgammonBoard, currentPlayer: BackgammonP
         }
         findStandardPartialMoves()
         findStandardSequentialMoves()
-        findFullMovesRecursive_LATEST_TRY()
+        findFullMovesRecursive()
     }
 
     private fun findStandardPartialMoves() {
@@ -66,12 +66,12 @@ class FullMovesSearchDoubling(board: BackgammonBoard, currentPlayer: BackgammonP
         }
     }
 
-    private fun findFullMovesRecursive_LATEST_TRY() {
-        findFullMovesRecursive_LATEST_TRY(FullMoveBuilder(), partialMoves, SequencesList(), diceLeft)
+    private fun findFullMovesRecursive() {
+        findFullMovesRecursive(FullMoveBuilder(), partialMoves, SequencesList(), diceLeft)
     }
 
-    private fun findFullMovesRecursive_LATEST_TRY(fullMoveBuilder: FullMoveBuilder, partialMoves: List<BackgammonMove>,
-                                                  sequences: SequencesList, diceLeft: Int) {
+    private fun findFullMovesRecursive(fullMoveBuilder: FullMoveBuilder, partialMoves: List<BackgammonMove>,
+                                       sequences: SequencesList, diceLeft: Int) {
 
         //TODO handle situation when dice left
         if (diceLeft == 0) {
@@ -101,7 +101,7 @@ class FullMovesSearchDoubling(board: BackgammonBoard, currentPlayer: BackgammonP
             fullMoveBuilder.append(sequentialMove)
         }
 
-        findFullMovesRecursive_LATEST_TRY(fullMoveBuilder.clone(), partialMoves, sequences.clone(), diceLeft - 1)
+        findFullMovesRecursive(fullMoveBuilder.clone(), partialMoves, sequences.clone(), diceLeft - 1)
     }
 
     private fun findFullMovesWithPartialMove(fullMoveBuilder: FullMoveBuilder, partialMoves: List<BackgammonMove>,
@@ -117,58 +117,8 @@ class FullMovesSearchDoubling(board: BackgammonBoard, currentPlayer: BackgammonP
         val partialMovesCopy = partialMoves.toMutableList()
         partialMovesCopy.remove(partialMove)
 
-        findFullMovesRecursive_LATEST_TRY(fullMoveBuilder.clone(), partialMovesCopy, sequencesCopy, diceLeft - 1)
+        findFullMovesRecursive(fullMoveBuilder.clone(), partialMovesCopy, sequencesCopy, diceLeft - 1)
     }
-
-//    private fun findFullMovesRecursive(currentSequence: SequenceForPartialMove, possibleMoves: List<BackgammonMove>,
-//                                       fullMove: BackgammonMovesSequence, diceLeft: Int) {
-//        val currentSequentialMove = currentSequence.poll()
-//        if (currentSequentialMove != null) {
-//            partialMoves.add(currentSequentialMove)
-//            // add full move, call recursive and return?
-//        } // TO nie ma sensu :<
-//
-//        val it = partialMoves.listIterator()
-//        while (it.hasNext()) {
-//            val partialMove = it.next()
-//            it.remove() // poll from list
-//
-//            fullMove.append(partialMove)
-//
-//            if (diceLeft > 0) {
-//                // get new "current sequence"?
-//                findFullMovesRecursive(currentSequence, partialMoves.copyAsArrayList(), fullMove, diceLeft - 1)
-//            }
-//        }
-//    }
-
-
-//    private fun dunnoFullMovesMaybe() {
-//        for (i in diceLeft downTo 1) {
-//            val partialMovesIterator = partialMoves.listIterator()
-//            while (partialMovesIterator.hasNext()) {
-//                val move = partialMovesIterator.next()
-//                partialMovesIterator.remove()
-//            }
-//        }
-//    }
-//
-//    private fun dunnoOneMove(diceLeft: Int) {
-//        var diceLeftForSequence = diceLeft
-//        while (diceLeftForSequence > 0) {
-//            val partialMovesIterator = partialMoves.listIterator()
-//            while (partialMovesIterator.hasNext()) {
-//                val move = partialMovesIterator.next()
-//                partialMovesIterator.remove()
-//                diceLeftForSequence -= 1
-//
-//                // find sequential move (and decrement diceAgain??? That should be some local copy... Maybe checked again. Or maybe not?
-//
-//                // find combination (here?)
-//                dunnoOneMove(diceLeftForSequence)
-//            }
-//        }
-//    }
 
     private class SequencesList : Cloneable, Iterable<SequenceForPartialMove> {
 

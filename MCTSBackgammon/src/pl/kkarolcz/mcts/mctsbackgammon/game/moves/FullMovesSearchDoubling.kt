@@ -14,7 +14,7 @@ class FullMovesSearchDoubling(board: BackgammonBoard, currentPlayer: BackgammonP
 
     private val die = dice.first
 
-    private var moveFromBar: BackgammonMove? = null
+    private var barMoves = mutableListOf<BackgammonMove>()
 
     private val partialMoves = mutableListOf<PartialMove>()
     private val sequentialMoves = SequencesForPartialMoves()
@@ -25,19 +25,25 @@ class FullMovesSearchDoubling(board: BackgammonBoard, currentPlayer: BackgammonP
 
     override fun findAllImpl() {
         if (playerCheckers.barCheckers > 0) {
-            moveFromBar = findPartialBarMove(die)
-            if (moveFromBar == null) {
-                return
-            }
+            findBarMoves()
+
             if (playerCheckers.barCheckers >= 4) {
-                fullMoves.add(BackgammonMovesSequence.create(moveFromBar!!, moveFromBar!!, moveFromBar!!, moveFromBar!!))
-                return
+                fullMoves.add(BackgammonMovesSequence.create(barMoves))
+                return // No need to do anything when there's >= 4 checkers on the bar
             }
             diceLeft -= playerCheckers.barCheckers
         }
         findStandardPartialMoves()
         findStandardSequentialMoves()
+
         findFullMovesRecursive()
+    }
+
+    private fun findBarMoves() {
+        val moveFromBar = findPartialBarMove(die) ?: return // Stop if there are checkers on the bar and no possible moves
+        for (i in 1..minOf(playerCheckers.barCheckers, 4)) {
+            barMoves.add(moveFromBar)
+        }
     }
 
     private fun findStandardPartialMoves() {
@@ -72,7 +78,7 @@ class FullMovesSearchDoubling(board: BackgammonBoard, currentPlayer: BackgammonP
     }
 
     private fun findFullMovesRecursive() {
-        findFullMovesRecursive(RecursionState(FullMoveBuilder(), partialMoves, SequencesForPartialMoves()), diceLeft)
+        findFullMovesRecursive(RecursionState(FullMoveBuilder(barMoves), partialMoves, SequencesForPartialMoves()), diceLeft)
     }
 
     private fun findFullMovesRecursive(recursionState: RecursionState, diceLeft: Int) {
@@ -81,22 +87,18 @@ class FullMovesSearchDoubling(board: BackgammonBoard, currentPlayer: BackgammonP
         val sequences = recursionState.sequences
 
         //TODO handle situation when dice left
-        if (diceLeft == 0) {
-            //TODO Choose only maximum length (example: 3 moves should not be chosen if 4 moves were found
-            addFullMoveIfCorrect(fullMoveBuilder.build())
-            return
+        if (diceLeft > 0) {
+            //TODO bear off
+
+            for (sequence in sequences) {
+                findFullMovesWithSequence(recursionState.clone(), diceLeft, sequence.key)
+            }
+
+            for (partialMove in partialMoves) {
+                findFullMovesWithPartialMove(recursionState.clone(), diceLeft, partialMove)
+            }
         }
-
-        //TODO bear off
-
-        for (sequence in sequences) {
-            findFullMovesWithSequence(recursionState.clone(), diceLeft, sequence.key)
-        }
-
-        for (partialMove in partialMoves) {
-            findFullMovesWithPartialMove(recursionState.clone(), diceLeft, partialMove)
-        }
-
+        addFullMoveIfCorrect(fullMoveBuilder.build())
 
         //TODO handle situation when dice left
     }

@@ -2,6 +2,7 @@ package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 
 import org.junit.Ignore
 import org.junit.Test
+import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.BAR_INDEX
 import kotlin.test.fail
 
 /**
@@ -59,7 +60,10 @@ class BackgammonDoublingMovesTest : AbstractBackgammonMovesTest() {
 
     @Test
     fun `Test move from bar on an empty point and then locked`() {
-        fail("Not implemented yet")
+        player1Checkers.put(BAR_INDEX, 1)
+        player2Checkers.put(toOpponentsIndex(21), 2)
+        val movesSequence = listOf(movesSequence(move(BAR_INDEX, 23)))
+        assertAllMovesFound(dice(2, 2), movesSequence)
     }
 
     @Test

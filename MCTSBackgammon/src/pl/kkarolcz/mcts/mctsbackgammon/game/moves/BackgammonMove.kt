@@ -1,5 +1,7 @@
 package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 
+import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.BAR_INDEX
+import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.BEAR_OFF_INDEX
 import java.util.*
 
 /**
@@ -40,6 +42,12 @@ class BackgammonMove private constructor(val oldIndex: Byte, val newIndex: Byte)
 
     override fun hashCode(): Int = perfectHash(oldIndex, newIndex)
 
-    override fun toString(): String = "($oldIndex -> $newIndex)"
+    override fun toString(): String = "(${toString(oldIndex)} -> ${toString(newIndex)})"
+
+    private fun toString(index: Byte): String = when (index) {
+        BAR_INDEX -> "BAR"
+        BEAR_OFF_INDEX -> "OFF"
+        else -> index.toString()
+    }
 
 }

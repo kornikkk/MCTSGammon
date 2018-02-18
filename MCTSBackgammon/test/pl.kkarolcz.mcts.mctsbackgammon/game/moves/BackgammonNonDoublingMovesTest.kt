@@ -107,6 +107,8 @@ class BackgammonNonDoublingMovesTest : AbstractBackgammonMovesTest() {
     @Ignore
     @Test
     fun testPerformance() {
+        val storeMoves = true
+        val allMoves = mutableListOf<BackgammonMovesSequence>()
         val random = Random()
         for (i in 1..1_000_000) {
             val player1Checkers = BackgammonPlayerCheckers()
@@ -127,7 +129,10 @@ class BackgammonNonDoublingMovesTest : AbstractBackgammonMovesTest() {
 
             val board = BackgammonBoard(player1Checkers, player2Checkers)
             val dices = dice(1 + random.nextInt(6), 1 + random.nextInt(6))
-            FullMovesSearchNonDoubling(board, BackgammonPlayer.PLAYER_ONE, dices).findAll()
+            val moves = FullMovesSearchNonDoubling(board, BackgammonPlayer.PLAYER_ONE, dices).findAll()
+
+            if (storeMoves)
+                allMoves.addAll(moves)
         }
         return
     }

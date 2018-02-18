@@ -7,7 +7,9 @@ class FullMoveBuilder : Cloneable {
 
     private val moves = mutableListOf<BackgammonMove>()
 
-    constructor()
+    constructor(barMoves: List<BackgammonMove>) {
+        this.moves.addAll(barMoves)
+    }
 
     private constructor(other: FullMoveBuilder) {
         this.moves.addAll(other.moves)

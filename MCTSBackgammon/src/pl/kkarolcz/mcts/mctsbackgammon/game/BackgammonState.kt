@@ -94,7 +94,7 @@ class BackgammonState : MCTSState<BackgammonMovesSequence> {
                                       nextDices: MutableList<Dice>) {
 
         if (nextDices.isEmpty()) {
-            finishedMovesSequences.add(BackgammonMovesSequence(movesSequence))
+            finishedMovesSequences.add(BackgammonMovesSequence.create(movesSequence))
         } else {
             val dice = nextDices.removeAt(0)
             val nextMoves = possibleMoves(board, currentPlayer, dice)
@@ -105,7 +105,7 @@ class BackgammonState : MCTSState<BackgammonMovesSequence> {
                 board.undoLastMove()
             }
             if (movesSequence.isNotEmpty() && nextMoves.isEmpty()) {
-                finishedMovesSequences.add(BackgammonMovesSequence(movesSequence))
+                finishedMovesSequences.add(BackgammonMovesSequence.create(movesSequence))
             }
         }
     }

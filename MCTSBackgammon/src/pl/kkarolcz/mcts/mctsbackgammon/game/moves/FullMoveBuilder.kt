@@ -19,6 +19,6 @@ class FullMoveBuilder : Cloneable {
         moves.add(move)
     }
 
-    fun build(): BackgammonMovesSequence = BackgammonMovesSequence(moves)
+    fun build(): BackgammonMovesSequence = BackgammonMovesSequence.create(moves)
 
 }

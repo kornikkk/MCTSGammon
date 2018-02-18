@@ -15,9 +15,9 @@ abstract class AbstractFullMovesSearch(board: BackgammonBoard, currentPlayer: Ba
 
     protected val playerCheckers = board.getPlayerCheckers(currentPlayer)
     protected val opponentCheckers = board.getPlayerCheckers(currentPlayer.opponent())
-    protected val fullMoves = mutableListOf<BackgammonMovesSequence>()
+    protected val fullMoves: MutableCollection<BackgammonMovesSequence> = mutableSetOf()
 
-    fun findAll(): List<BackgammonMovesSequence> {
+    fun findAll(): Collection<BackgammonMovesSequence> {
         findAllImpl()
         return fullMoves
     }

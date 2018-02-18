@@ -29,7 +29,7 @@ open class AbstractBackgammonMovesTest {
 
     protected fun assertNoMovesFound(dice: BackgammonDice) {
         val searcher = FullMovesSearchNonDoubling(board, BackgammonPlayer.PLAYER_ONE, dice)
-        assertEquals(emptyList(), searcher.findAll())
+        assertEquals(emptyList(), searcher.findAll().toList())
     }
 
     protected fun assertAllMovesFound(dice: BackgammonDice, vararg expectedMoves: BackgammonMovesSequence) {
@@ -57,7 +57,7 @@ open class AbstractBackgammonMovesTest {
 
     protected fun move(oldIndex: Number, newIndex: Number) = BackgammonMove.create(oldIndex.toByte(), newIndex.toByte())
 
-    protected fun movesSequence(vararg moves: BackgammonMove) = BackgammonMovesSequence(moves.toList())
+    protected fun movesSequence(vararg moves: BackgammonMove) = BackgammonMovesSequence.create(*moves)
 
     protected fun toOpponentsIndex(index: Number) = BackgammonBoardIndex.toOpponentsIndex(index.toByte())
 }

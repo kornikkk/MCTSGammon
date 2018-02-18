@@ -34,8 +34,13 @@ class FullMovesSearchNonDoubling(board: BackgammonBoard, currentPlayer: Backgamm
 
             // Find only bar sequences
             if (playerCheckers.barCheckers >= 2) {
-                if (moveFromBarFirstDie != null || moveFromBarSecondDie != null)
-                    fullMoves.add(BackgammonMovesSequence(moveFromBarFirstDie, moveFromBarSecondDie))
+                if (moveFromBarFirstDie != null && moveFromBarSecondDie != null)
+                    fullMoves.add(BackgammonMovesSequence.create(moveFromBarFirstDie!!, moveFromBarSecondDie!!))
+                else if (moveFromBarFirstDie != null)
+                    fullMoves.add(BackgammonMovesSequence.create(moveFromBarFirstDie!!))
+                else if (moveFromBarSecondDie != null)
+                    fullMoves.add(BackgammonMovesSequence.create(moveFromBarSecondDie!!))
+
                 return // Finish finding moves. No more possible moves
             }
         }
@@ -49,9 +54,9 @@ class FullMovesSearchNonDoubling(board: BackgammonBoard, currentPlayer: Backgamm
 
             if (fullMoves.isEmpty()) {
                 if (moveFromBarFirstDie != null)
-                    fullMoves.add(BackgammonMovesSequence(moveFromBarFirstDie))
+                    fullMoves.add(BackgammonMovesSequence.create(moveFromBarFirstDie!!))
                 if (moveFromBarSecondDie != null)
-                    fullMoves.add(BackgammonMovesSequence(moveFromBarSecondDie))
+                    fullMoves.add(BackgammonMovesSequence.create(moveFromBarSecondDie!!))
             }
         }
         // Find normal sequences
@@ -71,8 +76,8 @@ class FullMovesSearchNonDoubling(board: BackgammonBoard, currentPlayer: Backgamm
             }
 
             if (fullMoves.isEmpty()) {
-                fullMoves.addAll(partialMovesFirstDie.map { move -> BackgammonMovesSequence(move) })
-                fullMoves.addAll(partialMovesSecondDie.map { move -> BackgammonMovesSequence(move) })
+                fullMoves.addAll(partialMovesFirstDie.map { move -> BackgammonMovesSequence.create(move) })
+                fullMoves.addAll(partialMovesSecondDie.map { move -> BackgammonMovesSequence.create(move) })
             }
         }
     }
@@ -104,7 +109,7 @@ class FullMovesSearchNonDoubling(board: BackgammonBoard, currentPlayer: Backgamm
 
             for (move2 in secondPartialMoves) {
                 if (isMovePossibleAfterMove(move1, move2)) {
-                    fullMoves.add(BackgammonMovesSequence(move1, move2))
+                    fullMoves.add(BackgammonMovesSequence.create(move1, move2))
                     anyFullSequenceFound = true
                 }
             }
@@ -122,7 +127,7 @@ class FullMovesSearchNonDoubling(board: BackgammonBoard, currentPlayer: Backgamm
         if (bearingOff) {// Check bear off move first
             val bearOffMove = findPartialBearOffMove(previousMove, die)
             if (bearOffMove != null) {
-                fullMoves.add(BackgammonMovesSequence(previousMove, bearOffMove))
+                fullMoves.add(BackgammonMovesSequence.create(previousMove, bearOffMove))
                 anyFullSequenceFound = true
                 return
             }
@@ -130,7 +135,7 @@ class FullMovesSearchNonDoubling(board: BackgammonBoard, currentPlayer: Backgamm
 
         val newIndex = findMove(previousMove.newIndex, die)
         if (newIndex != NO_INDEX) {
-            fullMoves.add(BackgammonMovesSequence(previousMove, BackgammonMove.create(previousMove.newIndex, newIndex)))
+            fullMoves.add(BackgammonMovesSequence.create(previousMove, BackgammonMove.create(previousMove.newIndex, newIndex)))
             anyFullSequenceFound = true
         }
     }
@@ -141,11 +146,11 @@ class FullMovesSearchNonDoubling(board: BackgammonBoard, currentPlayer: Backgamm
         if (firstBearOffMove != null) {
             val secondBearOffMove = findPartialBearOffMove(firstBearOffMove, dice.second)
             if (secondBearOffMove != null) {
-                fullMoves.add(BackgammonMovesSequence(firstBearOffMove, secondBearOffMove))
+                fullMoves.add(BackgammonMovesSequence.create(firstBearOffMove, secondBearOffMove))
                 anyFullSequenceFound = true
             }
             if (!anyFullSequenceFound) {
-                fullMoves.add(BackgammonMovesSequence(firstBearOffMove))
+                fullMoves.add(BackgammonMovesSequence.create(firstBearOffMove))
             }
         }
     }
@@ -186,7 +191,7 @@ class FullMovesSearchNonDoubling(board: BackgammonBoard, currentPlayer: Backgamm
     private fun findBearOffAfterPreBearOffFullMove(previousMove: BackgammonMove, die: Byte) {
         val move = findPartialBearOffMove(previousMove, die)
         if (move != null) {
-            fullMoves.add(BackgammonMovesSequence(previousMove, move))
+            fullMoves.add(BackgammonMovesSequence.create(previousMove, move))
             anyFullSequenceFound = true
         }
     }

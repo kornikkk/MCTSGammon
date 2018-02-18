@@ -108,7 +108,7 @@ class BackgammonNonDoublingMovesTest : AbstractBackgammonMovesTest() {
     @Test
     fun testPerformance() {
         val random = Random()
-        for (i in 1..100_000) {
+        for (i in 1..1_000_000) {
             val player1Checkers = BackgammonPlayerCheckers()
             val player1RandomCheckers = ByteArray(26)
 

@@ -1,31 +1,25 @@
 package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 
-import com.carrotsearch.hppc.ByteObjectHashMap
-import com.carrotsearch.hppc.ByteObjectMap
+import java.util.*
 
 /**
  * Created by kkarolcz on 24.08.2017.
  */
 class BackgammonMove private constructor(val oldIndex: Byte, val newIndex: Byte) {
     companion object {
-        private val INSTANCES: ByteObjectMap<ByteObjectMap<BackgammonMove>> = ByteObjectHashMap()
+        private val INSTANCES: WeakHashMap<Short, BackgammonMove> = WeakHashMap()
 
         fun create(oldIndex: Byte, newIndex: Byte): BackgammonMove {
-            val forOldIndex: ByteObjectMap<BackgammonMove>
-            if (!INSTANCES.containsKey(oldIndex)) {
-                forOldIndex = ByteObjectHashMap()
-                INSTANCES.put(oldIndex, forOldIndex)
-            } else {
-                forOldIndex = INSTANCES.get(oldIndex)
+            val key = perfectHash(oldIndex, newIndex).toShort()
+            var value = INSTANCES[key]
+            if (value == null) {
+                value = BackgammonMove(oldIndex, newIndex)
+                INSTANCES.put(key, value)
             }
-
-            if (!forOldIndex.containsKey(newIndex)) {
-                val move = BackgammonMove(oldIndex, newIndex)
-                forOldIndex.put(newIndex, move)
-                return move
-            }
-            return forOldIndex.get(newIndex)
+            return value
         }
+
+        private fun perfectHash(oldIndex: Byte, newIndex: Byte): Int = oldIndex.toInt() shl 8 or newIndex.toInt()
     }
 
     fun reversed() = BackgammonMove(newIndex, oldIndex)
@@ -42,9 +36,10 @@ class BackgammonMove private constructor(val oldIndex: Byte, val newIndex: Byte)
         return true
     }
 
-    override fun hashCode(): Int {
-        var result = oldIndex.toInt()
-        result = 31 * result + newIndex
-        return result
-    }
+    fun perfectHash(): Int = perfectHash(oldIndex, newIndex)
+
+    override fun hashCode(): Int = perfectHash(oldIndex, newIndex)
+
+    override fun toString(): String = "($oldIndex -> $newIndex)"
+
 }

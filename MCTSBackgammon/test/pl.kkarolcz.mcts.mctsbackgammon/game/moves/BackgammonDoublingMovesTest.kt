@@ -27,10 +27,32 @@ class BackgammonDoublingMovesTest : AbstractBackgammonMovesTest() {
         player1Checkers.put(23, 1)
         val movesSequence = listOf(
                 movesSequence(move(24, 22), move(22, 20), move(20, 18), move(18, 16)),
-                movesSequence(move(23, 21), move(21, 19), move(19, 17), move(17, 15)),
-                movesSequence(move(24, 22), move(22, 20), move(23, 21), move(21, 19)),
                 movesSequence(move(24, 22), move(22, 20), move(20, 18), move(23, 21)),
-                movesSequence(move(23, 21), move(21, 19), move(19, 17), move(24, 22))
+                movesSequence(move(24, 22), move(22, 20), move(23, 21), move(21, 19)),
+                movesSequence(move(24, 22), move(23, 21), move(21, 19), move(19, 17)),
+                movesSequence(move(23, 21), move(21, 19), move(19, 17), move(17, 15)),
+                movesSequence(move(23, 21), move(21, 19), move(19, 17), move(24, 22)),
+                movesSequence(move(23, 21), move(21, 19), move(24, 22), move(22, 20)),
+                movesSequence(move(23, 21), move(24, 22), move(22, 20), move(20, 18)),
+                movesSequence(move(24, 22), move(22, 20), move(23, 21), move(20, 18)),
+                movesSequence(move(24, 22), move(23, 21), move(21, 19), move(22, 20)),
+                movesSequence(move(24, 22), move(23, 21), move(22, 20), move(20, 18)),
+                movesSequence(move(24, 22), move(23, 21), move(22, 20), move(21, 19)),
+                movesSequence(move(23, 21), move(24, 22), move(21, 19), move(19, 17)),
+                movesSequence(move(23, 21), move(21, 19), move(24, 22), move(19, 17)),
+                movesSequence(move(23, 21), move(24, 22), move(22, 20), move(21, 19)),
+                movesSequence(move(23, 21), move(24, 22), move(21, 19), move(22, 20))
+        )
+        assertAllMovesFound(dice(2, 2), movesSequence)
+    }
+
+    @Test
+    fun `Test one locked checker move`() {
+        player1Checkers.put(24, 2)
+        player2Checkers.put(toOpponentsIndex(18), 2)
+        val movesSequence = listOf(
+                movesSequence(move(24, 22), move(22, 20), move(24, 22), move(22, 20)),
+                movesSequence(move(24, 22), move(24, 22), move(22, 20), move(22, 20))
         )
         assertAllMovesFound(dice(2, 2), movesSequence)
     }

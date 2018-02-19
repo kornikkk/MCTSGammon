@@ -1,33 +1,26 @@
 package pl.kkarolcz.mcts.mctsbackgammon.game.dices
 
-class Dice(value: Byte) {
-    private val value: Byte
+import pl.kkarolcz.utils.combinations
 
-    init {
-        when (value) {
-            in POSSIBLE_VALUES -> this.value = value
-            else -> throw IllegalArgumentException("Possible range is 1..6")
-        }
+/**
+ * Created by kkarolcz on 24.08.2017.
+ */
+class Dice constructor(val first: Byte, val second: Byte) {
+
+    val doubling = first == second
+
+    val values = when (doubling) {
+        true -> arrayOf(first, first, second, second)
+        false -> arrayOf(first, second)
+    }
+
+    val valuesOLD: List<Die> = when (doubling) {
+        true -> arrayListOf(Die(first), Die(first), Die(second), Die(second))
+        false -> arrayListOf(Die(first), Die(second))
     }
 
     companion object {
-        val POSSIBLE_VALUES: ByteArray = byteArrayOf(1, 2, 3, 4, 5, 6)
-    }
-
-    fun toByte(): Byte = value
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Dice
-
-        if (value != other.value) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return value.toInt()
+        private val POSSIBLE_VALUES_COMBINATIONS = combinations(Die.POSSIBLE_VALUES.toList().toTypedArray(), 2)
+        val POSSIBLE_COMBINATIONS = this.POSSIBLE_VALUES_COMBINATIONS.map { (dice1, dice2) -> Dice(dice1, dice2) }
     }
 }

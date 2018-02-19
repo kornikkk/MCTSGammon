@@ -1,11 +1,11 @@
 package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 
-import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoard
-import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.BEAR_OFF_INDEX
-import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.NO_INDEX
-import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.isOnHomeBoard
-import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonPlayer
-import pl.kkarolcz.mcts.mctsbackgammon.game.dices.BackgammonDice
+import pl.kkarolcz.mcts.mctsbackgammon.board.Board
+import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BEAR_OFF_INDEX
+import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.NO_INDEX
+import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.isOnHomeBoard
+import pl.kkarolcz.mcts.mctsbackgammon.game.Player
+import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
 import pl.kkarolcz.utils.ByteMath.ONE_BYTE
 import pl.kkarolcz.utils.singletonOrEmptyList
 import java.util.*
@@ -13,17 +13,17 @@ import java.util.*
 /**
  * Created by kkarolcz on 21.11.2017.
  */
-class FullMovesSearchNonDoubling(board: BackgammonBoard, currentPlayer: BackgammonPlayer, dice: BackgammonDice)
+class FullMovesSearchNonDoubling(board: Board, currentPlayer: Player, dice: Dice)
     : AbstractFullMovesSearch(board, currentPlayer, dice) {
 
-    private var moveFromBarFirstDie: BackgammonMove? = null
-    private var moveFromBarSecondDie: BackgammonMove? = null
+    private var moveFromBarFirstDie: SingleMove? = null
+    private var moveFromBarSecondDie: SingleMove? = null
 
-    private var partialPreBearOffMoveFirstDie: BackgammonMove? = null
-    private var partialPreBearOffMoveSecondDie: BackgammonMove? = null
+    private var partialPreBearOffMoveFirstDie: SingleMove? = null
+    private var partialPreBearOffMoveSecondDie: SingleMove? = null
 
-    private val partialMovesFirstDie = mutableListOf<BackgammonMove>()
-    private val partialMovesSecondDie = mutableListOf<BackgammonMove>()
+    private val partialMovesFirstDie = mutableListOf<SingleMove>()
+    private val partialMovesSecondDie = mutableListOf<SingleMove>()
 
     private var anyFullSequenceFound = false
 
@@ -35,11 +35,11 @@ class FullMovesSearchNonDoubling(board: BackgammonBoard, currentPlayer: Backgamm
             // Find only bar sequences
             if (playerCheckers.barCheckers >= 2) {
                 if (moveFromBarFirstDie != null && moveFromBarSecondDie != null)
-                    fullMoves.add(BackgammonMovesSequence.create(moveFromBarFirstDie!!, moveFromBarSecondDie!!))
+                    fullMoves.add(FullMove.create(moveFromBarFirstDie!!, moveFromBarSecondDie!!))
                 else if (moveFromBarFirstDie != null)
-                    fullMoves.add(BackgammonMovesSequence.create(moveFromBarFirstDie!!))
+                    fullMoves.add(FullMove.create(moveFromBarFirstDie!!))
                 else if (moveFromBarSecondDie != null)
-                    fullMoves.add(BackgammonMovesSequence.create(moveFromBarSecondDie!!))
+                    fullMoves.add(FullMove.create(moveFromBarSecondDie!!))
 
                 return // Finish finding moves. No more possible moves
             }
@@ -54,9 +54,9 @@ class FullMovesSearchNonDoubling(board: BackgammonBoard, currentPlayer: Backgamm
 
             if (fullMoves.isEmpty()) {
                 if (moveFromBarFirstDie != null)
-                    fullMoves.add(BackgammonMovesSequence.create(moveFromBarFirstDie!!))
+                    fullMoves.add(FullMove.create(moveFromBarFirstDie!!))
                 if (moveFromBarSecondDie != null)
-                    fullMoves.add(BackgammonMovesSequence.create(moveFromBarSecondDie!!))
+                    fullMoves.add(FullMove.create(moveFromBarSecondDie!!))
             }
         }
         // Find normal sequences
@@ -76,8 +76,8 @@ class FullMovesSearchNonDoubling(board: BackgammonBoard, currentPlayer: Backgamm
             }
 
             if (fullMoves.isEmpty()) {
-                fullMoves.addAll(partialMovesFirstDie.map { move -> BackgammonMovesSequence.create(move) })
-                fullMoves.addAll(partialMovesSecondDie.map { move -> BackgammonMovesSequence.create(move) })
+                fullMoves.addAll(partialMovesFirstDie.map { move -> FullMove.create(move) })
+                fullMoves.addAll(partialMovesSecondDie.map { move -> FullMove.create(move) })
             }
         }
     }
@@ -101,7 +101,7 @@ class FullMovesSearchNonDoubling(board: BackgammonBoard, currentPlayer: Backgamm
         }
     }
 
-    private fun findStandardFullMoves(firstPartialMoves: Collection<BackgammonMove>, secondPartialMoves: Collection<BackgammonMove>,
+    private fun findStandardFullMoves(firstPartialMoves: Collection<SingleMove>, secondPartialMoves: Collection<SingleMove>,
                                       secondDice: Byte, bearingOff: Boolean) {
 
         for (move1 in firstPartialMoves) {
@@ -109,25 +109,25 @@ class FullMovesSearchNonDoubling(board: BackgammonBoard, currentPlayer: Backgamm
 
             for (move2 in secondPartialMoves) {
                 if (isMovePossibleAfterMove(move1, move2)) {
-                    fullMoves.add(BackgammonMovesSequence.create(move1, move2))
+                    fullMoves.add(FullMove.create(move1, move2))
                     anyFullSequenceFound = true
                 }
             }
         }
     }
 
-    private fun isMovePossibleAfterMove(previousMove: BackgammonMove, move: BackgammonMove): Boolean {
+    private fun isMovePossibleAfterMove(previousMove: SingleMove, move: SingleMove): Boolean {
         if (previousMove.oldIndex == move.oldIndex) {
             return playerCheckers.get(previousMove.oldIndex) > 1
         }
         return true
     }
 
-    private fun findSequentialFullMove(previousMove: BackgammonMove, die: Byte, bearingOff: Boolean) {
+    private fun findSequentialFullMove(previousMove: SingleMove, die: Byte, bearingOff: Boolean) {
         if (bearingOff) {// Check bear off move first
             val bearOffMove = findPartialBearOffMove(previousMove, die)
             if (bearOffMove != null) {
-                fullMoves.add(BackgammonMovesSequence.create(previousMove, bearOffMove))
+                fullMoves.add(FullMove.create(previousMove, bearOffMove))
                 anyFullSequenceFound = true
                 return
             }
@@ -135,7 +135,7 @@ class FullMovesSearchNonDoubling(board: BackgammonBoard, currentPlayer: Backgamm
 
         val newIndex = findMove(previousMove.newIndex, die)
         if (newIndex != NO_INDEX) {
-            fullMoves.add(BackgammonMovesSequence.create(previousMove, BackgammonMove.create(previousMove.newIndex, newIndex)))
+            fullMoves.add(FullMove.create(previousMove, SingleMove.create(previousMove.newIndex, newIndex)))
             anyFullSequenceFound = true
         }
     }
@@ -146,11 +146,11 @@ class FullMovesSearchNonDoubling(board: BackgammonBoard, currentPlayer: Backgamm
         if (firstBearOffMove != null) {
             val secondBearOffMove = findPartialBearOffMove(firstBearOffMove, dice.second)
             if (secondBearOffMove != null) {
-                fullMoves.add(BackgammonMovesSequence.create(firstBearOffMove, secondBearOffMove))
+                fullMoves.add(FullMove.create(firstBearOffMove, secondBearOffMove))
                 anyFullSequenceFound = true
             }
             if (!anyFullSequenceFound) {
-                fullMoves.add(BackgammonMovesSequence.create(firstBearOffMove))
+                fullMoves.add(FullMove.create(firstBearOffMove))
             }
         }
     }
@@ -168,9 +168,9 @@ class FullMovesSearchNonDoubling(board: BackgammonBoard, currentPlayer: Backgamm
                 val secondDieNewIndex = findMove(nonHomeIndex, dice.second)
 
                 if (firstDieNewIndex != NO_INDEX && isOnHomeBoard(firstDieNewIndex))
-                    partialPreBearOffMoveFirstDie = BackgammonMove.create(nonHomeIndex, firstDieNewIndex)
+                    partialPreBearOffMoveFirstDie = SingleMove.create(nonHomeIndex, firstDieNewIndex)
                 if (secondDieNewIndex != NO_INDEX && isOnHomeBoard(secondDieNewIndex))
-                    partialPreBearOffMoveSecondDie = BackgammonMove.create(nonHomeIndex, secondDieNewIndex)
+                    partialPreBearOffMoveSecondDie = SingleMove.create(nonHomeIndex, secondDieNewIndex)
 
                 return partialPreBearOffMoveFirstDie != null || partialPreBearOffMoveSecondDie != null
             }
@@ -188,16 +188,16 @@ class FullMovesSearchNonDoubling(board: BackgammonBoard, currentPlayer: Backgamm
         }
     }
 
-    private fun findBearOffAfterPreBearOffFullMove(previousMove: BackgammonMove, die: Byte) {
+    private fun findBearOffAfterPreBearOffFullMove(previousMove: SingleMove, die: Byte) {
         val move = findPartialBearOffMove(previousMove, die)
         if (move != null) {
-            fullMoves.add(BackgammonMovesSequence.create(previousMove, move))
+            fullMoves.add(FullMove.create(previousMove, move))
             anyFullSequenceFound = true
         }
     }
 
 
-    private fun findPartialBearOffMove(previousMove: BackgammonMove?, die: Byte): BackgammonMove? {
+    private fun findPartialBearOffMove(previousMove: SingleMove?, die: Byte): SingleMove? {
         val indices: MutableSet<Byte> = sortedSetOf(Comparator.reverseOrder())
 
         //Add all home towers

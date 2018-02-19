@@ -1,7 +1,7 @@
 package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.mcts
 
 import pl.kkarolcz.mcts.MCTSNode
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.BackgammonMovesSequence
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMove
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.server.BoardInfo
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.server.GNUBackgammonReceiver
 import pl.kkarolcz.mcts.node.selectionpolicies.UCTNodeSelectionPolicy
@@ -11,7 +11,7 @@ import pl.kkarolcz.mcts.node.selectionpolicies.UCTNodeSelectionPolicy
  */
 class GNUBackgammonMCTS : GNUBackgammonReceiver {
     var gameStarted = false
-    private lateinit var currentNode: MCTSNode<BackgammonMovesSequence>
+    private lateinit var currentNode: MCTSNode<FullMove>
 
     companion object {
         val SIMULATIONS_LIMIT = 500

@@ -3,7 +3,7 @@ package pl.kkarolcz.mcts.mctsbackgammon.game
 /**
  * Created by kkarolcz on 24.08.2017.
  */
-enum class BackgammonPlayer {
+enum class Player {
     PLAYER_ONE, PLAYER_TWO;
 
     companion object {
@@ -14,7 +14,7 @@ enum class BackgammonPlayer {
         }
     }
 
-    fun opponent(): BackgammonPlayer = when (this) {
+    fun opponent(): Player = when (this) {
         PLAYER_ONE -> PLAYER_TWO
         PLAYER_TWO -> PLAYER_ONE
     }

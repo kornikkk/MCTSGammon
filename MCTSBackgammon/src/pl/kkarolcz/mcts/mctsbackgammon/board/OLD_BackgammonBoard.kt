@@ -1,6 +1,6 @@
 package pl.kkarolcz.mcts.mctsbackgammon.board
 
-import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonPlayer
+import pl.kkarolcz.mcts.mctsbackgammon.game.Player
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.OLD_SingleBackgammonMove
 
 /**
@@ -30,16 +30,16 @@ class OLD_BackgammonBoard : Cloneable {
         return OLD_BackgammonBoard(this)
     }
 
-    fun getPlayerCheckers(backgammonPlayer: BackgammonPlayer): OLD_BackgammonPlayerCheckers = when (backgammonPlayer) {
-        BackgammonPlayer.PLAYER_ONE -> player1Checkers
-        BackgammonPlayer.PLAYER_TWO -> player2Checkers
+    fun getPlayerCheckers(player: Player): OLD_BackgammonPlayerCheckers = when (player) {
+        Player.PLAYER_ONE -> player1Checkers
+        Player.PLAYER_TWO -> player2Checkers
     }
 
-    fun doMove(player: BackgammonPlayer, move: OLD_SingleBackgammonMove) {
+    fun doMove(player: Player, move: OLD_SingleBackgammonMove) {
         getPlayerCheckers(player).doMove(move)
     }
 
-    fun undoMove(player: BackgammonPlayer, move: OLD_SingleBackgammonMove) {
+    fun undoMove(player: Player, move: OLD_SingleBackgammonMove) {
         getPlayerCheckers(player).undoMove(move)
     }
 

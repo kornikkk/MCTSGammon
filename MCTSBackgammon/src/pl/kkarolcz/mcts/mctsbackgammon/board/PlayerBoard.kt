@@ -2,9 +2,9 @@ package pl.kkarolcz.mcts.mctsbackgammon.board
 
 import com.carrotsearch.hppc.ByteByteHashMap
 import com.carrotsearch.hppc.ByteByteMap
-import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.BAR_INDEX
-import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.BEAR_OFF_INDEX
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.BackgammonMove
+import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BAR_INDEX
+import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BEAR_OFF_INDEX
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.SingleMove
 import pl.kkarolcz.utils.ByteMath.ZERO_BYTE
 import pl.kkarolcz.utils.clearBit
 import pl.kkarolcz.utils.setBit
@@ -16,7 +16,7 @@ import java.lang.Integer.numberOfLeadingZeros
  * Created by kkarolcz on 19.11.2017.
  */
 
-class BackgammonPlayerCheckers : Cloneable {
+class PlayerBoard : Cloneable {
     private val towers: ByteByteMap
     private var towersMask: Int // Bit mask of all towers
     private val nonHomeTowersMask: Int get() = towersMask shr 6 shl 6 // Remove 6 least significant bits (home board)
@@ -42,20 +42,20 @@ class BackgammonPlayerCheckers : Cloneable {
         this._bearOffCheckers = 0
     }
 
-    private constructor(other: BackgammonPlayerCheckers) {
+    private constructor(other: PlayerBoard) {
         this.towers = ByteByteHashMap(other.towers)
         this.towersMask = other.nonHomeTowersMask
         this._barCheckers = other._barCheckers
         this._bearOffCheckers = other._bearOffCheckers
     }
 
-    public override fun clone() = BackgammonPlayerCheckers(this)
+    public override fun clone() = PlayerBoard(this)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as BackgammonPlayerCheckers
+        other as PlayerBoard
 
         if (towers != other.towers) return false
         if (_barCheckers != other._barCheckers) return false
@@ -118,7 +118,7 @@ class BackgammonPlayerCheckers : Cloneable {
 
     fun isNotOccupiedOrCanBeHit(index: Byte): Boolean = get(index) <= 1
 
-    fun move(move: BackgammonMove) {
+    fun move(move: SingleMove) {
         val checkers = get(move.oldIndex)
         if (checkers == 0.toByte()) throw IllegalStateException("No checkers to move")
         remove(move.oldIndex)

@@ -2,8 +2,8 @@ package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 
 import pl.kkarolcz.mcts.mctsbackgammon.board.OLD_BackgammonBoard
 import pl.kkarolcz.mcts.mctsbackgammon.board.OLD_BackgammonBoardIndex
-import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonPlayer
-import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
+import pl.kkarolcz.mcts.mctsbackgammon.game.Player
+import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Die
 import pl.kkarolcz.utils.ByteMath
 
 /**
@@ -11,7 +11,7 @@ import pl.kkarolcz.utils.ByteMath
  */
 
 @Deprecated("REMOVE")
-fun possibleMoves(board: OLD_BackgammonBoard, player: BackgammonPlayer, dice: Dice): List<OLD_SingleBackgammonMove> {
+fun possibleMoves(board: OLD_BackgammonBoard, player: Player, die: Die): List<OLD_SingleBackgammonMove> {
     val playerCheckers = board.getPlayerCheckers(player)
 
     if (!playerCheckers.anyLeft()) {
@@ -19,7 +19,7 @@ fun possibleMoves(board: OLD_BackgammonBoard, player: BackgammonPlayer, dice: Di
     }
 
     if (!playerCheckers.barEmpty()) {
-        val moveFromBar = moveFromBar(board, player, dice)
+        val moveFromBar = moveFromBar(board, player, die)
         if (moveFromBar != null) {
             return listOf(moveFromBar)
         }
@@ -27,19 +27,19 @@ fun possibleMoves(board: OLD_BackgammonBoard, player: BackgammonPlayer, dice: Di
     }
 
     if (board.getPlayerCheckers(player).allInHomeBoard()) {
-        val normalHomeBoardMoves = normalMoves(board, player, dice, OLD_BackgammonBoardIndex.HOME_BOARD_START_INDEX)
-        val bearOffMove = bearOffMove(board, player, dice)
+        val normalHomeBoardMoves = normalMoves(board, player, die, OLD_BackgammonBoardIndex.HOME_BOARD_START_INDEX)
+        val bearOffMove = bearOffMove(board, player, die)
         if (bearOffMove != null) {
             return normalHomeBoardMoves + bearOffMove
         }
     }
 
-    return normalMoves(board, player, dice)
+    return normalMoves(board, player, die)
 }
 
 @Deprecated("REMOVE")
-private fun moveFromBar(board: OLD_BackgammonBoard, player: BackgammonPlayer, dice: Dice): OLD_SingleBackgammonMove? {
-    val newIndex = OLD_BackgammonBoardIndex.shift(OLD_BackgammonBoardIndex.BAR_INDEX, dice)
+private fun moveFromBar(board: OLD_BackgammonBoard, player: Player, die: Die): OLD_SingleBackgammonMove? {
+    val newIndex = OLD_BackgammonBoardIndex.shift(OLD_BackgammonBoardIndex.BAR_INDEX, die)
     if (newIndex != OLD_BackgammonBoardIndex.NO_INDEX) {
         val opponentCheckers = board.getPlayerCheckers(player.opponent())
         if (opponentCheckers[OLD_BackgammonBoardIndex.toOpponentsIndex(newIndex)] <= 1)
@@ -49,10 +49,10 @@ private fun moveFromBar(board: OLD_BackgammonBoard, player: BackgammonPlayer, di
 }
 
 @Deprecated("REMOVE")
-private fun bearOffMove(board: OLD_BackgammonBoard, player: BackgammonPlayer, dice: Dice): OLD_SingleBackgammonMove? {
-    val oldIndex = board.getPlayerCheckers(player).firstForBearingOff(dice)
+private fun bearOffMove(board: OLD_BackgammonBoard, player: Player, die: Die): OLD_SingleBackgammonMove? {
+    val oldIndex = board.getPlayerCheckers(player).firstForBearingOff(die)
     if (oldIndex != null) {
-        val newIndex = oldIndex.shiftForBearOff(dice)
+        val newIndex = oldIndex.shiftForBearOff(die)
         if (newIndex != null) {
             return OLD_SingleBackgammonMove(oldIndex, newIndex)
         }
@@ -61,7 +61,7 @@ private fun bearOffMove(board: OLD_BackgammonBoard, player: BackgammonPlayer, di
 }
 
 @Deprecated("REMOVE")
-private fun normalMoves(board: OLD_BackgammonBoard, player: BackgammonPlayer, dice: Dice,
+private fun normalMoves(board: OLD_BackgammonBoard, player: Player, die: Die,
                         startIndex: Int = OLD_BackgammonBoardIndex.MAX_INDEX): List<OLD_SingleBackgammonMove> {
 
     val playerCheckers = board.getPlayerCheckers(player)
@@ -75,7 +75,7 @@ private fun normalMoves(board: OLD_BackgammonBoard, player: BackgammonPlayer, di
             continue
 
         // Check if move is even possible
-        val newIndex = OLD_BackgammonBoardIndex.shift(oldIndex, dice)
+        val newIndex = OLD_BackgammonBoardIndex.shift(oldIndex, die)
         if (newIndex == OLD_BackgammonBoardIndex.NO_INDEX)
             continue
 

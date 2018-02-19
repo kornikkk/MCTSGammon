@@ -1,22 +1,22 @@
 package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 
-import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoard
-import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.BAR_INDEX
-import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.NO_INDEX
-import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.shift
-import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.shiftForBearOff
-import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.shiftFromBar
-import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.toOpponentsIndex
-import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonPlayerCheckers
-import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonPlayer
-import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
+import pl.kkarolcz.mcts.mctsbackgammon.board.Board
+import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BAR_INDEX
+import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.NO_INDEX
+import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.shift
+import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.shiftForBearOff
+import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.shiftFromBar
+import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.toOpponentsIndex
+import pl.kkarolcz.mcts.mctsbackgammon.board.PlayerBoard
+import pl.kkarolcz.mcts.mctsbackgammon.game.Player
+import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Die
 
 /**
  * Created by kkarolcz on 19.11.2017.
  */
 
 
-fun possibleMoves(board: BackgammonBoard, player: BackgammonPlayer, dice: Dice): List<BackgammonMove> {
+fun possibleMoves(board: Board, player: Player, die: Die): List<SingleMove> {
     val playerCheckers = board.getPlayerCheckers(player)
     val opponentCheckers = board.getPlayerCheckers(player.opponent())
 
@@ -25,51 +25,51 @@ fun possibleMoves(board: BackgammonBoard, player: BackgammonPlayer, dice: Dice):
     }
 
     if (playerCheckers.barCheckers > 0) {
-        val moveFromBar = moveFromBar(opponentCheckers, dice)
+        val moveFromBar = moveFromBar(opponentCheckers, die)
         if (moveFromBar != null) {
             return listOf(moveFromBar)
         }
         return emptyList()
     }
 
-    return normalMoves(playerCheckers, opponentCheckers, dice, playerCheckers.canBearOff)
+    return normalMoves(playerCheckers, opponentCheckers, die, playerCheckers.canBearOff)
 }
 
-private fun moveFromBar(opponentCheckers: BackgammonPlayerCheckers, dice: Dice): BackgammonMove? {
-    val newIndex = shiftFromBar(BAR_INDEX, dice)
+private fun moveFromBar(opponentBoard: PlayerBoard, die: Die): SingleMove? {
+    val newIndex = shiftFromBar(BAR_INDEX, die)
     if (newIndex == NO_INDEX)
         return null
 
-    if (opponentCheckers.isNotOccupiedOrCanBeHit(toOpponentsIndex(newIndex)))
-        return BackgammonMove.create(BAR_INDEX, newIndex)
+    if (opponentBoard.isNotOccupiedOrCanBeHit(toOpponentsIndex(newIndex)))
+        return SingleMove.create(BAR_INDEX, newIndex)
 
     return null
 }
 
-private fun normalMoves(playerCheckers: BackgammonPlayerCheckers, opponentCheckers: BackgammonPlayerCheckers, dice: Dice,
-                        searchForBearOff: Boolean = false): List<BackgammonMove> {
+private fun normalMoves(playerBoard: PlayerBoard, opponentBoard: PlayerBoard, die: Die,
+                        searchForBearOff: Boolean = false): List<SingleMove> {
 
-    val moves = mutableListOf<BackgammonMove>()
+    val moves = mutableListOf<SingleMove>()
     var continueSearchForBearOff = searchForBearOff
-    for (tower in playerCheckers.towerIterator()) {
+    for (tower in playerBoard.towerIterator()) {
         /** BEAR OFF MOVES */
         if (continueSearchForBearOff) {
-            val bearOffNewIndex = shiftForBearOff(tower.index, dice)
+            val bearOffNewIndex = shiftForBearOff(tower.index, die)
             if (bearOffNewIndex != NO_INDEX) {
-                moves.add(BackgammonMove.create(tower.index, bearOffNewIndex))
+                moves.add(SingleMove.create(tower.index, bearOffNewIndex))
                 continueSearchForBearOff = false
             }
         }
 
         /** NORMAL MOVES */
-        val newIndex = shift(tower.index, dice)
+        val newIndex = shift(tower.index, die)
 
         // Check if normal move is possible
         if (newIndex == NO_INDEX)
             continue
 
-        if (opponentCheckers.isNotOccupiedOrCanBeHit(toOpponentsIndex(newIndex))) {
-            moves.add(BackgammonMove.create(tower.index, newIndex))
+        if (opponentBoard.isNotOccupiedOrCanBeHit(toOpponentsIndex(newIndex))) {
+            moves.add(SingleMove.create(tower.index, newIndex))
         }
     }
 

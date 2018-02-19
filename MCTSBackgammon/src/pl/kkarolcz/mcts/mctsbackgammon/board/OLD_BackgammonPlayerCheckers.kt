@@ -1,6 +1,6 @@
 package pl.kkarolcz.mcts.mctsbackgammon.board
 
-import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
+import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Die
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.OLD_SingleBackgammonMove
 import pl.kkarolcz.utils.ByteMath
 import java.util.*
@@ -65,10 +65,10 @@ class OLD_BackgammonPlayerCheckers : Cloneable {
         return true
     }
 
-    fun firstForBearingOff(dice: Dice): OLD_BackgammonBoardIndex? {
+    fun firstForBearingOff(die: Die): OLD_BackgammonBoardIndex? {
         // For performance purposes
         for (i in OLD_BackgammonBoardIndex.HOME_BOARD_START_INDEX downTo OLD_BackgammonBoardIndex.MIN_INDEX) {
-            if (OLD_BackgammonBoardIndex.shiftForBearOff(i, dice) == OLD_BackgammonBoardIndex.NO_INDEX)
+            if (OLD_BackgammonBoardIndex.shiftForBearOff(i, die) == OLD_BackgammonBoardIndex.NO_INDEX)
                 continue
 
             if (checkers[i] > 0)

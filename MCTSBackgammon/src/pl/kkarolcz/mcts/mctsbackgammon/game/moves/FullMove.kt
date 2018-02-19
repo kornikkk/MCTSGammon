@@ -7,21 +7,21 @@ import java.util.*
  * Created by kkarolcz on 19.11.2017.
  */
 //TODO: Can be changed to array of new indices and start index
-class BackgammonMovesSequence private constructor(moves: List<BackgammonMove>) : MCTSMove, Cloneable {
+class FullMove private constructor(moves: List<SingleMove>) : MCTSMove, Cloneable {
     private val _moves = moves.toTypedArray()
     val moves get() = _moves
 
     companion object {
-        private val INSTANCES = WeakHashMap<Long, BackgammonMovesSequence>()
+        private val INSTANCES = WeakHashMap<Long, FullMove>()
 
-        fun create(vararg moves: BackgammonMove): BackgammonMovesSequence = create(moves.toList())
+        fun create(vararg moves: SingleMove): FullMove = create(moves.toList())
 
-        fun create(moves: List<BackgammonMove>): BackgammonMovesSequence {
+        fun create(moves: List<SingleMove>): FullMove {
             val key = perfectHash(moves)
-            return INSTANCES.computeIfAbsent(key) { BackgammonMovesSequence(moves) }
+            return INSTANCES.computeIfAbsent(key) { FullMove(moves) }
         }
 
-        private fun perfectHash(moves: List<BackgammonMove>): Long {
+        private fun perfectHash(moves: List<SingleMove>): Long {
             var currentShift = 0
             var hash = 0L
             for (move in moves) {
@@ -38,7 +38,7 @@ class BackgammonMovesSequence private constructor(moves: List<BackgammonMove>) :
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as BackgammonMovesSequence
+        other as FullMove
 
         if (!Arrays.equals(_moves, other._moves)) return false
 

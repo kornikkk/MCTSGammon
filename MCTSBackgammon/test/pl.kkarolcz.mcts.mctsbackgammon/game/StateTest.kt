@@ -6,7 +6,7 @@ import pl.kkarolcz.mcts.mctsbackgammon.board.OLD_BackgammonBoard
 /**
  * Created by kkarolcz on 28.08.2017.
  */
-class BackgammonStateTest {
+class StateTest {
 
     private val player1Checkers: ByteArray = ByteArray(OLD_BackgammonBoard.SIZE)
     private val player2Checkers: ByteArray = ByteArray(OLD_BackgammonBoard.SIZE)
@@ -19,9 +19,9 @@ class BackgammonStateTest {
 //
 //    @Test
 //    fun `Test single checker possible moves`() {
-//        player1Checkers[23] = 1
-//        player2Checkers[1] = 1
-//        val possibleMoves = getPossibleMoves(BackgammonDice(Dice(1), Dice(2)))
+//        player1Board[23] = 1
+//        player2Board[1] = 1
+//        val possibleMoves = getPossibleMoves(Dice(Die(1), Die(2)))
 //
 //        assertEquals(2, possibleMoves.size)
 //
@@ -31,9 +31,9 @@ class BackgammonStateTest {
 //
 //    @Test
 //    fun `Test single checker possible moves for doubling cube`() {
-//        player1Checkers[23] = 1
-//        player2Checkers[1] = 1
-//        val possibleMoves = getPossibleMoves(BackgammonDice(Dice(1), Dice(1)))
+//        player1Board[23] = 1
+//        player2Board[1] = 1
+//        val possibleMoves = getPossibleMoves(Dice(Die(1), Die(1)))
 //
 //        assertEquals(1, possibleMoves.size)
 //
@@ -42,19 +42,19 @@ class BackgammonStateTest {
 //
 //    @Test
 //    fun `Test single checker moves not possible because of opponent's checkers`() {
-//        player1Checkers[23] = 1
-//        player2Checkers[3] = 2
-//        player2Checkers[4] = 2
-//        val possibleMoves = getPossibleMoves(BackgammonDice(Dice(1), Dice(2)))
+//        player1Board[23] = 1
+//        player2Board[3] = 2
+//        player2Board[4] = 2
+//        val possibleMoves = getPossibleMoves(Dice(Die(1), Die(2)))
 //
 //        assertEquals(0, possibleMoves.size)
 //    }
 //
 //    @Test
 //    fun `Test bear off moves`() {
-//        player1Checkers[1] = 2
-//        player2Checkers[1] = 1
-//        val possibleMoves = getPossibleMoves(BackgammonDice(Dice(2), Dice(1)))
+//        player1Board[1] = 2
+//        player2Board[1] = 1
+//        val possibleMoves = getPossibleMoves(Dice(Die(2), Die(1)))
 //
 //        assertEquals(2, possibleMoves.size)
 //        assertContainsMovesSequence(possibleMoves, singleBearingOffMove(1), singleBearingOffMove(1))
@@ -63,10 +63,10 @@ class BackgammonStateTest {
 //
 //    @Test
 //    fun `Test bear off and normal moves`() {
-//        player1Checkers[3] = 1
-//        player1Checkers[2] = 1
-//        player2Checkers[1] = 1
-//        val possibleMoves = getPossibleMoves(BackgammonDice(Dice(3), Dice(2)))
+//        player1Board[3] = 1
+//        player1Board[2] = 1
+//        player2Board[1] = 1
+//        val possibleMoves = getPossibleMoves(Dice(Die(3), Die(2)))
 //
 //        assertEquals(3, possibleMoves.size)
 //        assertContainsMovesSequence(possibleMoves, singleBearingOffMove(3), singleBearingOffMove(2))
@@ -76,19 +76,19 @@ class BackgammonStateTest {
 //
 //    @Test
 //    fun `Test real case`() {
-//        player2Checkers[3] = 5
-//        player2Checkers[4] = 4
-//        player2Checkers[5] = 3
-//        player2Checkers[6] = 2
-//        player2Checkers[7] = 1
+//        player2Board[3] = 5
+//        player2Board[4] = 4
+//        player2Board[5] = 3
+//        player2Board[6] = 2
+//        player2Board[7] = 1
 //
-//        player1Checkers[1] = 5
-//        player1Checkers[2] = 1
-//        player1Checkers[5] = 1
-//        player1Checkers[23] = 2
-//        player1Checkers[24] = 6
+//        player1Board[1] = 5
+//        player1Board[2] = 1
+//        player1Board[5] = 1
+//        player1Board[23] = 2
+//        player1Board[24] = 6
 //
-//        val possibleMoves = getPossibleMoves(BackgammonDice(Dice(4), Dice(3)))
+//        val possibleMoves = getPossibleMoves(Dice(Die(4), Die(3)))
 //        assertContainsMovesSequence(possibleMoves, singleMove(5, 2))
 //        assertContainsMovesSequence(possibleMoves, singleMove(5, 1))
 //        assertEquals(2, possibleMoves.size, "Wrong number of possible move sequences")
@@ -109,14 +109,14 @@ class BackgammonStateTest {
 //            OLD_SingleBackgammonMove(OLD_BackgammonBoardIndex.of(oldIndex), OLD_BackgammonBoardIndex.bearingOff())
 //
 //
-//    private fun getPossibleMoves(dice: BackgammonDice) =
+//    private fun getPossibleMoves(dice: Dice) =
 //            buildState(dice).findPossibleMoves().map { backgammonMovesSequence -> backgammonMovesSequence.moves }.toList()
 //
-//    private fun buildState(dice: BackgammonDice) = BackgammonState(buildBoard(), BackgammonPlayer.PLAYER_TWO, dice)
+//    private fun buildState(dice: Dice) = State(buildBoard(), Player.PLAYER_TWO, dice)
 //
 //    private fun buildBoard() = OLD_BackgammonBoard(
-//            OLD_BackgammonPlayerCheckers(player1Checkers, 0),
-//            OLD_BackgammonPlayerCheckers(player2Checkers, 0))
+//            OLD_BackgammonPlayerCheckers(player1Board, 0),
+//            OLD_BackgammonPlayerCheckers(player2Board, 0))
 
 
 }

@@ -1,16 +1,16 @@
 package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 
 import org.junit.Test
-import pl.kkarolcz.mcts.mctsbackgammon.board.BackgammonBoardIndex.Companion.BAR_INDEX
+import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BAR_INDEX
 
 /**
  * Created by kkarolcz on 27.08.2017.
  */
-class BackgammonDoublingMovesTest : AbstractBackgammonMovesTest() {
+class BackgammonDoublingMovesTest : AbstractSingleMovesTest() {
 
     @Test
     fun `Test single checker move`() {
-        player1Checkers.put(24, 1)
+        player1Board.put(24, 1)
         val movesSequence = movesSequence(
                 move(24, 22),
                 move(22, 20),
@@ -22,8 +22,8 @@ class BackgammonDoublingMovesTest : AbstractBackgammonMovesTest() {
 
     @Test
     fun `Test multiple checkers move`() {
-        player1Checkers.put(24, 1)
-        player1Checkers.put(23, 1)
+        player1Board.put(24, 1)
+        player1Board.put(23, 1)
         val movesSequence = listOf(
                 movesSequence(move(24, 22), move(22, 20), move(20, 18), move(18, 16)),
                 movesSequence(move(24, 22), move(22, 20), move(20, 18), move(23, 21)),
@@ -47,8 +47,8 @@ class BackgammonDoublingMovesTest : AbstractBackgammonMovesTest() {
 
     @Test
     fun `Test one locked checker move`() {
-        player1Checkers.put(24, 2)
-        player2Checkers.put(toOpponentsIndex(18), 2)
+        player1Board.put(24, 2)
+        player2Board.put(toOpponentsIndex(18), 2)
         val movesSequence = listOf(
                 movesSequence(move(24, 22), move(22, 20), move(24, 22), move(22, 20)),
                 movesSequence(move(24, 22), move(24, 22), move(22, 20), move(22, 20))
@@ -58,31 +58,31 @@ class BackgammonDoublingMovesTest : AbstractBackgammonMovesTest() {
 
     @Test
     fun `Test move from bar on an empty point and then locked`() {
-        player1Checkers.put(BAR_INDEX, 1)
-        player2Checkers.put(toOpponentsIndex(21), 2)
+        player1Board.put(BAR_INDEX, 1)
+        player2Board.put(toOpponentsIndex(21), 2)
         val movesSequence = listOf(movesSequence(move(BAR_INDEX, 23)))
         assertAllMovesFound(dice(2, 2), movesSequence)
     }
 
     @Test
     fun `Test 2 moves from bar on an empty point and then locked`() {
-        player1Checkers.put(BAR_INDEX, 2)
-        player2Checkers.put(toOpponentsIndex(21), 2)
+        player1Board.put(BAR_INDEX, 2)
+        player2Board.put(toOpponentsIndex(21), 2)
         val movesSequence = listOf(movesSequence(move(BAR_INDEX, 23), move(BAR_INDEX, 23)))
         assertAllMovesFound(dice(2, 2), movesSequence)
     }
 
     @Test
     fun `Test 3 moves from bar on an empty point and then locked`() {
-        player1Checkers.put(BAR_INDEX, 3)
-        player2Checkers.put(toOpponentsIndex(21), 2)
+        player1Board.put(BAR_INDEX, 3)
+        player2Board.put(toOpponentsIndex(21), 2)
         val movesSequence = listOf(movesSequence(move(BAR_INDEX, 23), move(BAR_INDEX, 23), move(BAR_INDEX, 23)))
         assertAllMovesFound(dice(2, 2), movesSequence)
     }
 
     @Test
     fun `Test moves from bar only`() {
-        player1Checkers.put(BAR_INDEX, 4)
+        player1Board.put(BAR_INDEX, 4)
         val movesSequence = listOf(movesSequence(move(BAR_INDEX, 23), move(BAR_INDEX, 23), move(BAR_INDEX, 23), move(BAR_INDEX, 23)))
         assertAllMovesFound(dice(2, 2), movesSequence)
     }
@@ -90,15 +90,15 @@ class BackgammonDoublingMovesTest : AbstractBackgammonMovesTest() {
 
     @Test
     fun `Test move from bar on an empty point and then further`() {
-        player1Checkers.put(BAR_INDEX, 1)
+        player1Board.put(BAR_INDEX, 1)
         val movesSequence = listOf(movesSequence(move(BAR_INDEX, 23), move(23, 21), move(21, 19), move(19, 17)))
         assertAllMovesFound(dice(2, 2), movesSequence)
     }
 
     @Test
     fun `Test bar move and then standard move`() {
-        player1Checkers.put(BAR_INDEX, 1)
-        player1Checkers.put(24, 1)
+        player1Board.put(BAR_INDEX, 1)
+        player1Board.put(24, 1)
         val movesSequence = listOf(
                 movesSequence(move(BAR_INDEX, 23), move(23, 21), move(21, 19), move(19, 17)),
                 movesSequence(move(BAR_INDEX, 23), move(23, 21), move(21, 19), move(24, 22)),
@@ -113,10 +113,10 @@ class BackgammonDoublingMovesTest : AbstractBackgammonMovesTest() {
 
     @Test
     fun `Test bar move, standard move with one sequential move and then locked`() {
-        player1Checkers.put(BAR_INDEX, 1)
-        player1Checkers.put(24, 1)
-        player2Checkers.put(toOpponentsIndex(21), 2)
-        player2Checkers.put(toOpponentsIndex(20), 2)
+        player1Board.put(BAR_INDEX, 1)
+        player1Board.put(24, 1)
+        player2Board.put(toOpponentsIndex(21), 2)
+        player2Board.put(toOpponentsIndex(20), 2)
         val movesSequence = listOf(movesSequence(move(BAR_INDEX, 23), move(24, 22)))
         assertAllMovesFound(dice(2, 2), movesSequence)
     }

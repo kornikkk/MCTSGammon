@@ -14,10 +14,11 @@ class FullMovesSearchDoubling(board: BackgammonBoard, currentPlayer: BackgammonP
 
     private val die = dice.first
 
-    private var barMoves = mutableListOf<BackgammonMove>()
+    private val barMoves = mutableListOf<PartialMove>()
+    private val barSequentialMoves = SequencesForPartialMoves()
 
     private val partialMoves = mutableListOf<PartialMove>()
-    private val sequentialMoves = SequencesForPartialMoves()
+    private val standardSequentialMoves = SequencesForPartialMoves()
 
     private var diceLeft = 4
 
@@ -28,11 +29,13 @@ class FullMovesSearchDoubling(board: BackgammonBoard, currentPlayer: BackgammonP
             findBarMoves()
 
             if (playerCheckers.barCheckers >= 4) {
-                fullMoves.add(BackgammonMovesSequence.create(barMoves))
+                fullMoves.add(BackgammonMovesSequence.create(barMoves.map(PartialMove::move)))
                 return // No need to do anything when there's >= 4 checkers on the bar
             }
             diceLeft -= playerCheckers.barCheckers
         }
+
+        findBarSequentialMoves()
         findStandardPartialMoves()
         findStandardSequentialMoves()
 
@@ -42,7 +45,7 @@ class FullMovesSearchDoubling(board: BackgammonBoard, currentPlayer: BackgammonP
     private fun findBarMoves() {
         val moveFromBar = findPartialBarMove(die) ?: return // Stop if there are checkers on the bar and no possible moves
         for (i in 1..minOf(playerCheckers.barCheckers, 4)) {
-            barMoves.add(moveFromBar)
+            barMoves.add(PartialMove(moveFromBar))
         }
     }
 
@@ -57,9 +60,19 @@ class FullMovesSearchDoubling(board: BackgammonBoard, currentPlayer: BackgammonP
         }
     }
 
+    private fun findBarSequentialMoves() {
+        // No need to decrement dice like in findStandardSequentialMoves(). It was already done because bar moves exist
+        findSequentialMoves(barMoves, barSequentialMoves, diceLeft)
+    }
+
     private fun findStandardSequentialMoves() {
-        for (partialMove in partialMoves.distinct()) {
-            var diceLeft = this.diceLeft - 1 // We assume that one of the partial moves is used
+        // We assume that one of the partial moves is used so dice are decremented
+        findSequentialMoves(partialMoves, standardSequentialMoves, diceLeft - 1)
+    }
+
+    private fun findSequentialMoves(initialMoves: List<PartialMove>, sequences: SequencesForPartialMoves, initialDiceLeft: Int) {
+        for (partialMove in initialMoves.distinct()) {
+            var diceLeft = initialDiceLeft
             var oldIndex: Byte
             var newIndex = partialMove.move.newIndex
 
@@ -72,23 +85,28 @@ class FullMovesSearchDoubling(board: BackgammonBoard, currentPlayer: BackgammonP
                     break
                 }
 
-                sequentialMoves.getOrCreate(partialMove).add(BackgammonMove.create(oldIndex, newIndex))
+                sequences.getOrCreate(partialMove).add(BackgammonMove.create(oldIndex, newIndex))
             }
         }
     }
 
     private fun findFullMovesRecursive() {
-        findFullMovesRecursive(RecursionState(FullMoveBuilder(barMoves), partialMoves, SequencesForPartialMoves()), diceLeft)
+        findFullMovesRecursive(RecursionState(), diceLeft)
     }
 
     private fun findFullMovesRecursive(recursionState: RecursionState, diceLeft: Int) {
         val fullMoveBuilder = recursionState.fullMoveBuilder
+        val barMovesSequences = recursionState.barMovesSequences
         val partialMoves = recursionState.partialMoves
-        val sequences = recursionState.sequences
+        val sequences = recursionState.standardSequences
 
         //TODO handle situation when dice left
         if (diceLeft > 0) {
             //TODO bear off
+
+            for (sequence in barMovesSequences) {
+                findFullMovesWithBarequence(recursionState.clone(), diceLeft, sequence.key)
+            }
 
             for (sequence in sequences) {
                 findFullMovesWithSequence(recursionState.clone(), diceLeft, sequence.key)
@@ -103,8 +121,17 @@ class FullMovesSearchDoubling(board: BackgammonBoard, currentPlayer: BackgammonP
         //TODO handle situation when dice left
     }
 
+    private fun findFullMovesWithBarequence(recursionState: RecursionState, diceLeft: Int, partialMove: PartialMove) {
+        val sequentialMove = recursionState.barMovesSequences.getSequence(partialMove)?.poll()
+        if (sequentialMove != null) {
+            recursionState.fullMoveBuilder.append(sequentialMove)
+        }
+
+        findFullMovesRecursive(recursionState, diceLeft - 1)
+    }
+
     private fun findFullMovesWithSequence(recursionState: RecursionState, diceLeft: Int, partialMove: PartialMove) {
-        val sequentialMove = recursionState.sequences.getSequence(partialMove)?.poll()
+        val sequentialMove = recursionState.standardSequences.getSequence(partialMove)?.poll()
         if (sequentialMove != null) {
             recursionState.fullMoveBuilder.append(sequentialMove)
         }
@@ -115,9 +142,9 @@ class FullMovesSearchDoubling(board: BackgammonBoard, currentPlayer: BackgammonP
     private fun findFullMovesWithPartialMove(recursionState: RecursionState, diceLeft: Int, partialMove: PartialMove) {
         recursionState.fullMoveBuilder.append(partialMove.move)
 
-        val sequenceForPartialMove = sequentialMoves.getSequence(partialMove)
+        val sequenceForPartialMove = standardSequentialMoves.getSequence(partialMove)
         if (sequenceForPartialMove != null) {
-            recursionState.sequences.add(sequenceForPartialMove)
+            recursionState.standardSequences.add(sequenceForPartialMove)
         }
 
         recursionState.partialMoves.remove(partialMove)
@@ -138,15 +165,40 @@ class FullMovesSearchDoubling(board: BackgammonBoard, currentPlayer: BackgammonP
 
     }
 
-    private class RecursionState(fullMoveBuilder: FullMoveBuilder, partialMoves: MutableList<PartialMove>,
-                                 sequences: SequencesForPartialMoves) : Cloneable {
+    private inner class RecursionState : Cloneable {
 
-        val fullMoveBuilder: FullMoveBuilder = fullMoveBuilder.clone()
-        val partialMoves: MutableList<PartialMove> = partialMoves.toMutableList()
-        val sequences: SequencesForPartialMoves = sequences.clone()
+        val fullMoveBuilder: FullMoveBuilder
+        val barMovesSequences: SequencesForPartialMoves
+        val partialMoves: MutableList<PartialMove>
+        val standardSequences: SequencesForPartialMoves
+
+        constructor() {
+            this.fullMoveBuilder = FullMoveBuilder(this@FullMovesSearchDoubling.barMoves.map(PartialMove::move))
+            this.barMovesSequences = SequencesForPartialMoves()
+            this.partialMoves = this@FullMovesSearchDoubling.partialMoves
+            this.standardSequences = SequencesForPartialMoves()
+
+            addAllBarMovesSequences()
+        }
+
+        constructor(other: RecursionState) {
+            this.fullMoveBuilder = other.fullMoveBuilder.clone()
+            this.barMovesSequences = other.barMovesSequences.clone()
+            this.partialMoves = other.partialMoves.toMutableList()
+            this.standardSequences = other.standardSequences.clone()
+        }
+
+        private fun addAllBarMovesSequences() {
+            for (barMove in barMoves) {
+                val sequence = this@FullMovesSearchDoubling.barSequentialMoves.getSequence(barMove)
+                if (sequence != null) {
+                    barMovesSequences.add(sequence)
+                }
+            }
+        }
 
         public override fun clone(): RecursionState {
-            return RecursionState(fullMoveBuilder, partialMoves, sequences)
+            return RecursionState(this)
         }
 
     }

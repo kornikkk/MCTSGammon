@@ -12,7 +12,7 @@ import pl.kkarolcz.utils.randomElement
 /**
  * Created by kkarolcz on 24.08.2017.
  */
-class State(private val board: Board, override var currentPlayer: Player, val dice: Dice?) : MCTSState<FullMove, Dice>() {
+class BackgammonState(private val board: Board, override var currentPlayer: Player, val dice: Dice?) : MCTSState<FullMove, Dice>() {
 
     override val result: Result?
         get() = when {
@@ -27,9 +27,9 @@ class State(private val board: Board, override var currentPlayer: Player, val di
         movesProvider.setDice(dice)
     }
 
-    override fun copyForExpanding() = State(board.clone(), currentPlayer, null)
+    override fun copyForExpanding() = BackgammonState(board.clone(), currentPlayer, null)
 
-    override fun copyForPlayout() = State(board.clone(), currentPlayer, Dice.PERMUTATIONS.randomElement())
+    override fun copyForPlayout() = BackgammonState(board.clone(), currentPlayer, Dice.PERMUTATIONS.randomElement())
 
     override fun doMoveImpl(move: FullMove) {
         for (currentMove in move.moves)
@@ -50,7 +50,7 @@ class State(private val board: Board, override var currentPlayer: Player, val di
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as State
+        other as BackgammonState
 
         if (currentPlayer != other.currentPlayer) return false
         if (board != other.board) return false

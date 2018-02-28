@@ -5,14 +5,14 @@ import pl.kkarolcz.mcts.mctsbackgammon.board.Board
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BAR_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BEAR_OFF_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.PlayerBoard
-import pl.kkarolcz.mcts.mctsbackgammon.game.State
+import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonState
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.server.BoardInfo
 
 /**
  * Created by kkarolcz on 29.08.2017.
  */
-fun BoardInfo.convertToBackgammonState(): State {
+fun BoardInfo.convertToBackgammonState(): BackgammonState {
     // players seem to be mixed up
     val opponentsBoard = when (colour) {
         BoardInfo.Player.O -> convertToPlayerCheckers(piecesO, bar2, opponentOnHome, direction == 1)
@@ -25,7 +25,7 @@ fun BoardInfo.convertToBackgammonState(): State {
     }
     val board = Board(mctsBoard, opponentsBoard)
     val currentPlayer = getCurrentPlayer()
-    return State(board, currentPlayer.opponent(), getBackgammonDice(currentPlayer))
+    return BackgammonState(board, currentPlayer.opponent(), getBackgammonDice(currentPlayer))
 }
 
 private fun convertToPlayerCheckers(checkersArray: ByteArray, onBarCheckers: Byte, onHomeCheckers: Byte, reversed: Boolean): PlayerBoard {

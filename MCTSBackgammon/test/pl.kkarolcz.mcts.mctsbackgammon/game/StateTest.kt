@@ -109,7 +109,7 @@ class StateTest {
 //    private fun getPossibleMoves(dice: Dice) =
 //            buildState(dice).findPossibleMoves().map { backgammonMovesSequence -> backgammonMovesSequence.untriedMoves }.toList()
 //
-//    private fun buildState(dice: Dice) = State(buildBoard(), Player.OPPONENT, dice)
+//    private fun buildState(dice: Dice) = BackgammonState(buildBoard(), Player.OPPONENT, dice)
 //
 //    private fun buildBoard() = OLD_BackgammonBoard(
 //            OLD_BackgammonPlayerCheckers(player1Board, 0),

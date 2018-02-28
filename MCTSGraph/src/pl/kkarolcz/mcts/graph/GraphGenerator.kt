@@ -13,6 +13,7 @@ import org.jgrapht.graph.DefaultDirectedGraph
 import org.jgrapht.graph.DefaultEdge
 import pl.kkarolcz.mcts.MCTSMove
 import pl.kkarolcz.mcts.MCTSNode
+import pl.kkarolcz.mcts.MCTSTraceableMove
 import java.awt.Dimension
 import java.io.File
 import java.util.*
@@ -25,13 +26,15 @@ import javax.swing.WindowConstants
  */
 object GraphGenerator {
 
-    fun generateGraph(rootNode: MCTSNode<out MCTSMove>): DirectedGraph<MCTSNode<out MCTSMove>, DefaultEdge> {
-        val graph = DefaultDirectedGraph<MCTSNode<out MCTSMove>, DefaultEdge>(DefaultEdge::class.java)
+    fun <N : MCTSNode<N, M, T>, M : MCTSMove, T : MCTSTraceableMove.Trace> generateGraph(rootNode: N):
+            DirectedGraph<N, DefaultEdge> {
+
+        val graph = DefaultDirectedGraph<N, DefaultEdge>(DefaultEdge::class.java)
         addNodeToGraph(graph, rootNode)
         return graph
     }
 
-    fun addNodeToGraph(graph: DirectedGraph<MCTSNode<out MCTSMove>, DefaultEdge>, node: MCTSNode<out MCTSMove>) {
+    fun <N : MCTSNode<N, M, T>, M : MCTSMove, T : MCTSTraceableMove.Trace> addNodeToGraph(graph: DirectedGraph<N, DefaultEdge>, node: N) {
         graph.addVertex(node)
         node.children.forEach { child ->
             graph.addVertex(child)

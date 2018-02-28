@@ -1,10 +1,10 @@
 package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 
+import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.board.Board
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BEAR_OFF_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.NO_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.isOnHomeBoard
-import pl.kkarolcz.mcts.mctsbackgammon.game.Player
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
 import pl.kkarolcz.utils.ByteMath.ONE_BYTE
 import pl.kkarolcz.utils.singletonOrEmptyList
@@ -28,7 +28,7 @@ class FullMovesSearchNonDoubling(board: Board, currentPlayer: Player, dice: Dice
     private var anyFullSequenceFound = false
 
     override fun findAllImpl() {
-        // Find bar moves only when there are any checkers which must be moved
+        // Find bar untriedMoves only when there are any checkers which must be moved
         if (playerCheckers.barCheckers > 0) {
             findBarPartialMoves()
 
@@ -41,7 +41,9 @@ class FullMovesSearchNonDoubling(board: Board, currentPlayer: Player, dice: Dice
                 else if (moveFromBarSecondDie != null)
                     fullMoves.add(FullMove.create(moveFromBarSecondDie!!))
 
-                return // Finish finding moves. No more possible moves
+                return // Finish finding untriedMoves. No more possible untriedMoves
+            } else if (moveFromBarFirstDie == null && moveFromBarSecondDie == null) {
+                return
             }
         }
 
@@ -66,7 +68,7 @@ class FullMovesSearchNonDoubling(board: Board, currentPlayer: Player, dice: Dice
             findStandardFullMoves(partialMovesFirstDie, partialMovesSecondDie, dice.second, playerCheckers.canBearOff)
             findStandardFullMoves(partialMovesSecondDie, partialMovesFirstDie, dice.first, playerCheckers.canBearOff)
 
-            // Find full bear off moves
+            // Find full bear off untriedMoves
             if (playerCheckers.canBearOff) {
                 findBearOffFullMoves()
             }

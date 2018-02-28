@@ -2,11 +2,11 @@ package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 
 import org.junit.Ignore
 import org.junit.Test
+import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.board.Board
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BAR_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BEAR_OFF_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.PlayerBoard
-import pl.kkarolcz.mcts.mctsbackgammon.game.Player
 import java.util.*
 
 /**
@@ -90,7 +90,7 @@ class BackgammonNonDoublingMovesTest : AbstractSingleMovesTest() {
                 movesSequence(move(22, 22 - 5), move(22, 22 - 4)),
                 movesSequence(move(22, 22 - 4), move(22, 22 - 5)),
 
-                // Combinations of single moves
+                // Combinations of single untriedMoves
                 movesSequence(move(24, 24 - 5), move(22, 22 - 4)),
                 movesSequence(move(24, 24 - 4), move(22, 22 - 5)),
                 movesSequence(move(24, 24 - 4), move(10, 10 - 5)),
@@ -107,10 +107,10 @@ class BackgammonNonDoublingMovesTest : AbstractSingleMovesTest() {
     @Ignore
     @Test
     fun testPerformance() {
-        val storeMoves = true
+        val storeMoves = false
         val allMoves = mutableListOf<FullMove>()
         val random = Random()
-        for (i in 1..1_000_000) {
+        for (i in 1..100_000) {
             val player1Checkers = PlayerBoard()
             val player1RandomCheckers = ByteArray(26)
 
@@ -129,7 +129,7 @@ class BackgammonNonDoublingMovesTest : AbstractSingleMovesTest() {
 
             val board = Board(player1Checkers, player2Checkers)
             val dices = dice(1 + random.nextInt(6), 1 + random.nextInt(6))
-            val moves = FullMovesSearchNonDoubling(board, Player.PLAYER_ONE, dices).findAll()
+            val moves = FullMovesSearchNonDoubling(board, Player.MCTS, dices).findAll()
 
             if (storeMoves)
                 allMoves.addAll(moves)
@@ -143,8 +143,8 @@ class BackgammonNonDoublingMovesTest : AbstractSingleMovesTest() {
 //        player1Board.put(6, 2)
 //
 //        // Two opponents checkers so move is not possible with dice value = 5
-//        val moves = possibleMoves(buildBoard(), Player.PLAYER_ONE, Die(5))
-//        assertEquals(0, moves.count(), "Wrong number of possible moves. Should be empty")
+//        val untriedMoves = possibleMoves(buildBoard(), Player.MCTS, Die(5))
+//        assertEquals(0, untriedMoves.count(), "Wrong number of possible untriedMoves. Should be empty")
 //    }
 //
     @Test
@@ -176,9 +176,44 @@ class BackgammonNonDoublingMovesTest : AbstractSingleMovesTest() {
 
         assertNoMovesFound(dice(4, 2))
     }
+
+    @Test
+    fun `Test bar move not possible`() {
+        player1Board.put(BAR_INDEX, 1)
+        player1Board.put(15, 1)
+        player2Board.put(toOpponentsIndex(23), 2)
+        player2Board.put(toOpponentsIndex(21), 2)
+
+        assertNoMovesFound(dice(4, 2))
+    }
+
+    @Test
+    fun `Test real case 1`() {
+        player1Board.put(1, 2)
+        player1Board.put(5, 1)
+        player1Board.put(12, 2)
+        player1Board.put(16, 2)
+        player1Board.put(17, 1)
+        player1Board.put(19, 3)
+        player1Board.put(21, 2)
+        player1Board.put(23, 2)
+
+        player2Board.put(1, 2)
+        player2Board.put(7, 1)
+        player2Board.put(10, 1)
+        player2Board.put(11, 1)
+        player2Board.put(12, 2)
+        player2Board.put(15, 1)
+        player2Board.put(16, 2)
+        player2Board.put(19, 2)
+        player2Board.put(22, 1)
+        player2Board.put(23, 1)
+
+        searcher(dice(3, 1)).findAll()
+    }
 //
 //    @Test
-//    fun `Test bear off not possible and normal moves not found`() {
+//    fun `Test bear off not possible and normal untriedMoves not found`() {
 //        player1Board.put(0, 1)
 //        player1Board.put(2, 3)
 //
@@ -186,13 +221,13 @@ class BackgammonNonDoublingMovesTest : AbstractSingleMovesTest() {
 //        player1Board.put(20, 1)
 //        player1Board.put(10, 1)
 //
-//        val moves = possibleMoves(buildBoard(), Player.PLAYER_ONE, Die(2))
-//        assertEquals(0, moves.count(), "No moves should be possible")
+//        val untriedMoves = possibleMoves(buildBoard(), Player.MCTS, Die(2))
+//        assertEquals(0, untriedMoves.count(), "No untriedMoves should be possible")
 //    }
 
 //
 //    @Test
-//    fun `Test more moves`() {
+//    fun `Test more untriedMoves`() {
 //        player1Board[24] = 1
 //        player2Board[3] = 1
 //
@@ -205,12 +240,12 @@ class BackgammonNonDoublingMovesTest : AbstractSingleMovesTest() {
 //        player1Board[3] = 1
 //        player2Board[24] = 0
 //
-//        val moves = possibleMoves(buildBoard(), Player.PLAYER_ONE, Die(2))
-//        assertEquals(3, moves.count(), "Wrong number of possible moves")
-//        assertNotNull(moves.find { move -> move.newCheckerIndex.toInt() == 22 })
-//        assertNull(moves.find { move -> move.newCheckerIndex.toInt() == 21 })
-//        assertNotNull(moves.find { move -> move.newCheckerIndex.toInt() == 20 })
-//        assertNotNull(moves.find { move -> move.newCheckerIndex.toInt() == 1 })
+//        val untriedMoves = possibleMoves(buildBoard(), Player.MCTS, Die(2))
+//        assertEquals(3, untriedMoves.count(), "Wrong number of possible untriedMoves")
+//        assertNotNull(untriedMoves.find { move -> move.newCheckerIndex.toInt() == 22 })
+//        assertNull(untriedMoves.find { move -> move.newCheckerIndex.toInt() == 21 })
+//        assertNotNull(untriedMoves.find { move -> move.newCheckerIndex.toInt() == 20 })
+//        assertNotNull(untriedMoves.find { move -> move.newCheckerIndex.toInt() == 1 })
 //    }
 //
 //    @Test
@@ -227,10 +262,10 @@ class BackgammonNonDoublingMovesTest : AbstractSingleMovesTest() {
 //        player1Board[23] = 2
 //        player1Board[24] = 6
 //
-//        val movesFor3 = possibleMoves(buildBoard(), Player.PLAYER_ONE, Die(3))
+//        val movesFor3 = possibleMoves(buildBoard(), Player.MCTS, Die(3))
 //        assertNotNull(movesFor3.find { move -> move.newCheckerIndex.toInt() == 2 })
 //
-//        val movesFor4 = possibleMoves(buildBoard(), Player.PLAYER_ONE, Die(4))
+//        val movesFor4 = possibleMoves(buildBoard(), Player.MCTS, Die(4))
 //        assertNotNull(movesFor4.find { move -> move.newCheckerIndex.toInt() == 1 })
 //    }
 

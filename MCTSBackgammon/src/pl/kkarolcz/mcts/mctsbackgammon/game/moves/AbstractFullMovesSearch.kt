@@ -1,11 +1,11 @@
 package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 
+import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.board.Board
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BAR_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.NO_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.toOpponentsIndex
-import pl.kkarolcz.mcts.mctsbackgammon.game.Player
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
 
 /**
@@ -13,11 +13,11 @@ import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
  */
 abstract class AbstractFullMovesSearch(board: Board, currentPlayer: Player, protected val dice: Dice) {
 
-    protected val playerCheckers = board.getPlayerCheckers(currentPlayer)
-    protected val opponentCheckers = board.getPlayerCheckers(currentPlayer.opponent())
-    protected val fullMoves: MutableCollection<FullMove> = mutableSetOf()
+    protected val playerCheckers = board.getPlayerBoard(currentPlayer)
+    private val opponentCheckers = board.getPlayerBoard(currentPlayer.opponent())
+    protected val fullMoves: MutableSet<FullMove> = mutableSetOf()
 
-    fun findAll(): Collection<FullMove> {
+    fun findAll(): MutableSet<FullMove> {
         findAllImpl()
         return fullMoves
     }
@@ -39,18 +39,6 @@ abstract class AbstractFullMovesSearch(board: Board, currentPlayer: Player, prot
         return null
     }
 
-    //TODO Do something with that shit
-//    /** BEAR OFF MOVES */
-//    if (continueSearchForBearOff) {
-//        val bearOffNewIndex = BoardIndex.shiftForBearOff(tower.index, dice)
-//        if (bearOffNewIndex != BoardIndex.NO_INDEX) {
-//            moves.add(SingleMove(tower.index, bearOffNewIndex))
-//            continueSearchForBearOff = false
-//        }
-//    }
-
-
-    //TODO BEAR OFF MOVES
     protected fun findMove(index: Byte, dice: Byte): Byte {
         val newIndex = BoardIndex.shift(index, dice)
         if (newIndex != NO_INDEX && opponentCheckers.isNotOccupiedOrCanBeHit(toOpponentsIndex(newIndex))) {
@@ -58,7 +46,6 @@ abstract class AbstractFullMovesSearch(board: Board, currentPlayer: Player, prot
         }
         return NO_INDEX
     }
-
 
     protected fun firstForBearingOff(homeTowersIndices: Collection<Byte>, dice: Byte): SingleMove? {
         var greaterThanDiceFound = false

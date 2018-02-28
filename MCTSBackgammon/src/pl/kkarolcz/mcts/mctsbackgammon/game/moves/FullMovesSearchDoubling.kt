@@ -1,10 +1,9 @@
 package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 
+import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.board.Board
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.NO_INDEX
-import pl.kkarolcz.mcts.mctsbackgammon.game.Player
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
-import java.util.*
 
 /**
  * Created by kkarolcz on 27.12.2017.
@@ -105,7 +104,7 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
             //TODO bear off
 
             for (sequence in barMovesSequences) {
-                findFullMovesWithBarequence(recursionState.clone(), diceLeft, sequence.key)
+                findFullMovesWithBarSequence(recursionState.clone(), diceLeft, sequence.key)
             }
 
             for (sequence in sequences) {
@@ -121,7 +120,7 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
         //TODO handle situation when dice left
     }
 
-    private fun findFullMovesWithBarequence(recursionState: RecursionState, diceLeft: Int, partialMove: PartialMove) {
+    private fun findFullMovesWithBarSequence(recursionState: RecursionState, diceLeft: Int, partialMove: PartialMove) {
         val sequentialMove = recursionState.barMovesSequences.getSequence(partialMove)?.poll()
         if (sequentialMove != null) {
             recursionState.fullMovesBuilder.append(sequentialMove)
@@ -206,7 +205,20 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
     private class PartialMove(val move: SingleMove)
 
     private class SequencesForPartialMoves : Cloneable, Iterable<SequenceForPartialMove> {
-        private val map = mutableMapOf<PartialMove, SequenceForPartialMove>()
+        private val map: MutableMap<PartialMove, SequenceForPartialMove>
+
+        constructor() {
+            this.map = HashMap()
+        }
+
+        private constructor(other: SequencesForPartialMoves) {
+            this.map = HashMap(other.map.size + 1, 1.0f)
+            for (entry in other.map) {
+                if (!entry.value.isEmpty()) {
+                    map.put(entry.key, entry.value.clone())
+                }
+            }
+        }
 
         fun getOrCreate(key: PartialMove): SequenceForPartialMove {
             return map.computeIfAbsent(key) { SequenceForPartialMove(key) }
@@ -223,27 +235,22 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
         override fun iterator(): Iterator<SequenceForPartialMove> = map.values.iterator()
 
         public override fun clone(): SequencesForPartialMoves {
-            val copy = SequencesForPartialMoves()
-            for (entry in map) {
-                if (!entry.value.isEmpty()) {
-                    copy.map.put(entry.key, entry.value.clone())
-                }
-            }
-            return copy
+            return SequencesForPartialMoves(this)
         }
     }
 
     private class SequenceForPartialMove : Cloneable {
         val key: PartialMove
-        private val sequence = LinkedList<SingleMove>()
+        private val sequence: MutableList<SingleMove>
 
         constructor(key: PartialMove) {
             this.key = key
+            this.sequence = ArrayList()
         }
 
         private constructor(other: SequenceForPartialMove) {
             this.key = other.key
-            sequence.addAll(other.sequence)
+            this.sequence = ArrayList(other.sequence)
         }
 
         fun add(move: SingleMove) {
@@ -253,7 +260,10 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
         fun isEmpty() = sequence.isEmpty()
 
         fun poll(): SingleMove? {
-            return sequence.pollFirst()
+            if (sequence.isNotEmpty()) {
+                return sequence.removeAt(0)
+            }
+            return null
         }
 
         public override fun clone() = SequenceForPartialMove(this)

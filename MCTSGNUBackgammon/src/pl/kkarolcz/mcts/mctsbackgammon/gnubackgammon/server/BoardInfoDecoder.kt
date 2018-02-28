@@ -1,5 +1,6 @@
 package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.server
 
+import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.server.BoardInfo.Player
 import pl.kkarolcz.utils.ByteMath
 
 /**
@@ -14,30 +15,30 @@ class BoardInfoDecoder private constructor() {
             decodedBoardInfo.player1Name = encoded[1]
             decodedBoardInfo.player2Name = encoded[2]
             decodedBoardInfo.matchLength = encoded[3].toInt()
-            decodedBoardInfo.player1Score = encoded[4].toInt()
-            decodedBoardInfo.player2Score = encoded[5].toInt()
-            decodedBoardInfo.player1Bar = encoded[6].toByte()
+            decodedBoardInfo.playerScore = encoded[4].toInt()
+            decodedBoardInfo.opponentScore = encoded[5].toInt()
+            decodedBoardInfo.bar1 = encoded[6].toByte()
 
             decodeCheckers(encoded, decodedBoardInfo)
 
-            decodedBoardInfo.player2Bar = encoded[31].toByte()
-            decodedBoardInfo.playerTurn = encoded[32].toInt()
-            decodedBoardInfo.player1Dice1 = encoded[33].toInt()
-            decodedBoardInfo.player1Dice2 = encoded[34].toInt()
-            decodedBoardInfo.player2Dice1 = encoded[35].toInt()
-            decodedBoardInfo.player2Dice2 = encoded[36].toInt()
+            decodedBoardInfo.bar2 = encoded[31].toByte()
+            decodedBoardInfo.playerTurn = decodePlayerTurn(encoded[32].toInt())
+            decodedBoardInfo.playerDice1 = encoded[33].toInt()
+            decodedBoardInfo.playerDice2 = encoded[34].toInt()
+            decodedBoardInfo.opponentDice1 = encoded[35].toInt()
+            decodedBoardInfo.opponentDice2 = encoded[36].toInt()
             decodedBoardInfo.doublingCube = encoded[37].toInt()
-            decodedBoardInfo.player1MayDouble = encoded[38].toInt() == 1
-            decodedBoardInfo.player2MayDouble = encoded[39].toInt() == 1
+            decodedBoardInfo.playerMayDouble = encoded[38].toInt() == 1
+            decodedBoardInfo.opponentMayDouble = encoded[39].toInt() == 1
             decodedBoardInfo.wasDoubled = encoded[40].toInt() == 1
-            decodedBoardInfo.colour = BoardInfo.Colour.fromInt(encoded[41].toInt())
+            decodedBoardInfo.colour = decodeColour(encoded[41].toInt())
             decodedBoardInfo.direction = encoded[42].toInt()
             decodedBoardInfo.home = encoded[43].toInt()
             decodedBoardInfo.bar = encoded[44].toInt()
-            decodedBoardInfo.player1OnHome = encoded[45].toByte()
-            decodedBoardInfo.player2OnHome = encoded[46].toByte()
-            decodedBoardInfo.player1OnBar = encoded[47].toByte()
-            decodedBoardInfo.player2OnBar = encoded[48].toByte()
+            decodedBoardInfo.playerOnHome = encoded[45].toByte()
+            decodedBoardInfo.opponentOnHome = encoded[46].toByte()
+            decodedBoardInfo.playerOnBar = encoded[47].toByte()
+            decodedBoardInfo.opponentOnBar = encoded[48].toByte()
             decodedBoardInfo.canMove = encoded[49].toInt()
             decodedBoardInfo.forcedMove = encoded[50].toInt()
             decodedBoardInfo.didCrawford = encoded[51].toInt()
@@ -50,29 +51,33 @@ class BoardInfoDecoder private constructor() {
             (7..30).forEachIndexed { indexOnBoard, indexInEncoded ->
                 val encodedCheckersOnPoint = encoded[indexInEncoded].toByte()
                 when (getPlayerPieces(encodedCheckersOnPoint)) {
-                    PlayerPieces.O -> {
-                        boardInfo.whiteCheckers[indexOnBoard] = ByteMath.abs(encodedCheckersOnPoint)
+                    Player.O -> {
+                        boardInfo.piecesO[indexOnBoard] = ByteMath.abs(encodedCheckersOnPoint)
                     }
-                    PlayerPieces.X -> {
-                        boardInfo.blackCheckers[indexOnBoard] = ByteMath.abs(encodedCheckersOnPoint)
+                    Player.X -> {
+                        boardInfo.piecesX[indexOnBoard] = ByteMath.abs(encodedCheckersOnPoint)
                     }
-                    PlayerPieces.BOTH -> {
-                        // Skip. Array is already filled with zeroes
-                    }
+                // Skip null Array is already filled with zeroes
                 }
             }
         }
 
-        private fun getPlayerPieces(encodedCheckersOnPoint: Byte): PlayerPieces {
-            if (encodedCheckersOnPoint > 0)
-                return PlayerPieces.O
-            else if (encodedCheckersOnPoint < 0)
-                return PlayerPieces.X
-            return PlayerPieces.BOTH
+        private fun getPlayerPieces(encodedCheckersOnPoint: Byte): Player? = when {
+            encodedCheckersOnPoint > 0 -> Player.O
+            encodedCheckersOnPoint < 0 -> Player.X
+            else -> null
         }
 
-        private enum class PlayerPieces {
-            O, X, BOTH
+        private fun decodePlayerTurn(turn: Int): Player? = when (turn) {
+            -1 -> Player.X
+            1 -> Player.O
+            else -> null
+        }
+
+        private fun decodeColour(colour: Int) = when (colour) {
+            -1 -> Player.X
+            1 -> Player.O
+            else -> throw IllegalArgumentException("Not possible colour")
         }
     }
 }

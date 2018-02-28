@@ -7,43 +7,41 @@ class BoardInfo {
     lateinit var player1Name: String
     lateinit var player2Name: String
     var matchLength: Int = 0
-    var player1Score: Int = 0
-    var player2Score: Int = 0
-    var player1Bar: Byte = 0
-    val whiteCheckers: ByteArray = ByteArray(24) { 0 }
-    val blackCheckers: ByteArray = ByteArray(24) { 0 }
-    var player2Bar: Byte = 0
-    var playerTurn: Int = 0
-    var player1Dice1: Int = 0
-    var player1Dice2: Int = 0
-    var player2Dice1: Int = 0
-    var player2Dice2: Int = 0
+    var playerScore: Int = 0
+    var opponentScore: Int = 0
+    var bar1: Byte = 0
+    val piecesO: ByteArray = ByteArray(24) { 0 }
+    val piecesX: ByteArray = ByteArray(24) { 0 }
+    var bar2: Byte = 0
+    var playerTurn: Player? = null
+    var playerDice1: Int = 0
+    var playerDice2: Int = 0
+    var opponentDice1: Int = 0
+    var opponentDice2: Int = 0
     var doublingCube: Int = 0
-    var player1MayDouble: Boolean = false
-    var player2MayDouble: Boolean = false
+    var playerMayDouble: Boolean = false
+    var opponentMayDouble: Boolean = false
     var wasDoubled: Boolean = false
-    lateinit var colour: Colour
+    lateinit var colour: Player
     var direction: Int = 0
     var home: Int = 0 // obsolete
     var bar: Int = 0 // obsolete
-    var player1OnHome: Byte = 0
-    var player2OnHome: Byte = 0
-    var player1OnBar: Byte = 0
-    var player2OnBar: Byte = 0
+    var playerOnHome: Byte = 0
+    var opponentOnHome: Byte = 0
+    var playerOnBar: Byte = 0
+    var opponentOnBar: Byte = 0
     var canMove: Int = 0
     var forcedMove: Int = 0 // don't use
     var didCrawford: Int = 0
     var redoubles: Int = 0
 
-    enum class Colour {
-        WHITE, BLACK;
+    enum class Player {
+        O, X;
 
-        companion object {
-            fun fromInt(value: Int) = when (value) {
-                -1 -> BLACK
-                1 -> WHITE
-                else -> throw IllegalArgumentException("Wrong colour code")
-            }
+        fun opponent() = when (this) {
+            X -> O
+            O -> X
         }
     }
+
 }

@@ -2,29 +2,20 @@ package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BAR_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BEAR_OFF_INDEX
-import java.util.*
 
 /**
  * Created by kkarolcz on 24.08.2017.
  */
 class SingleMove private constructor(val oldIndex: Byte, val newIndex: Byte) {
     companion object {
-        private val INSTANCES: WeakHashMap<Short, SingleMove> = WeakHashMap()
-
         fun create(oldIndex: Byte, newIndex: Byte): SingleMove {
-            val key = perfectHash(oldIndex, newIndex).toShort()
-            var value = INSTANCES[key]
-            if (value == null) {
-                value = SingleMove(oldIndex, newIndex)
-                INSTANCES.put(key, value)
-            }
-            return value
+            return SingleMove(oldIndex, newIndex)
         }
 
         private fun perfectHash(oldIndex: Byte, newIndex: Byte): Int = oldIndex.toInt() shl 8 or newIndex.toInt()
     }
 
-    fun reversed() = SingleMove(newIndex, oldIndex)
+    fun reversed() = create(newIndex, oldIndex)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -37,8 +28,6 @@ class SingleMove private constructor(val oldIndex: Byte, val newIndex: Byte) {
 
         return true
     }
-
-    fun perfectHash(): Int = perfectHash(oldIndex, newIndex)
 
     override fun hashCode(): Int = perfectHash(oldIndex, newIndex)
 

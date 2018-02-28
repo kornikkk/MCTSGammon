@@ -19,8 +19,8 @@ import java.lang.Integer.numberOfLeadingZeros
 class PlayerBoard : Cloneable {
     private val towers: ByteByteMap
     private var towersMask: Int // Bit mask of all towers
-    private val nonHomeTowersMask: Int get() = towersMask shr 6 shl 6 // Remove 6 least significant bits (home board)
-    private val homeTowersMask: Int get() = towersMask shl 26 shr 26 // Preserve 6 least significant bits (home board)
+    private val nonHomeTowersMask: Int get() = towersMask ushr 6 shl 6 // Remove 6 least significant bits (home board)
+    private val homeTowersMask: Int get() = towersMask shl 26 ushr 26 // Preserve 6 least significant bits (home board)
     private var _barCheckers: Byte
     private var _bearOffCheckers: Byte
 
@@ -44,7 +44,7 @@ class PlayerBoard : Cloneable {
 
     private constructor(other: PlayerBoard) {
         this.towers = ByteByteHashMap(other.towers)
-        this.towersMask = other.nonHomeTowersMask
+        this.towersMask = other.towersMask
         this._barCheckers = other._barCheckers
         this._bearOffCheckers = other._bearOffCheckers
     }

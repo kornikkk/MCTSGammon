@@ -1,9 +1,9 @@
 package pl.kkarolcz.mcts.mctsbackgammon.board
 
+import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BAR_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.isOnBoard
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.toOpponentsIndex
-import pl.kkarolcz.mcts.mctsbackgammon.game.Player
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.SingleMove
 import java.util.*
 
@@ -12,22 +12,22 @@ import java.util.*
  */
 class Board : Cloneable {
 
-    private val player1Board: PlayerBoard
-    private val player2Board: PlayerBoard
+    private val mctsBoard: PlayerBoard
+    private val opponentsBoard: PlayerBoard
     private var doneMoves: Stack<DoneMove>? = null
 
     companion object {
         val SIZE: Byte = 25
     }
 
-    constructor(player1Board: PlayerBoard, player2Board: PlayerBoard) {
-        this.player1Board = player1Board
-        this.player2Board = player2Board
+    constructor(mctsBoard: PlayerBoard, opponentsBoard: PlayerBoard) {
+        this.mctsBoard = mctsBoard
+        this.opponentsBoard = opponentsBoard
     }
 
     private constructor(other: Board) {
-        player1Board = other.player1Board.clone()
-        player2Board = other.player2Board.clone()
+        mctsBoard = other.mctsBoard.clone()
+        opponentsBoard = other.opponentsBoard.clone()
     }
 
     public override fun clone() = Board(this)
@@ -38,32 +38,32 @@ class Board : Cloneable {
 
         other as Board
 
-        if (player1Board != other.player1Board) return false
-        if (player2Board != other.player2Board) return false
+        if (mctsBoard != other.mctsBoard) return false
+        if (opponentsBoard != other.opponentsBoard) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = player1Board.hashCode()
-        result = 31 * result + player2Board.hashCode()
+        var result = mctsBoard.hashCode()
+        result = 31 * result + opponentsBoard.hashCode()
         return result
     }
 
 
-    fun getPlayerCheckers(player: Player) = when (player) {
-        Player.PLAYER_ONE -> player1Board
-        Player.PLAYER_TWO -> player2Board
+    fun getPlayerBoard(player: Player) = when (player) {
+        Player.MCTS -> mctsBoard
+        Player.OPPONENT -> opponentsBoard
     }
 
     // TODO Simplify if undo is removed
-    fun doMove(player: Player, move: SingleMove) {
-        val playerCheckers = getPlayerCheckers(player)
-        playerCheckers.move(move)
+    fun doSingleMove(player: Player, move: SingleMove) {
+        val playerBoard = getPlayerBoard(player)
+        playerBoard.move(move)
 
-        val opponentMove: SingleMove? = hitOpponentIfOccupied(player.opponent(), move)
+        val opponentsMove: SingleMove? = hitOpponentIfOccupied(player.opponent(), move)
 
-        addDoneMove(DoneMove(player, move, opponentMove))
+        //  addDoneMove(DoneMove(player, move, opponentsMove))
     }
 
     //TODO Remove in the future?
@@ -71,16 +71,16 @@ class Board : Cloneable {
         val doneMove = popDoneMove()
         val player = doneMove.player
 
-        val playerCheckers = getPlayerCheckers(player)
-        val opponentCheckers = getPlayerCheckers(player.opponent())
+        val playerCheckers = getPlayerBoard(player)
+        val opponentCheckers = getPlayerBoard(player.opponent())
 
-        playerCheckers.move(doneMove.playerMove.reversed())
+        playerCheckers.move(doneMove.playersMove.reversed())
         if (doneMove.opponentsMove != null)
             opponentCheckers.move(doneMove.opponentsMove.reversed())
     }
 
     private fun hitOpponentIfOccupied(opponent: Player, move: SingleMove): SingleMove? {
-        val opponentCheckers = getPlayerCheckers(opponent)
+        val opponentCheckers = getPlayerBoard(opponent)
         val opponentsIndex = toOpponentsIndex(move.newIndex)
         if (isOnBoard(move.newIndex) && opponentCheckers.isOccupied(opponentsIndex)) {
             val opponentsMove = SingleMove.create(opponentsIndex, BAR_INDEX)
@@ -97,9 +97,9 @@ class Board : Cloneable {
     }
 
     private fun popDoneMove(): DoneMove {
-        return doneMoves?.pop() ?: throw IllegalStateException("No moves to undo")
+        return doneMoves?.pop() ?: throw IllegalStateException("No untriedMoves to undo")
     }
 
-    private class DoneMove(val player: Player, val playerMove: SingleMove, val opponentsMove: SingleMove?)
+    private class DoneMove(val player: Player, val playersMove: SingleMove, val opponentsMove: SingleMove?)
 
 }

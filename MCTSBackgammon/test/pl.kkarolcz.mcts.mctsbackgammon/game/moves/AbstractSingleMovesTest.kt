@@ -1,10 +1,10 @@
 package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 
 import org.junit.Before
+import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.board.Board
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex
 import pl.kkarolcz.mcts.mctsbackgammon.board.PlayerBoard
-import pl.kkarolcz.mcts.mctsbackgammon.game.Player
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
 import kotlin.test.assertEquals
 import kotlin.test.fail
@@ -28,7 +28,7 @@ open class AbstractSingleMovesTest {
 
 
     protected fun assertNoMovesFound(dice: Dice) {
-        val searcher = FullMovesSearchNonDoubling(board, Player.PLAYER_ONE, dice)
+        val searcher = FullMovesSearchNonDoubling(board, Player.MCTS, dice)
         assertEquals(emptyList(), searcher.findAll().toList())
     }
 
@@ -37,20 +37,21 @@ open class AbstractSingleMovesTest {
     }
 
     protected fun assertAllMovesFound(dice: Dice, expectedMoves: Iterable<FullMove>) {
-        val searcher = when (dice.doubling) {
-            true -> FullMovesSearchDoubling(board, Player.PLAYER_ONE, dice)
-            false -> FullMovesSearchNonDoubling(board, Player.PLAYER_ONE, dice)
-        }
         val expectedSet = expectedMoves.toMutableSet()
-        val actualSet = searcher.findAll().toMutableSet()
+        val actualSet = searcher(dice).findAll().toMutableSet()
         if (expectedSet != actualSet && !actualSet.containsAll(expectedSet)) {
             expectedSet.removeAll(actualSet)
-            fail("Not found moves: $expectedSet")
+            fail("Not found untriedMoves: $expectedSet")
         }
         if (expectedSet != actualSet && !expectedSet.containsAll(actualSet)) {
             actualSet.removeAll(expectedMoves)
-            fail("Not expected moves: $actualSet")
+            fail("Not expected untriedMoves: $actualSet")
         }
+    }
+
+    protected fun searcher(dice: Dice) = when (dice.doubling) {
+        true -> FullMovesSearchDoubling(board, Player.MCTS, dice)
+        false -> FullMovesSearchNonDoubling(board, Player.MCTS, dice)
     }
 
     protected fun dice(firstDice: Number, secondDice: Number) = Dice(firstDice.toByte(), secondDice.toByte())

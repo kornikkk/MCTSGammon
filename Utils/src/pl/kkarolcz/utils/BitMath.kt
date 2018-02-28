@@ -22,7 +22,7 @@ fun setBitsFromMostSignificant(bits: Int): List<Int> {
             positions.add(currentPosition)
         }
         ++currentPosition
-        mask = mask shr 1
+        mask = mask ushr 1
     }
 
     return positions

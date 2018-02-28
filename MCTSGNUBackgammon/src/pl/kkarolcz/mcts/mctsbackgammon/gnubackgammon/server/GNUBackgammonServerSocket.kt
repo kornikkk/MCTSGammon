@@ -51,7 +51,7 @@ class GNUBackgammonServerSocket(private val gnuBackgammonInterface: GNUBackgammo
     }
 
     private fun requestForDicesRequired(boardInfo: BoardInfo): Boolean =
-            boardInfo.player1Dice1 == 0 && boardInfo.player1Dice2 == 0 && boardInfo.player2Dice1 == 0 && boardInfo.player2Dice2 == 0
+            boardInfo.playerDice1 == 0 && boardInfo.playerDice2 == 0 && boardInfo.opponentDice1 == 0 && boardInfo.opponentDice2 == 0
 
     override fun close() {
         server.close()

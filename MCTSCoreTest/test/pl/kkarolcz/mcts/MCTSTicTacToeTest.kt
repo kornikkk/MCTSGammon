@@ -5,6 +5,7 @@ import pl.kkarolcz.mcts.node.selectionpolicies.UCTNodeSelectionPolicy
 import pl.kkarolcz.utils.array2d
 import pl.kkarolcz.utils.copyOf
 import pl.kkarolcz.utils.randomElement
+import pl.kkarolcz.utils.randomOrNullElement
 import kotlin.test.assertTrue
 
 /**
@@ -29,11 +30,11 @@ class MCTSTest {
                 if (!node.isFullyExpanded)
                     node = node.children.randomElement() // random opponent's move
             }
-            if (node.result?.get(0) == Result.PlayerResult.WIN) ++wins
+            if (node.result?.get(Player.MCTS) == Result.PlayerResult.WIN) ++wins
             else if (node.result == null) ++draws
         }
 
-        // Tic Tac Toe is pretty simple to lose with random moves. Let's say 70% of wins is enough for test to pass
+        // Tic Tac Toe is pretty simple to lose with random untriedMoves. Let's say 70% of wins is enough for test to pass
         println("Wins: $wins")
         println("Draws: $draws")
         assertTrue { wins > 0.9 * maxGames }
@@ -75,23 +76,23 @@ class TicTacToeState : MCTSState<TicTacToeMove> {
         get() {
             for (winningPosition in WINNING_POSITIONS) {
                 if (winningPosition.all { xy -> get(xy) == CellState.O })
-                    return Result(mapOf(Pair(0, Result.PlayerResult.WIN), Pair(1, Result.PlayerResult.LOSE)))
+                    return Result(Result.PlayerResult.WIN, Result.PlayerResult.LOSE)
                 if (winningPosition.all { xy -> get(xy) == CellState.X })
-                    return Result(mapOf(Pair(0, Result.PlayerResult.LOSE), Pair(1, Result.PlayerResult.WIN)))
+                    return Result(Result.PlayerResult.LOSE, Result.PlayerResult.WIN)
             }
             return null
         }
 
-    override var previousPlayerId: Int
+    override var currentPlayer: Player
 
     constructor() {
         board = array2d(3, 3) { CellState.NONE }
-        this.previousPlayerId = 1
+        this.currentPlayer = Player.MCTS
     }
 
     private constructor (other: TicTacToeState) {
         this.board = other.board.copyOf()
-        this.previousPlayerId = other.previousPlayerId
+        this.currentPlayer = Player.OPPONENT
     }
 
     override fun clone(): MCTSState<TicTacToeMove> {
@@ -120,14 +121,17 @@ class TicTacToeState : MCTSState<TicTacToeMove> {
         return moves
     }
 
+    override fun findRandomPossibleMove(): TicTacToeMove? {
+        return findPossibleMoves().randomOrNullElement()
+    }
 
     override fun doMoveImpl(move: TicTacToeMove) {
         if (board[move.row][move.column] != CellState.NONE)
             throw IllegalStateException("Illegal move on non-empty board field")
         if (result == null)
-            board[move.row][move.column] = if (currentPlayerId == 0) CellState.O else CellState.X
+            board[move.row][move.column] = if (currentPlayer == Player.MCTS) CellState.O else CellState.X
         else
-            moves.clear()
+            untriedMoves.clear()
     }
 
     private fun get(xy: Pair<Int, Int>) = board[xy.first][xy.second]

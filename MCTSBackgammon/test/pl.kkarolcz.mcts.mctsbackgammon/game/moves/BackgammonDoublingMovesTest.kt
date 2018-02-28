@@ -1,12 +1,52 @@
 package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 
+import org.junit.Ignore
 import org.junit.Test
+import pl.kkarolcz.mcts.Player
+import pl.kkarolcz.mcts.mctsbackgammon.board.Board
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BAR_INDEX
+import pl.kkarolcz.mcts.mctsbackgammon.board.PlayerBoard
+import java.util.*
 
 /**
  * Created by kkarolcz on 27.08.2017.
  */
 class BackgammonDoublingMovesTest : AbstractSingleMovesTest() {
+
+
+    @Ignore
+    @Test
+    fun testPerformance() {
+        val storeMoves = false
+        val allMoves = mutableListOf<FullMove>()
+        val random = Random()
+        for (i in 1..10_000) {
+            val player1Checkers = PlayerBoard()
+            val player1RandomCheckers = ByteArray(26)
+
+            val player2Checkers = PlayerBoard()
+            val player2RandomCheckers = ByteArray(26)
+
+            for (j in 1..15) {
+                player1RandomCheckers[random.nextInt(26)] = 1
+                player2RandomCheckers[random.nextInt(26)] = 1
+            }
+            for (j in 0..25) {
+                val pointIndex = j.toByte()
+                player1Checkers.put(pointIndex, player1RandomCheckers[j])
+                player2Checkers.put(pointIndex, player2RandomCheckers[j])
+            }
+
+            val board = Board(player1Checkers, player2Checkers)
+            val die = 1 + random.nextInt(6)
+            val dices = dice(die, die)
+            val moves = FullMovesSearchDoubling(board, Player.MCTS, dices).findAll()
+
+            if (storeMoves)
+                allMoves.addAll(moves)
+        }
+        return
+    }
 
     @Test
     fun `Test single checker move`() {
@@ -121,6 +161,13 @@ class BackgammonDoublingMovesTest : AbstractSingleMovesTest() {
         assertAllMovesFound(dice(2, 2), movesSequence)
     }
 
+    @Test
+    fun `Test bar move not possible`() {
+        player1Board.put(BAR_INDEX, 1)
+        player1Board.put(21, 5)
+        player2Board.put(toOpponentsIndex(23), 2)
+        assertNoMovesFound(dice(2, 2))
+    }
 
 //
 //    @Test
@@ -130,7 +177,7 @@ class BackgammonDoublingMovesTest : AbstractSingleMovesTest() {
 //
 //
 //    @Test
-//    fun `Test moves not possible from bar on 2 of opponent's checkers on point`() {
+//    fun `Test untriedMoves not possible from bar on 2 of opponent's checkers on point`() {
 //        fail("Not implemented yet")
 //    }
 //
@@ -140,7 +187,7 @@ class BackgammonDoublingMovesTest : AbstractSingleMovesTest() {
 //    }
 //
 //    @Test
-//    fun `Test many moves possible`() {
+//    fun `Test many untriedMoves possible`() {
 //        fail("Not implemented yet")
 //    }
 //

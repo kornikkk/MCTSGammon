@@ -1,90 +1,64 @@
 package pl.kkarolcz.mcts
 
-import pl.kkarolcz.utils.randomElement
-
 /**
  * Created by kkarolcz on 07.08.2017.
  */
-abstract class MCTSState<M : MCTSMove> : Cloneable {
-    val currentPlayerId: Int
-        get() = 1 - previousPlayerId
+abstract class MCTSState<M : MCTSMove, T : MCTSTraceableMove.Trace> {
+    abstract var currentPlayer: Player
 
     abstract val result: Result?
 
-    abstract var previousPlayerId: Int
+    protected abstract val movesProvider: MCTSMovesProvider<M, T>
 
-    protected val moves: MutableList<M> = mutableListOf()
+    abstract fun copyForExpanding(): MCTSState<M, T>
 
-    private var hasNotPossibleMove = false
-
-    public abstract override fun clone(): MCTSState<M>
+    protected abstract fun copyForPlayout(): MCTSState<M, T>
 
     override fun toString() = "" +
-            "Next Player ID: $currentPlayerId" +
-            "\nWinner Player ID: ${result?.winner() ?: "NONE"}"
+            "Current Player: $currentPlayer" +
+            "\nWinner: ${result?.winner() ?: "NONE"}"
 
-    fun hasUntriedMoves(): Boolean = hasNotPossibleMove || moves.isNotEmpty()
+    fun hasUntriedMoves(): Boolean = movesProvider.hasUntriedMoves()
 
-    fun doMove(move: M) {
-        moves.remove(move)
+    internal fun doMove(move: M) {
+        // movesProvider.remove(move)
         doMoveImpl(move)
     }
 
     abstract protected fun doMoveImpl(move: M)
 
+    abstract protected fun afterSwitchPlayerForPlayout()
+
     /**
      * Return random possible move if present or null for not possible move
      */
-    internal fun pollRandomMove(): M? {
-        if (moves.isNotEmpty()) {
-            val move = moves.randomElement()
-            moves.remove(move)
-            return move
-        }
-        if (hasNotPossibleMove) {
-            hasNotPossibleMove = false
-            return null
-        }
-
-        throw IllegalStateException("Check if has not possible move or any untried moves are present before call")
-    }
+    internal fun pollRandomMove(): MCTSTraceableMove<M, T> = movesProvider.nextRandomUntriedMove()
 
     internal fun playout(): Result? {
-        val newState = clone()
-        newState.updatePossibleMoves()
-
+        val newState = copyForPlayout()
         var newStateResult = newState.result
-        while (newStateResult == null && newState.hasUntriedMoves()) {
-            val move = newState.pollRandomMove()
-            if (move != null)
-                newState.doMoveImpl(move)
 
-            newState.switchPlayer()
+        while (newStateResult == null && newState.hasUntriedMoves()) {
+            newState.doMoveImpl(newState.pollRandomMove().move)
+
+            newState.switchPlayerForPlayout()
             newStateResult = newState.result
         }
         return newStateResult
     }
 
     internal fun switchPlayer() {
-        beforeSwitchPlayer()
-        previousPlayerId = currentPlayerId
-        updatePossibleMoves()
+        currentPlayer = currentPlayer.opponent()
+        movesProvider.reset(currentPlayer)
     }
 
-    internal fun updatePossibleMoves() {
-        moves.clear()
-        val possibleMoves = findPossibleMoves()
-        hasNotPossibleMove = possibleMoves.isEmpty()
-        if (!hasNotPossibleMove)
-            moves.addAll(possibleMoves)
+    protected open fun switchPlayerForPlayout() {
+        switchPlayer()
+        afterSwitchPlayerForPlayout()
     }
-
-
-    abstract fun beforeSwitchPlayer()
-
-    abstract fun findPossibleMoves(): List<M>
 
     abstract override fun equals(other: Any?): Boolean
 
     abstract override fun hashCode(): Int
+
 }

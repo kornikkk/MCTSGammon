@@ -12,23 +12,10 @@ class FullMove private constructor(moves: List<SingleMove>) : MCTSMove, Cloneabl
     val moves get() = _moves
 
     companion object {
-        private val INSTANCES = WeakHashMap<Long, FullMove>()
-
         fun create(vararg moves: SingleMove): FullMove = create(moves.toList())
 
         fun create(moves: List<SingleMove>): FullMove {
-            val key = perfectHash(moves)
-            return INSTANCES.computeIfAbsent(key) { FullMove(moves) }
-        }
-
-        private fun perfectHash(moves: List<SingleMove>): Long {
-            var currentShift = 0
-            var hash = 0L
-            for (move in moves) {
-                hash = hash or move.perfectHash().toLong() shl currentShift
-                currentShift += 16
-            }
-            return hash
+            return FullMove(moves)
         }
     }
 

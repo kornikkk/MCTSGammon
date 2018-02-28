@@ -9,7 +9,6 @@
         <module name="mcts-graph" />
         <module name="MCTSBackgammon" />
         <module name="MCTSCore" />
-        <module name="MCTSCoreTest" />
         <module name="MCTSGNUBackgammon" />
         <module name="MCTSGraph" />
         <module name="Utils" />

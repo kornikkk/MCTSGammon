@@ -5,19 +5,20 @@ package pl.kkarolcz.mcts
  */
 
 
-class Result(private val playerResults: Map<Int, PlayerResult>) {
+class Result(private val playerResult: PlayerResult, private val opponentResult: PlayerResult) {
 
-    operator fun get(playerId: Int) =
-            playerResults[playerId] ?: throw IllegalStateException("Cannot get result of not existing player")
+    operator fun get(player: Player) = when (player) {
+        Player.MCTS -> playerResult
+        Player.OPPONENT -> opponentResult
+    }
 
-    fun winner(): Int = playerResults
-            .filter { (_, result) -> result == PlayerResult.WIN }
-            .map { (playerId, _) -> playerId }
-            .first()
+    fun winner(): Player? = when {
+        playerResult == PlayerResult.WIN -> Player.MCTS
+        opponentResult == PlayerResult.WIN -> Player.OPPONENT
+        else -> null
+    }
 
-    override fun toString() = playerResults
-            .map { (playerId, result) -> "Player ID: $playerId, Result: $result" }
-            .joinToString("\n")
+    override fun toString() = "Player: $playerResult, Opponent: $opponentResult"
 
     enum class PlayerResult {
         WIN, LOSE

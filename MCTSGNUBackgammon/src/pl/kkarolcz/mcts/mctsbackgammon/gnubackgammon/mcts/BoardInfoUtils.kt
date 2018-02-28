@@ -1,10 +1,10 @@
 package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.mcts
 
+import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.board.Board
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BAR_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BEAR_OFF_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.PlayerBoard
-import pl.kkarolcz.mcts.mctsbackgammon.game.Player
 import pl.kkarolcz.mcts.mctsbackgammon.game.State
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.server.BoardInfo
@@ -13,22 +13,22 @@ import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.server.BoardInfo
  * Created by kkarolcz on 29.08.2017.
  */
 fun BoardInfo.convertToBackgammonState(): State {
-    val player1Checkers = when (colour) {
-        BoardInfo.Colour.BLACK -> convertToPlayerCheckers(whiteCheckers, player2Bar, player2OnHome, direction == -1)
-        BoardInfo.Colour.WHITE -> convertToPlayerCheckers(blackCheckers, player2Bar, player2OnHome, direction == -1)
+    // players seem to be mixed up
+    val opponentsBoard = when (colour) {
+        BoardInfo.Player.O -> convertToPlayerCheckers(piecesO, bar2, opponentOnHome, direction == 1)
+        BoardInfo.Player.X -> convertToPlayerCheckers(piecesX, bar2, opponentOnHome, direction == 1)
     }
     // Opposite colour for opponent
-    val player2Checkers = when (colour) {
-        BoardInfo.Colour.BLACK -> convertToPlayerCheckers(blackCheckers, player1Bar, player1OnHome, direction == 1)
-        BoardInfo.Colour.WHITE -> convertToPlayerCheckers(whiteCheckers, player1Bar, player1OnHome, direction == 1)
+    val mctsBoard = when (colour.opponent()) {
+        BoardInfo.Player.O -> convertToPlayerCheckers(piecesO, bar1, playerOnHome, direction == -1)
+        BoardInfo.Player.X -> convertToPlayerCheckers(piecesX, bar1, playerOnHome, direction == -1)
     }
-    val board = Board(player1Checkers, player2Checkers)
+    val board = Board(mctsBoard, opponentsBoard)
     val currentPlayer = getCurrentPlayer()
-    return State(board, currentPlayer.opponent(), getBackgammonDices(currentPlayer))
+    return State(board, currentPlayer.opponent(), getBackgammonDice(currentPlayer))
 }
 
-private fun convertToPlayerCheckers(checkersArray: ByteArray, onBarCheckers: Byte, onHomeCheckers: Byte, reversed: Boolean):
-        PlayerBoard {
+private fun convertToPlayerCheckers(checkersArray: ByteArray, onBarCheckers: Byte, onHomeCheckers: Byte, reversed: Boolean): PlayerBoard {
     val playerCheckers = PlayerBoard()
 
     playerCheckers.put(BAR_INDEX, Math.abs(onBarCheckers.toInt()).toByte())
@@ -45,40 +45,31 @@ private fun convertToPlayerCheckers(checkersArray: ByteArray, onBarCheckers: Byt
 }
 
 
-private fun BoardInfo.getCurrentPlayer(): Player {
-    val colourTurn = getColourTurn()
-    if (colourTurn == colour)
-        return Player.PLAYER_ONE
-    if (colourTurn != colour)
-        return Player.PLAYER_TWO
-    return getWinnerPlayer().opponent()
+private fun BoardInfo.getCurrentPlayer(): Player = when (playerTurn) {
+    null -> getWinnerPlayer().opponent() // End of the game
+    colour -> Player.MCTS
+    else -> Player.OPPONENT
 }
 
 private fun BoardInfo.getWinnerPlayer(): Player {
     return when {
-        player1Score > player2Score -> Player.PLAYER_ONE
-        player1Score < player2Score -> Player.PLAYER_TWO
+        playerScore > opponentScore -> Player.MCTS
+        playerScore < opponentScore -> Player.OPPONENT
         else -> throw IllegalStateException("Cannot get winner when there's draw")
     }
 }
 
-private fun BoardInfo.getColourTurn(): BoardInfo.Colour? = when (playerTurn) {
-    -1 -> BoardInfo.Colour.WHITE
-    1 -> BoardInfo.Colour.BLACK
-    else -> null
-}
-
-private fun BoardInfo.getBackgammonDices(currentPlayer: Player): Dice? =
+private fun BoardInfo.getBackgammonDice(currentPlayer: Player): Dice? =
         when (currentPlayer) {
-            Player.PLAYER_ONE -> {
+            Player.MCTS -> {
                 when {
-                    player1Dice1 > 0 && player1Dice2 > 0 -> dicesOf(player1Dice1, player1Dice2)
+                    playerDice1 > 0 && playerDice2 > 0 -> dicesOf(playerDice1, playerDice2)
                     else -> null
                 }
             }
-            Player.PLAYER_TWO -> {
+            Player.OPPONENT -> {
                 when {
-                    player2Dice1 > 0 && player2Dice2 > 0 -> dicesOf(player2Dice1, player2Dice2)
+                    opponentDice1 > 0 && opponentDice2 > 0 -> dicesOf(opponentDice1, opponentDice2)
                     else -> null
                 }
             }

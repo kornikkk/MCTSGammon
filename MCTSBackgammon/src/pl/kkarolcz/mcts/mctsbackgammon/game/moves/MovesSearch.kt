@@ -1,5 +1,6 @@
 package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 
+import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.board.Board
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BAR_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.NO_INDEX
@@ -8,7 +9,6 @@ import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.shiftForBearOf
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.shiftFromBar
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.toOpponentsIndex
 import pl.kkarolcz.mcts.mctsbackgammon.board.PlayerBoard
-import pl.kkarolcz.mcts.mctsbackgammon.game.Player
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Die
 
 /**
@@ -17,8 +17,8 @@ import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Die
 
 
 fun possibleMoves(board: Board, player: Player, die: Die): List<SingleMove> {
-    val playerCheckers = board.getPlayerCheckers(player)
-    val opponentCheckers = board.getPlayerCheckers(player.opponent())
+    val playerCheckers = board.getPlayerBoard(player)
+    val opponentCheckers = board.getPlayerBoard(player.opponent())
 
     if (!playerCheckers.anyLeftOnBoard) {
         return emptyList()

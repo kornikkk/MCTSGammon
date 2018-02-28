@@ -35,11 +35,11 @@ class FullMovesSearchNonDoubling(board: Board, currentPlayer: Player, dice: Dice
             // Find only bar sequences
             if (playerCheckers.barCheckers >= 2) {
                 if (moveFromBarFirstDie != null && moveFromBarSecondDie != null)
-                    fullMoves.add(FullMove.create(moveFromBarFirstDie!!, moveFromBarSecondDie!!))
+                    fullMoves.add(FullMove(moveFromBarFirstDie!!, moveFromBarSecondDie!!))
                 else if (moveFromBarFirstDie != null)
-                    fullMoves.add(FullMove.create(moveFromBarFirstDie!!))
+                    fullMoves.add(FullMove(moveFromBarFirstDie!!))
                 else if (moveFromBarSecondDie != null)
-                    fullMoves.add(FullMove.create(moveFromBarSecondDie!!))
+                    fullMoves.add(FullMove(moveFromBarSecondDie!!))
 
                 return // Finish finding untriedMoves. No more possible untriedMoves
             } else if (moveFromBarFirstDie == null && moveFromBarSecondDie == null) {
@@ -56,9 +56,9 @@ class FullMovesSearchNonDoubling(board: Board, currentPlayer: Player, dice: Dice
 
             if (fullMoves.isEmpty()) {
                 if (moveFromBarFirstDie != null)
-                    fullMoves.add(FullMove.create(moveFromBarFirstDie!!))
+                    fullMoves.add(FullMove(moveFromBarFirstDie!!))
                 if (moveFromBarSecondDie != null)
-                    fullMoves.add(FullMove.create(moveFromBarSecondDie!!))
+                    fullMoves.add(FullMove(moveFromBarSecondDie!!))
             }
         }
         // Find normal sequences
@@ -78,8 +78,8 @@ class FullMovesSearchNonDoubling(board: Board, currentPlayer: Player, dice: Dice
             }
 
             if (fullMoves.isEmpty()) {
-                fullMoves.addAll(partialMovesFirstDie.map { move -> FullMove.create(move) })
-                fullMoves.addAll(partialMovesSecondDie.map { move -> FullMove.create(move) })
+                fullMoves.addAll(partialMovesFirstDie.map { move -> FullMove(move) })
+                fullMoves.addAll(partialMovesSecondDie.map { move -> FullMove(move) })
             }
         }
     }
@@ -111,7 +111,7 @@ class FullMovesSearchNonDoubling(board: Board, currentPlayer: Player, dice: Dice
 
             for (move2 in secondPartialMoves) {
                 if (isMovePossibleAfterMove(move1, move2)) {
-                    fullMoves.add(FullMove.create(move1, move2))
+                    fullMoves.add(FullMove(move1, move2))
                     anyFullSequenceFound = true
                 }
             }
@@ -129,7 +129,7 @@ class FullMovesSearchNonDoubling(board: Board, currentPlayer: Player, dice: Dice
         if (bearingOff) {// Check bear off move first
             val bearOffMove = findPartialBearOffMove(previousMove, die)
             if (bearOffMove != null) {
-                fullMoves.add(FullMove.create(previousMove, bearOffMove))
+                fullMoves.add(FullMove(previousMove, bearOffMove))
                 anyFullSequenceFound = true
                 return
             }
@@ -137,7 +137,7 @@ class FullMovesSearchNonDoubling(board: Board, currentPlayer: Player, dice: Dice
 
         val newIndex = findMove(previousMove.newIndex, die)
         if (newIndex != NO_INDEX) {
-            fullMoves.add(FullMove.create(previousMove, SingleMove.create(previousMove.newIndex, newIndex)))
+            fullMoves.add(FullMove(previousMove, SingleMove(previousMove.newIndex, newIndex)))
             anyFullSequenceFound = true
         }
     }
@@ -148,11 +148,11 @@ class FullMovesSearchNonDoubling(board: Board, currentPlayer: Player, dice: Dice
         if (firstBearOffMove != null) {
             val secondBearOffMove = findPartialBearOffMove(firstBearOffMove, dice.second)
             if (secondBearOffMove != null) {
-                fullMoves.add(FullMove.create(firstBearOffMove, secondBearOffMove))
+                fullMoves.add(FullMove(firstBearOffMove, secondBearOffMove))
                 anyFullSequenceFound = true
             }
             if (!anyFullSequenceFound) {
-                fullMoves.add(FullMove.create(firstBearOffMove))
+                fullMoves.add(FullMove(firstBearOffMove))
             }
         }
     }
@@ -170,9 +170,9 @@ class FullMovesSearchNonDoubling(board: Board, currentPlayer: Player, dice: Dice
                 val secondDieNewIndex = findMove(nonHomeIndex, dice.second)
 
                 if (firstDieNewIndex != NO_INDEX && isOnHomeBoard(firstDieNewIndex))
-                    partialPreBearOffMoveFirstDie = SingleMove.create(nonHomeIndex, firstDieNewIndex)
+                    partialPreBearOffMoveFirstDie = SingleMove(nonHomeIndex, firstDieNewIndex)
                 if (secondDieNewIndex != NO_INDEX && isOnHomeBoard(secondDieNewIndex))
-                    partialPreBearOffMoveSecondDie = SingleMove.create(nonHomeIndex, secondDieNewIndex)
+                    partialPreBearOffMoveSecondDie = SingleMove(nonHomeIndex, secondDieNewIndex)
 
                 return partialPreBearOffMoveFirstDie != null || partialPreBearOffMoveSecondDie != null
             }
@@ -193,7 +193,7 @@ class FullMovesSearchNonDoubling(board: Board, currentPlayer: Player, dice: Dice
     private fun findBearOffAfterPreBearOffFullMove(previousMove: SingleMove, die: Byte) {
         val move = findPartialBearOffMove(previousMove, die)
         if (move != null) {
-            fullMoves.add(FullMove.create(previousMove, move))
+            fullMoves.add(FullMove(previousMove, move))
             anyFullSequenceFound = true
         }
     }

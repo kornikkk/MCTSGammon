@@ -21,6 +21,6 @@ class FullMovesBuilder : Cloneable {
         moves.add(move)
     }
 
-    fun build(): FullMove = FullMove.create(moves)
+    fun build(): FullMove = FullMove(moves)
 
 }

@@ -56,9 +56,9 @@ open class AbstractSingleMovesTest {
 
     protected fun dice(firstDice: Number, secondDice: Number) = Dice(firstDice.toByte(), secondDice.toByte())
 
-    protected fun move(oldIndex: Number, newIndex: Number) = SingleMove.create(oldIndex.toByte(), newIndex.toByte())
+    protected fun move(oldIndex: Number, newIndex: Number) = SingleMove(oldIndex.toByte(), newIndex.toByte())
 
-    protected fun movesSequence(vararg moves: SingleMove) = FullMove.create(*moves)
+    protected fun movesSequence(vararg moves: SingleMove) = FullMove(*moves)
 
     protected fun toOpponentsIndex(index: Number) = BoardIndex.toOpponentsIndex(index.toByte())
 }

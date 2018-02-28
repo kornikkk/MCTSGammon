@@ -28,14 +28,14 @@ abstract class AbstractFullMovesSearch(board: Board, currentPlayer: Player, prot
         val newIndex = BoardIndex.shift(BAR_INDEX, diceValue) // No need to check NO_INDEX
 
         if (opponentCheckers.isNotOccupiedOrCanBeHit(toOpponentsIndex(newIndex)))
-            return SingleMove.create(BAR_INDEX, newIndex)
+            return SingleMove(BAR_INDEX, newIndex)
         return null
     }
 
     protected fun findStandardPartialMoveForTower(index: Byte, diceValue: Byte): SingleMove? {
         val newIndex = findMove(index, diceValue)
         if (newIndex != NO_INDEX)
-            return SingleMove.create(index, newIndex)
+            return SingleMove(index, newIndex)
         return null
     }
 
@@ -51,14 +51,14 @@ abstract class AbstractFullMovesSearch(board: Board, currentPlayer: Player, prot
         var greaterThanDiceFound = false
         for (index in homeTowersIndices) {
             if (index == dice)
-                return SingleMove.create(index, BoardIndex.BEAR_OFF_INDEX)
+                return SingleMove(index, BoardIndex.BEAR_OFF_INDEX)
 
             if (index > dice) {
                 greaterThanDiceFound = true
                 continue
             }
             if (!greaterThanDiceFound && index < dice)
-                return SingleMove.create(index, BoardIndex.BEAR_OFF_INDEX)
+                return SingleMove(index, BoardIndex.BEAR_OFF_INDEX)
 
             break
         }

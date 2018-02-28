@@ -28,7 +28,7 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
             findBarMoves()
 
             if (playerCheckers.barCheckers >= 4) {
-                fullMoves.add(FullMove.create(barMoves.map(PartialMove::move)))
+                fullMoves.add(FullMove(barMoves.map(PartialMove::move)))
                 return // No need to do anything when there's >= 4 checkers on the bar
             }
             diceLeft -= playerCheckers.barCheckers
@@ -40,6 +40,15 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
 
         findFullMovesRecursive()
     }
+
+
+    private fun NEW_findFullMoves() {
+
+    }
+
+
+
+
 
     private fun findBarMoves() {
         val moveFromBar = findPartialBarMove(die) ?: return // Stop if there are checkers on the bar and no possible moves
@@ -84,7 +93,7 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
                     break
                 }
 
-                sequences.getOrCreate(partialMove).add(SingleMove.create(oldIndex, newIndex))
+                sequences.getOrCreate(partialMove).add(SingleMove(oldIndex, newIndex))
             }
         }
     }

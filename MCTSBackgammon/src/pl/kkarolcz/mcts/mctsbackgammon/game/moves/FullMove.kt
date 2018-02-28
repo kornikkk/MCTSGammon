@@ -7,16 +7,16 @@ import java.util.*
  * Created by kkarolcz on 19.11.2017.
  */
 //TODO: Can be changed to array of new indices and start index
-class FullMove private constructor(moves: List<SingleMove>) : MCTSMove, Cloneable {
-    private val _moves = moves.toTypedArray()
+class FullMove : MCTSMove, Cloneable {
+    private val _moves: Array<SingleMove>
     val moves get() = _moves
 
-    companion object {
-        fun create(vararg moves: SingleMove): FullMove = create(moves.toList())
+    constructor(moves: List<SingleMove>) {
+        this._moves = moves.toTypedArray()
+    }
 
-        fun create(moves: List<SingleMove>): FullMove {
-            return FullMove(moves)
-        }
+    constructor(vararg moves: SingleMove) {
+        this._moves = arrayOf(*moves)
     }
 
     fun length(): Int = _moves.size

@@ -15,7 +15,7 @@ object FullMovesSearch {
             false -> FullMovesSearchNonDoubling(board, player, dice).findAll()
         }
         return when {
-            moves.isEmpty() -> mutableSetOf(FullMove.create())
+            moves.isEmpty() -> mutableSetOf(FullMove())
             else -> moves
         }
     }

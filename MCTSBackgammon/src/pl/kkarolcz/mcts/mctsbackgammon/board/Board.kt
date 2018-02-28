@@ -83,7 +83,7 @@ class Board : Cloneable {
         val opponentCheckers = getPlayerBoard(opponent)
         val opponentsIndex = toOpponentsIndex(move.newIndex)
         if (isOnBoard(move.newIndex) && opponentCheckers.isOccupied(opponentsIndex)) {
-            val opponentsMove = SingleMove.create(opponentsIndex, BAR_INDEX)
+            val opponentsMove = SingleMove(opponentsIndex, BAR_INDEX)
             opponentCheckers.move(opponentsMove)
             return opponentsMove
         }

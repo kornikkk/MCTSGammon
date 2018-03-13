@@ -2,12 +2,36 @@ package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 
 import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.board.Board
+import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.NO_INDEX
+import pl.kkarolcz.mcts.mctsbackgammon.board.PlayerBoard
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
+import java.util.*
 
 /**
  * Created by kkarolcz on 27.12.2017.
  */
+
+
+fun main(vararg args: String) {
+    val player1Checkers = PlayerBoard()
+    for (i in 1..15)
+        player1Checkers.put((BoardIndex.BAR_INDEX - i.toByte()).toByte(), 1)
+
+    val board = Board(player1Checkers, PlayerBoard())
+    val dices = Dice(3, 3)
+
+    val attempts = 10000
+
+    val startTime = System.currentTimeMillis()
+    for (i in 1..attempts) {
+        FullMovesSearchDoubling(board, Player.MCTS, dices).findAll()
+    }
+    val endTime = System.currentTimeMillis()
+
+    println("Average time: ${(endTime - startTime) / attempts} ms")
+}
+
 class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
     : AbstractFullMovesSearch(board, currentPlayer, dice) {
 
@@ -22,6 +46,7 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
     private var diceLeft = 4
 
     private var currentFullMoveMaxLength = 0
+
 
     override fun findAllImpl() {
         if (playerCheckers.barCheckers > 0) {
@@ -39,16 +64,8 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
         findStandardSequentialMoves()
 
         findFullMovesRecursive()
+        //  println("Count of partial doubling moves: ${partialMoves.length}")
     }
-
-
-    private fun NEW_findFullMoves() {
-
-    }
-
-
-
-
 
     private fun findBarMoves() {
         val moveFromBar = findPartialBarMove(die) ?: return // Stop if there are checkers on the bar and no possible moves
@@ -113,18 +130,18 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
             //TODO bear off
 
             for (sequence in barMovesSequences) {
-                findFullMovesWithBarSequence(recursionState.clone(), diceLeft, sequence.key)
+                findFullMovesWithBarSequence(recursionState.copy(true, false, false), diceLeft, sequence.key)
             }
 
             for (sequence in sequences) {
-                findFullMovesWithSequence(recursionState.clone(), diceLeft, sequence.key)
+                findFullMovesWithSequence(recursionState.copy(false, false, true), diceLeft, sequence.key)
             }
 
             for (partialMove in partialMoves) {
-                findFullMovesWithPartialMove(recursionState.clone(), diceLeft, partialMove)
+                findFullMovesWithPartialMove(recursionState.copy(false, true, true), diceLeft, partialMove)
             }
         }
-        addFullMoveIfCorrect(fullMoveBuilder.build())
+        addFullMoveIfCorrect(fullMoveBuilder)
 
         //TODO handle situation when dice left
     }
@@ -160,18 +177,20 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
         findFullMovesRecursive(recursionState, diceLeft - 1)
     }
 
-    private fun addFullMoveIfCorrect(fullMove: FullMove) {
-        val length = fullMove.length()
-        if (length < currentFullMoveMaxLength) {
+    private fun addFullMoveIfCorrect(fullMoveBuilder: FullMovesBuilder) {
+        val size = fullMoveBuilder.length
+        if (size < currentFullMoveMaxLength) {
             return
         }
-        if (length > currentFullMoveMaxLength) {
-            currentFullMoveMaxLength = length
+        if (size > currentFullMoveMaxLength) {
+            currentFullMoveMaxLength = size
             fullMoves.clear()
         }
-        fullMoves.add(fullMove)
+        fullMoves.add(fullMoveBuilder.build())
 
     }
+
+    var testCounter = 0
 
     private inner class RecursionState : Cloneable {
 
@@ -189,11 +208,20 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
             addAllBarMovesSequences()
         }
 
-        constructor(other: RecursionState) {
+        constructor(other: RecursionState, copyBarSequences: Boolean, copyPartialMoves: Boolean, copyStandardSequences: Boolean) {
             this.fullMovesBuilder = other.fullMovesBuilder.clone()
-            this.barMovesSequences = other.barMovesSequences.clone()
-            this.partialMoves = other.partialMoves.toMutableList()
-            this.standardSequences = other.standardSequences.clone()
+            this.barMovesSequences = when (copyBarSequences) {
+                true -> other.barMovesSequences.clone()
+                else -> other.barMovesSequences
+            }
+            this.partialMoves = when (copyPartialMoves) {
+                true -> other.partialMoves.toMutableList()
+                else -> other.partialMoves
+            }
+            this.standardSequences = when (copyStandardSequences) {
+                true -> other.standardSequences.clone()
+                else -> other.standardSequences
+            }
         }
 
         private fun addAllBarMovesSequences() {
@@ -205,8 +233,10 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
             }
         }
 
-        public override fun clone(): RecursionState {
-            return RecursionState(this)
+        fun copy(copyBarSequences: Boolean, copyPartialMoves: Boolean, copyStandardSequences: Boolean): RecursionState {
+            testCounter += 1
+            //    println(testCounter)
+            return RecursionState(this, copyBarSequences, copyPartialMoves, copyStandardSequences)
         }
 
     }
@@ -214,17 +244,18 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
     private class PartialMove(val move: SingleMove)
 
     private class SequencesForPartialMoves : Cloneable, Iterable<SequenceForPartialMove> {
-        private val map: MutableMap<PartialMove, SequenceForPartialMove>
+        private val map: IdentityHashMap<PartialMove, SequenceForPartialMove>
 
         constructor() {
-            this.map = HashMap()
+            this.map = IdentityHashMap()
         }
 
         private constructor(other: SequencesForPartialMoves) {
-            this.map = HashMap(other.map.size + 1, 1.0f)
+            this.map = IdentityHashMap(other.map.size)
             for (entry in other.map) {
                 if (!entry.value.isEmpty()) {
-                    map.put(entry.key, entry.value.clone())
+                    val cloned = entry.value.clone()
+                    map.put(entry.key, cloned)
                 }
             }
         }
@@ -254,7 +285,7 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
 
         constructor(key: PartialMove) {
             this.key = key
-            this.sequence = ArrayList()
+            this.sequence = ArrayList(4)
         }
 
         private constructor(other: SequenceForPartialMove) {

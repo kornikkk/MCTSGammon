@@ -6,16 +6,21 @@ import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BEAR_OFF_INDEX
 /**
  * Created by kkarolcz on 24.08.2017.
  */
-class SingleMove constructor(val oldIndex: Byte, val newIndex: Byte) {
+class SingleMove constructor(val oldIndex: Byte, val newIndex: Byte) : Cloneable {
 
     fun reversed() = SingleMove(newIndex, oldIndex)
+
+    public override fun clone(): SingleMove = SingleMove(oldIndex, newIndex)
 
     override fun toString(): String = "(${toString(oldIndex)} -> ${toString(newIndex)})"
 
     private fun toString(index: Byte): String = when (index) {
         BAR_INDEX -> "BAR"
         BEAR_OFF_INDEX -> "OFF"
-        else -> index.toString()
+        else -> when {
+            index > 9 -> " " + index.toString()
+            else -> " " + index.toString()
+        }
     }
 
     override fun equals(other: Any?): Boolean {

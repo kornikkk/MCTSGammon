@@ -137,6 +137,27 @@ class BackgammonNonDoublingMovesTest : AbstractSingleMovesTest() {
         return
     }
 
+    @Ignore
+    @Test
+    fun testPerformance2() {
+        val player1Checkers = PlayerBoard()
+        for (i in 1..15)
+            player1Checkers.put((BAR_INDEX - i.toByte()).toByte(), 1)
+
+        val board = Board(player1Checkers, PlayerBoard())
+        val dice = dice(1, 2)
+
+        val attempts = 1000
+
+        val startTime = System.currentTimeMillis()
+        for (i in 1..attempts) {
+            FullMovesSearchNonDoubling(board, Player.MCTS, dice).findAll()
+        }
+        val endTime = System.currentTimeMillis()
+
+        println("Average time: ${(endTime - startTime) / attempts} ms")
+    }
+
     //    @Test
 //    fun `Test hit move not possible on 2 of opponent's checkers on point`() {
 //        player1Board.put(24, 1)

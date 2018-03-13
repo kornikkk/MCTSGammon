@@ -5,20 +5,32 @@ package pl.kkarolcz.mcts.mctsbackgammon.game.moves
  */
 class FullMovesBuilder : Cloneable {
 
-    private val moves = mutableListOf<SingleMove>()
+    private val moves: MutableList<SingleMove>
+
+    val length get() = moves.size
+
+    constructor() {
+        this.moves = ArrayList(4)
+    }
 
     constructor(barMoves: List<SingleMove>) {
-        this.moves.addAll(barMoves)
+        this.moves = ArrayList(barMoves)
     }
 
     private constructor(other: FullMovesBuilder) {
-        this.moves.addAll(other.moves)
+        this.moves = ArrayList(other.moves)
     }
 
     public override fun clone(): FullMovesBuilder = FullMovesBuilder(this)
 
-    fun append(move: SingleMove) {
-        moves.add(move)
+    fun append(moves: List<SingleMove>): FullMovesBuilder {
+        this.moves.addAll(moves)
+        return this
+    }
+
+    fun append(vararg moves: SingleMove): FullMovesBuilder {
+        this.moves.addAll(moves)
+        return this
     }
 
     fun build(): FullMove = FullMove(moves)

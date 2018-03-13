@@ -15,11 +15,11 @@ abstract class AbstractFullMovesSearch(board: Board, currentPlayer: Player, prot
 
     protected val playerCheckers = board.getPlayerBoard(currentPlayer)
     private val opponentCheckers = board.getPlayerBoard(currentPlayer.opponent())
-    protected val fullMoves: MutableSet<FullMove> = mutableSetOf()
+    protected val fullMoves = mutableListOf<FullMove>()
 
     fun findAll(): MutableSet<FullMove> {
         findAllImpl()
-        return fullMoves
+        return fullMoves.toMutableSet()
     }
 
     protected abstract fun findAllImpl()

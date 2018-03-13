@@ -19,8 +19,6 @@ class FullMove : MCTSMove, Cloneable {
         this._moves = arrayOf(*moves)
     }
 
-    fun length(): Int = _moves.size
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -37,7 +35,11 @@ class FullMove : MCTSMove, Cloneable {
     }
 
     override fun toString(): String {
-        return "[${_moves.joinToString(", ")}]"
+        val builder = StringBuilder("[${_moves.joinToString(" -> ")}")
+        for (i in 1..4 - moves.size)
+            builder.append("                ")
+        builder.append("]")
+        return builder.toString()
     }
 
 }

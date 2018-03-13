@@ -6,8 +6,8 @@ import pl.kkarolcz.mcts.mctsbackgammon.board.Board
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex
 import pl.kkarolcz.mcts.mctsbackgammon.board.PlayerBoard
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
+import java.util.*
 import kotlin.test.assertEquals
-import kotlin.test.fail
 
 /**
  * Created by kkarolcz on 11.02.2018.
@@ -37,20 +37,13 @@ open class AbstractSingleMovesTest {
     }
 
     protected fun assertAllMovesFound(dice: Dice, expectedMoves: Iterable<FullMove>) {
-        val expectedSet = expectedMoves.toMutableSet()
-        val actualSet = searcher(dice).findAll().toMutableSet()
-        if (expectedSet != actualSet && !actualSet.containsAll(expectedSet)) {
-            expectedSet.removeAll(actualSet)
-            fail("Not found untriedMoves: $expectedSet")
-        }
-        if (expectedSet != actualSet && !expectedSet.containsAll(actualSet)) {
-            actualSet.removeAll(expectedMoves)
-            fail("Not expected untriedMoves: $actualSet")
-        }
+        val expectedSet = sortMoves(expectedMoves)
+        val actualSet = sortMoves(searcher(dice).findAll())
+        assertEquals(expectedSet, actualSet)
     }
 
     protected fun searcher(dice: Dice) = when (dice.doubling) {
-        true -> FullMovesSearchDoubling(board, Player.MCTS, dice)
+        true -> FullMovesSearchDoubling_V2(board, Player.MCTS, dice)
         false -> FullMovesSearchNonDoubling(board, Player.MCTS, dice)
     }
 
@@ -61,4 +54,30 @@ open class AbstractSingleMovesTest {
     protected fun movesSequence(vararg moves: SingleMove) = FullMove(*moves)
 
     protected fun toOpponentsIndex(index: Number) = BoardIndex.toOpponentsIndex(index.toByte())
+
+    private fun sortMoves(moves: Iterable<FullMove>): List<FullMove> {
+        val movesList = moves.toMutableList()
+        Collections.sort(movesList) { move1, move2 ->
+            when {
+                move1.moves.size > move2.moves.size -> return@sort -1
+                move1.moves.size < move2.moves.size -> return@sort 1
+                else ->
+                    for (i in 0 until move1.moves.size) {
+                        val singleMove1 = move1.moves[i]
+                        val singleMove2 = move2.moves[i]
+                        when {
+                            singleMove1.oldIndex > singleMove2.oldIndex -> return@sort -1
+                            singleMove1.oldIndex < singleMove2.oldIndex -> return@sort 1
+                        }
+                        when {
+                            singleMove1.newIndex > singleMove2.newIndex -> return@sort -1
+                            singleMove1.newIndex < singleMove2.newIndex -> return@sort 1
+                        }
+                    }
+            }
+            return@sort 0
+        }
+
+        return movesList
+    }
 }

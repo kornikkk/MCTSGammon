@@ -6,6 +6,7 @@ import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BEAR_OFF_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.NO_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.isOnHomeBoard
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
+import pl.kkarolcz.mcts.mctsbackgammon.game.statistics.Statistics
 import pl.kkarolcz.utils.ByteMath.ONE_BYTE
 import pl.kkarolcz.utils.singletonOrEmptyList
 import java.util.*
@@ -28,6 +29,8 @@ class FullMovesSearchNonDoubling(board: Board, currentPlayer: Player, dice: Dice
     private var anyFullSequenceFound = false
 
     override fun findAllImpl() {
+        Statistics.currentGame.currentRound.incNonDoublingSearches()
+
         // Find bar untriedMoves only when there are any checkers which must be moved
         if (playerCheckers.barCheckers > 0) {
             findBarPartialMoves()

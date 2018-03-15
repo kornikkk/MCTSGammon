@@ -3,75 +3,58 @@ package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.board.Board
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex
-import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.NO_INDEX
-import pl.kkarolcz.mcts.mctsbackgammon.board.PlayerBoard
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
+import pl.kkarolcz.mcts.mctsbackgammon.game.statistics.Statistics
 import java.util.*
 
 /**
  * Created by kkarolcz on 27.12.2017.
  */
-
-
-fun main(vararg args: String) {
-    val player1Checkers = PlayerBoard()
-    for (i in 1..15)
-        player1Checkers.put((BoardIndex.BAR_INDEX - i.toByte()).toByte(), 1)
-
-    val board = Board(player1Checkers, PlayerBoard())
-    val dices = Dice(3, 3)
-
-    val attempts = 10000
-
-    val startTime = System.currentTimeMillis()
-    for (i in 1..attempts) {
-        FullMovesSearchDoubling(board, Player.MCTS, dices).findAll()
-    }
-    val endTime = System.currentTimeMillis()
-
-    println("Average time: ${(endTime - startTime) / attempts} ms")
-}
-
 class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
     : AbstractFullMovesSearch(board, currentPlayer, dice) {
 
     private val die = dice.first
 
-    private val barMoves = mutableListOf<PartialMove>()
-    private val barSequentialMoves = SequencesForPartialMoves()
+    private var barMove: SingleMove? = null
+    private var barSequentialMoves = SequencesForPartialMoves()
 
-    private val partialMoves = mutableListOf<PartialMove>()
+    private val partialMoves = mutableListOf<SingleMove>()
     private val standardSequentialMoves = SequencesForPartialMoves()
 
     private var diceLeft = 4
 
-    private var currentFullMoveMaxLength = 0
+    private val initialFullMoveBuilder = FullMovesBuilder()
+
+    private var longestFullMove = 0
 
 
     override fun findAllImpl() {
-        if (playerCheckers.barCheckers > 0) {
-            findBarMoves()
+        Statistics.currentGame.currentRound.incDoublingSearches()
 
-            if (playerCheckers.barCheckers >= 4) {
-                fullMoves.add(FullMove(barMoves.map(PartialMove::move)))
-                return // No need to do anything when there's >= 4 checkers on the bar
+        if (playerCheckers.barCheckers > 0) {
+            barMove = findPartialBarMove(die)
+            if (barMove == null) {
+                return // No moves possible
             }
             diceLeft -= playerCheckers.barCheckers
+
+            for (i in 1..minOf(playerCheckers.barCheckers, 4)) {
+                initialFullMoveBuilder.append(barMove!!)
+            }
+
+            if (diceLeft == 0) {
+                addFullMove(initialFullMoveBuilder)
+                return // No need to do anything when there's >= 4 checkers on the bar
+            }
+
+            findBarSequentialMoves()
         }
 
-        findBarSequentialMoves()
         findStandardPartialMoves()
         findStandardSequentialMoves()
 
-        findFullMovesRecursive()
-        //  println("Count of partial doubling moves: ${partialMoves.length}")
-    }
-
-    private fun findBarMoves() {
-        val moveFromBar = findPartialBarMove(die) ?: return // Stop if there are checkers on the bar and no possible moves
-        for (i in 1..minOf(playerCheckers.barCheckers, 4)) {
-            barMoves.add(PartialMove(moveFromBar))
-        }
+//        findFullMoves()
+        findFullMoves()
     }
 
     private fun findStandardPartialMoves() {
@@ -79,7 +62,7 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
             val move = findStandardPartialMoveForTower(tower.index, die)
             if (move != null) {
                 for (i in 1..minOf(tower.checkers.toInt(), diceLeft)) {
-                    partialMoves.add(PartialMove(move))
+                    partialMoves.add(move.clone())
                 }
             }
         }
@@ -87,7 +70,7 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
 
     private fun findBarSequentialMoves() {
         // No need to decrement dice like in findStandardSequentialMoves(). It was already done because bar moves exist
-        findSequentialMoves(barMoves, barSequentialMoves, diceLeft)
+        findSequentialMoves(Collections.singleton(barMove!!), barSequentialMoves, diceLeft)
     }
 
     private fun findStandardSequentialMoves() {
@@ -95,218 +78,237 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
         findSequentialMoves(partialMoves, standardSequentialMoves, diceLeft - 1)
     }
 
-    private fun findSequentialMoves(initialMoves: List<PartialMove>, sequences: SequencesForPartialMoves, initialDiceLeft: Int) {
-        for (partialMove in initialMoves.distinct()) {
+    private fun findSequentialMoves(partialMoves: Iterable<SingleMove>, sequences: SequencesForPartialMoves, initialDiceLeft: Int) {
+        if (initialDiceLeft == 0)
+            return
+
+        for (partialMove in partialMoves) {
             var diceLeft = initialDiceLeft
             var oldIndex: Byte
-            var newIndex = partialMove.move.newIndex
+            var newIndex = partialMove.newIndex
+            val sequenceForPartialMove = sequences.getOrCreateSequence(partialMove)
 
             while (diceLeft > 0) {
                 oldIndex = newIndex
                 newIndex = findMove(oldIndex, die)
                 diceLeft -= 1
 
-                if (newIndex == NO_INDEX) {
+                if (newIndex == BoardIndex.NO_INDEX) {
                     break
                 }
 
-                sequences.getOrCreate(partialMove).add(SingleMove(oldIndex, newIndex))
+                sequenceForPartialMove.add(SingleMove(oldIndex, newIndex))
             }
         }
     }
 
-    private fun findFullMovesRecursive() {
-        findFullMovesRecursive(RecursionState(), diceLeft)
-    }
-
-    private fun findFullMovesRecursive(recursionState: RecursionState, diceLeft: Int) {
-        val fullMoveBuilder = recursionState.fullMovesBuilder
-        val barMovesSequences = recursionState.barMovesSequences
-        val partialMoves = recursionState.partialMoves
-        val sequences = recursionState.standardSequences
-
-        //TODO handle situation when dice left
-        if (diceLeft > 0) {
-            //TODO bear off
-
-            for (sequence in barMovesSequences) {
-                findFullMovesWithBarSequence(recursionState.copy(true, false, false), diceLeft, sequence.key)
-            }
-
-            for (sequence in sequences) {
-                findFullMovesWithSequence(recursionState.copy(false, false, true), diceLeft, sequence.key)
-            }
-
-            for (partialMove in partialMoves) {
-                findFullMovesWithPartialMove(recursionState.copy(false, true, true), diceLeft, partialMove)
-            }
-        }
-        addFullMoveIfCorrect(fullMoveBuilder)
-
-        //TODO handle situation when dice left
-    }
-
-    private fun findFullMovesWithBarSequence(recursionState: RecursionState, diceLeft: Int, partialMove: PartialMove) {
-        val sequentialMove = recursionState.barMovesSequences.getSequence(partialMove)?.poll()
-        if (sequentialMove != null) {
-            recursionState.fullMovesBuilder.append(sequentialMove)
+    private fun findFullMoves() {
+        if (barMove != null) {
+            findSequencesWithBarPartialMovesOnly()
         }
 
-        findFullMovesRecursive(recursionState, diceLeft - 1)
-    }
-
-    private fun findFullMovesWithSequence(recursionState: RecursionState, diceLeft: Int, partialMove: PartialMove) {
-        val sequentialMove = recursionState.standardSequences.getSequence(partialMove)?.poll()
-        if (sequentialMove != null) {
-            recursionState.fullMovesBuilder.append(sequentialMove)
-        }
-
-        findFullMovesRecursive(recursionState, diceLeft - 1)
-    }
-
-    private fun findFullMovesWithPartialMove(recursionState: RecursionState, diceLeft: Int, partialMove: PartialMove) {
-        recursionState.fullMovesBuilder.append(partialMove.move)
-
-        val sequenceForPartialMove = standardSequentialMoves.getSequence(partialMove)
-        if (sequenceForPartialMove != null) {
-            recursionState.standardSequences.add(sequenceForPartialMove)
-        }
-
-        recursionState.partialMoves.remove(partialMove)
-
-        findFullMovesRecursive(recursionState, diceLeft - 1)
-    }
-
-    private fun addFullMoveIfCorrect(fullMoveBuilder: FullMovesBuilder) {
-        val size = fullMoveBuilder.length
-        if (size < currentFullMoveMaxLength) {
+        if (partialMoves.isEmpty() && fullMoves.isEmpty()) {
+            addFullMove(getBuilder())
             return
         }
-        if (size > currentFullMoveMaxLength) {
-            currentFullMoveMaxLength = size
+
+        if (partialMoves.isNotEmpty()) {
+            findFullMovesIteration(partialMoves.toMutableList(), emptyList())
+        }
+    }
+
+    private fun findFullMovesIteration(partialMoves: MutableList<SingleMove>, previousPartialMoves: List<SingleMove>) {
+
+        val iterator = partialMoves.listIterator()
+        while (iterator.hasNext()) {
+            val currentPartialMoves = previousPartialMoves + iterator.next()
+            iterator.remove()
+
+
+            addFullMove(getBuilder().append())
+
+            when (currentPartialMoves.size) {
+                1 -> findSequencesWith1PartialMove(currentPartialMoves[0])
+                2 -> findSequencesWith2PartialMoves(currentPartialMoves[0], currentPartialMoves[1])
+                3 -> findSequencesWith3PartialMoves(currentPartialMoves[0], currentPartialMoves[1], currentPartialMoves[2])
+            }
+
+            if (diceLeft - currentPartialMoves.size > 0) {
+                findFullMovesIteration(partialMoves.toMutableList(), currentPartialMoves)
+            }
+        }
+
+    }
+
+    private fun findSequencesWithBarPartialMovesOnly() {
+        val barSequence = barMove?.let { barSequentialMoves.getSequence(it) }
+        when (diceLeft) {
+            3 -> { // 1 partial move from the bar
+                if (barSequence != null) {
+                    val builder = getBuilder()
+                    barSequence.forEach { builder.append(it) }
+                    addFullMove(builder)
+                }
+            }
+            2 -> { // 2 partial moves from the bar
+                val barSequence1 = barSequence?.get(0)
+                val barSequence2 = barSequence?.get(1)
+
+                if (barSequence1 != null && barSequence2 != null)
+                    addFullMove(getBuilder().append(barSequence1, barSequence2))
+
+                if (barSequence1 != null)
+                    addFullMove(getBuilder().append(barSequence1, barSequence1))
+            }
+            1 -> { // 3 partial moves from the bar
+                val barSequence1 = barSequence?.get(0)
+                if (barSequence1 != null)
+                    addFullMove(getBuilder().append(barSequence1))
+            }
+        }
+    }
+
+    private fun findSequencesWith1PartialMove(partialMove: SingleMove) {
+        val builder = getBuilder()
+        builder.append(partialMove)
+
+        val barSequence = barMove?.let { barSequentialMoves.getSequence(it) }
+        val barSequence1 = barSequence?.get(0)
+        val barSequence2 = barSequence?.get(1)
+
+        val standardSequence = standardSequentialMoves.getSequence(partialMove)
+        val sequence1 = standardSequence?.get(0)
+        val sequence2 = standardSequence?.get(1)
+        val sequence3 = standardSequence?.get(2)
+
+        when (diceLeft) {
+            4 -> { // Bar is empty
+                // Full moves (4)
+                if (sequence1 != null && sequence2 != null && sequence3 != null)
+                    addFullMove(builder.clone().append(sequence1, sequence2, sequence3))
+
+                // Non full moves (3)
+                if (sequence1 != null && sequence2 != null)
+                    addFullMove(builder.clone().append(sequence1, sequence2))
+
+                // Non full moves (2)
+                if (sequence1 != null)
+                    addFullMove(builder.clone().append(sequence1))
+            }
+            3 -> { // 1 partialMove from the bar
+                // Full moves (4)
+                if (barSequence1 != null && barSequence2 != null)
+                    addFullMove(builder.clone().append(barSequence1, barSequence2))
+                if (barSequence1 != null && sequence1 != null)
+                    addFullMove(builder.clone().append(barSequence1, sequence1))
+                if (sequence1 != null && sequence2 != null)
+                    addFullMove(builder.clone().append(sequence1, sequence2))
+
+                // Non full moves (3)
+                if (barSequence1 != null && barSequence2 == null && sequence1 == null) {
+                    addFullMove(builder.clone().append(barSequence1))
+                }
+            }
+            2 -> { // 2 moves from the bar
+                // Full moves (4)
+                if (barSequence1 != null)
+                    addFullMove(builder.clone().append(barSequence1))
+                if (sequence1 != null)
+                    addFullMove(builder.clone().append(sequence1))
+            }
+        }
+    }
+
+    private fun findSequencesWith2PartialMoves(partialMove1: SingleMove, partialMove2: SingleMove) {
+        val builder = getBuilder()
+        builder.append(partialMove1, partialMove2)
+
+        val standardSequence1 = standardSequentialMoves.getSequence(partialMove1)
+        val sequence1x1 = standardSequence1?.get(0)
+        val sequence1x2 = standardSequence1?.get(1)
+
+        val standardSequence2 = standardSequentialMoves.getSequence(partialMove2)
+        val sequence2x1 = standardSequence2?.get(0)
+        val sequence2x2 = standardSequence2?.get(1)
+
+        when (diceLeft) {
+            4 -> { // Bar is empty
+                // Full moves (4)
+                if (sequence1x1 != null && sequence2x1 != null)
+                    addFullMove(builder.clone().append(sequence1x1, sequence2x1))
+                if (sequence1x1 != null && sequence1x2 != null)
+                    addFullMove(builder.clone().append(sequence1x1, sequence1x2))
+                if (sequence2x1 != null && sequence2x2 != null)
+                    addFullMove(builder.clone().append(sequence2x1, sequence2x2))
+
+                // Non full moves (3)
+                if (sequence1x1 != null)
+                    addFullMove(builder.clone().append(sequence1x1))
+                if (sequence2x1 != null)
+                    addFullMove(builder.clone().append(sequence2x1))
+            }
+        }
+    }
+
+
+    private fun findSequencesWith3PartialMoves(partialMove1: SingleMove, partialMove2: SingleMove, partialMove3: SingleMove) {
+        val builder = getBuilder()
+        builder.append(partialMove1, partialMove2, partialMove3)
+
+        val sequence1x1 = standardSequentialMoves.getSequence(partialMove1)?.get(0)
+        val sequence2x1 = standardSequentialMoves.getSequence(partialMove2)?.get(0)
+        val sequence3x1 = standardSequentialMoves.getSequence(partialMove3)?.get(0)
+
+        when (diceLeft) {
+            4 -> { // Bar is empty
+                // Full moves (4)
+                if (sequence1x1 != null)
+                    addFullMove(builder.clone().append(sequence1x1))
+                if (sequence2x1 != null)
+                    addFullMove(builder.clone().append(sequence2x1))
+                if (sequence3x1 != null)
+                    addFullMove(builder.clone().append(sequence3x1))
+            }
+        }
+    }
+
+    private fun getBuilder() = initialFullMoveBuilder.clone()
+
+
+    private fun addFullMove(builder: FullMovesBuilder) {
+        val length = builder.length
+        if (length > longestFullMove) {
             fullMoves.clear()
-        }
-        fullMoves.add(fullMoveBuilder.build())
-
-    }
-
-    var testCounter = 0
-
-    private inner class RecursionState : Cloneable {
-
-        val fullMovesBuilder: FullMovesBuilder
-        val barMovesSequences: SequencesForPartialMoves
-        val partialMoves: MutableList<PartialMove>
-        val standardSequences: SequencesForPartialMoves
-
-        constructor() {
-            this.fullMovesBuilder = FullMovesBuilder(this@FullMovesSearchDoubling.barMoves.map(PartialMove::move))
-            this.barMovesSequences = SequencesForPartialMoves()
-            this.partialMoves = this@FullMovesSearchDoubling.partialMoves
-            this.standardSequences = SequencesForPartialMoves()
-
-            addAllBarMovesSequences()
+            longestFullMove = length
         }
 
-        constructor(other: RecursionState, copyBarSequences: Boolean, copyPartialMoves: Boolean, copyStandardSequences: Boolean) {
-            this.fullMovesBuilder = other.fullMovesBuilder.clone()
-            this.barMovesSequences = when (copyBarSequences) {
-                true -> other.barMovesSequences.clone()
-                else -> other.barMovesSequences
-            }
-            this.partialMoves = when (copyPartialMoves) {
-                true -> other.partialMoves.toMutableList()
-                else -> other.partialMoves
-            }
-            this.standardSequences = when (copyStandardSequences) {
-                true -> other.standardSequences.clone()
-                else -> other.standardSequences
-            }
-        }
-
-        private fun addAllBarMovesSequences() {
-            for (barMove in barMoves) {
-                val sequence = this@FullMovesSearchDoubling.barSequentialMoves.getSequence(barMove)
-                if (sequence != null) {
-                    barMovesSequences.add(sequence)
-                }
-            }
-        }
-
-        fun copy(copyBarSequences: Boolean, copyPartialMoves: Boolean, copyStandardSequences: Boolean): RecursionState {
-            testCounter += 1
-            //    println(testCounter)
-            return RecursionState(this, copyBarSequences, copyPartialMoves, copyStandardSequences)
-        }
-
-    }
-
-    private class PartialMove(val move: SingleMove)
-
-    private class SequencesForPartialMoves : Cloneable, Iterable<SequenceForPartialMove> {
-        private val map: IdentityHashMap<PartialMove, SequenceForPartialMove>
-
-        constructor() {
-            this.map = IdentityHashMap()
-        }
-
-        private constructor(other: SequencesForPartialMoves) {
-            this.map = IdentityHashMap(other.map.size)
-            for (entry in other.map) {
-                if (!entry.value.isEmpty()) {
-                    val cloned = entry.value.clone()
-                    map.put(entry.key, cloned)
-                }
-            }
-        }
-
-        fun getOrCreate(key: PartialMove): SequenceForPartialMove {
-            return map.computeIfAbsent(key) { SequenceForPartialMove(key) }
-        }
-
-        fun getSequence(partialMove: PartialMove): SequenceForPartialMove? {
-            return map.getOrDefault(partialMove, null)
-        }
-
-        fun add(sequence: SequenceForPartialMove) {
-            map.put(sequence.key, sequence.clone())
-        }
-
-        override fun iterator(): Iterator<SequenceForPartialMove> = map.values.iterator()
-
-        public override fun clone(): SequencesForPartialMoves {
-            return SequencesForPartialMoves(this)
+        if (length == longestFullMove) {
+            fullMoves.add(builder.build())
         }
     }
 
-    private class SequenceForPartialMove : Cloneable {
-        val key: PartialMove
-        private val sequence: MutableList<SingleMove>
+    private class SequencesForPartialMoves {
+        private val map = IdentityHashMap<SingleMove, SequenceForPartialMove>(15)
 
-        constructor(key: PartialMove) {
-            this.key = key
-            this.sequence = ArrayList(4)
-        }
+        fun getOrCreateSequence(partialMove: SingleMove): SequenceForPartialMove =
+                map.computeIfAbsent(partialMove) { SequenceForPartialMove() }
 
-        private constructor(other: SequenceForPartialMove) {
-            this.key = other.key
-            this.sequence = ArrayList(other.sequence)
-        }
+        fun getSequence(partialMove: SingleMove): SequenceForPartialMove? = map.getOrDefault(partialMove, null)
+
+    }
+
+    private class SequenceForPartialMove : Iterable<SingleMove> {
+
+        private val sequence = ArrayList<SingleMove>(3)
+
+        override fun iterator(): Iterator<SingleMove> = sequence.iterator()
+
+        operator fun get(index: Int): SingleMove? = sequence.getOrNull(index)
 
         fun add(move: SingleMove) {
             sequence.add(move)
         }
 
-        fun isEmpty() = sequence.isEmpty()
-
-        fun poll(): SingleMove? {
-            if (sequence.isNotEmpty()) {
-                return sequence.removeAt(0)
-            }
-            return null
-        }
-
-        public override fun clone() = SequenceForPartialMove(this)
-
     }
+
 }

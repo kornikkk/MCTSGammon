@@ -147,7 +147,7 @@ class BackgammonNonDoublingMovesTest : AbstractSingleMovesTest() {
         val board = Board(player1Checkers, PlayerBoard())
         val dice = dice(1, 2)
 
-        val attempts = 1000
+        val attempts = 10000
 
         val startTime = System.currentTimeMillis()
         for (i in 1..attempts) {

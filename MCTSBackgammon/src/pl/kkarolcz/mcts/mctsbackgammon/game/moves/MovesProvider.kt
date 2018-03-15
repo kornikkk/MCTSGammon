@@ -91,8 +91,8 @@ class MovesProvider(private val board: Board, private var player: Player) : MCTS
             map.clear()
         }
 
-        fun put(dice: Dice, moves: MutableSet<FullMove>) {
-            map.put(dice, moves.toMutableList())
+        fun put(dice: Dice, moves: MutableList<FullMove>) {
+            map[dice] = moves
         }
 
         fun pollRandomMove(dice: Dice): FullMove {

@@ -6,6 +6,7 @@ import pl.kkarolcz.mcts.mctsbackgammon.board.Board
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex
 import pl.kkarolcz.mcts.mctsbackgammon.board.PlayerBoard
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
+import pl.kkarolcz.mcts.mctsbackgammon.game.statistics.Statistics
 import java.util.*
 import kotlin.test.assertEquals
 
@@ -19,7 +20,10 @@ open class AbstractSingleMovesTest {
     private lateinit var board: Board
 
     @Before
-    fun initializeEmptyPlayerCheckersArrays() {
+    fun initialize() {
+        Statistics.newGame()
+        Statistics.currentGame.newRound()
+
         player1Board = PlayerBoard()
         player2Board = PlayerBoard()
         player2Board.put(BoardIndex.BAR_INDEX, 1)
@@ -43,7 +47,7 @@ open class AbstractSingleMovesTest {
     }
 
     protected fun searcher(dice: Dice) = when (dice.doubling) {
-        true -> FullMovesSearchDoubling_V2(board, Player.MCTS, dice)
+        true -> FullMovesSearchDoubling(board, Player.MCTS, dice)
         false -> FullMovesSearchNonDoubling(board, Player.MCTS, dice)
     }
 
@@ -57,26 +61,26 @@ open class AbstractSingleMovesTest {
 
     private fun sortMoves(moves: Iterable<FullMove>): List<FullMove> {
         val movesList = moves.toMutableList()
-        Collections.sort(movesList) { move1, move2 ->
+        movesList.sortWith(Comparator { move1, move2 ->
             when {
-                move1.moves.size > move2.moves.size -> return@sort -1
-                move1.moves.size < move2.moves.size -> return@sort 1
+                move1.moves.size > move2.moves.size -> return@Comparator -1
+                move1.moves.size < move2.moves.size -> return@Comparator 1
                 else ->
                     for (i in 0 until move1.moves.size) {
                         val singleMove1 = move1.moves[i]
                         val singleMove2 = move2.moves[i]
                         when {
-                            singleMove1.oldIndex > singleMove2.oldIndex -> return@sort -1
-                            singleMove1.oldIndex < singleMove2.oldIndex -> return@sort 1
+                            singleMove1.oldIndex > singleMove2.oldIndex -> return@Comparator -1
+                            singleMove1.oldIndex < singleMove2.oldIndex -> return@Comparator 1
                         }
                         when {
-                            singleMove1.newIndex > singleMove2.newIndex -> return@sort -1
-                            singleMove1.newIndex < singleMove2.newIndex -> return@sort 1
+                            singleMove1.newIndex > singleMove2.newIndex -> return@Comparator -1
+                            singleMove1.newIndex < singleMove2.newIndex -> return@Comparator 1
                         }
                     }
             }
-            return@sort 0
-        }
+            return@Comparator 0
+        })
 
         return movesList
     }

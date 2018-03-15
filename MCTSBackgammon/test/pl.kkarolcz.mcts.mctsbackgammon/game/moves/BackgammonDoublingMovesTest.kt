@@ -24,11 +24,11 @@ class BackgammonDoublingMovesTest : AbstractSingleMovesTest() {
         val board = Board(player1Checkers, PlayerBoard())
         val dices = dice(3, 3)
 
-        val attempts = 1000
+        val attempts = 100000
 
         val startTime = System.currentTimeMillis()
         for (i in 1..attempts) {
-            FullMovesSearchDoubling_V2(board, Player.MCTS, dices).findAll()
+            FullMovesSearchDoubling(board, Player.MCTS, dices).findAll()
         }
         val endTime = System.currentTimeMillis()
 
@@ -59,7 +59,7 @@ class BackgammonDoublingMovesTest : AbstractSingleMovesTest() {
             val board = Board(player1Checkers, player2Checkers)
             val die = 1 + random.nextInt(6)
             val dices = dice(die, die)
-            FullMovesSearchDoubling_V2(board, Player.MCTS, dices).findAll()
+            FullMovesSearchDoubling(board, Player.MCTS, dices).findAll()
         }
     }
 
@@ -228,6 +228,34 @@ class BackgammonDoublingMovesTest : AbstractSingleMovesTest() {
                 movesSequence(move(5, 4), move(10, 9), move(15, 14), move(20, 19))
         )
         assertAllMovesFound(dice(1, 1), movesSequence)
+    }
+
+
+    @Test
+    fun `Test bar move and 3 partial moves`() {
+        player1Board.put(BAR_INDEX, 1)
+        player1Board.put(24, 1)
+        player1Board.put(16, 1)
+        player1Board.put(10, 1)
+
+        player2Board.put(toOpponentsIndex(20), 2)
+        player2Board.put(toOpponentsIndex(12), 2)
+
+        val movesSequence = listOf(
+                movesSequence(move(BAR_INDEX, 23), move(24, 22), move(23, 21), move(21, 19)),
+                movesSequence(move(BAR_INDEX, 23), move(24, 22), move(16, 14), move(10, 8)),
+                movesSequence(move(BAR_INDEX, 23), move(24, 22), move(10, 8), move(16, 14)),
+                movesSequence(move(BAR_INDEX, 23), move(23, 21), move(21, 19), move(19, 17)),
+                movesSequence(move(BAR_INDEX, 23), move(16, 14), move(24, 22), move(10, 8)),
+                movesSequence(move(BAR_INDEX, 23), move(16, 14), move(23, 21), move(21, 19)),
+                movesSequence(move(BAR_INDEX, 23), move(16, 14), move(10, 8), move(24, 22)),
+                movesSequence(move(BAR_INDEX, 23), move(10, 8), move(24, 22), move(16, 14)),
+                movesSequence(move(BAR_INDEX, 23), move(10, 8), move(23, 21), move(21, 19)),
+                movesSequence(move(BAR_INDEX, 23), move(10, 8), move(23, 21), move(8, 6)),
+                movesSequence(move(BAR_INDEX, 23), move(10, 8), move(16, 14), move(24, 22)),
+                movesSequence(move(BAR_INDEX, 23), move(10, 8), move(8, 6), move(6, 4))
+        )
+        assertAllMovesFound(dice(2, 2), movesSequence)
     }
 
     //TODO Check some more bar moves (like 3 moves and then sequence or 3 moves and then partial move)

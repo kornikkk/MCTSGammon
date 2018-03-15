@@ -9,7 +9,7 @@ class StateTest {
 //    private val player2Checkers: ByteArray = ByteArray(Board.SIZE)
 //
 //    @Before
-//    fun initializeEmptyPlayerCheckersArrays() {
+//    fun initialize() {
 //        player1Checkers.fill(0, 0, player1Checkers.size - 1)
 //        player2Checkers.fill(0, 0, player1Checkers.size - 1)
 //    }

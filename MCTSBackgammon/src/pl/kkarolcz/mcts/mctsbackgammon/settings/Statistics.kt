@@ -1,4 +1,4 @@
-package pl.kkarolcz.mcts.mctsbackgammon.game.statistics
+package pl.kkarolcz.mcts.mctsbackgammon.settings
 
 import java.io.File
 
@@ -18,7 +18,7 @@ object Statistics {
         if (logFile.exists()) {
             logFile.createNewFile()
         }
-        this.logFile = logFile
+        Statistics.logFile = logFile
     }
 
     fun newGame() {

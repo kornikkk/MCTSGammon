@@ -6,7 +6,7 @@ import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BEAR_OFF_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.NO_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.isOnHomeBoard
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
-import pl.kkarolcz.mcts.mctsbackgammon.game.statistics.Statistics
+import pl.kkarolcz.mcts.mctsbackgammon.settings.Statistics
 import pl.kkarolcz.utils.ByteMath.ONE_BYTE
 import pl.kkarolcz.utils.singletonOrEmptyList
 import java.util.*

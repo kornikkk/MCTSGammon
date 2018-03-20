@@ -17,10 +17,7 @@ class SingleMove constructor(val oldIndex: Byte, val newIndex: Byte) : Cloneable
     private fun toString(index: Byte): String = when (index) {
         BAR_INDEX -> "BAR"
         BEAR_OFF_INDEX -> "OFF"
-        else -> when {
-            index > 9 -> " " + index.toString()
-            else -> " " + index.toString()
-        }
+        else -> index.toString()
     }
 
     override fun equals(other: Any?): Boolean {

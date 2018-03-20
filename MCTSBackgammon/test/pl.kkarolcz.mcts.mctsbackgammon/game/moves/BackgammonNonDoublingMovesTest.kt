@@ -147,15 +147,16 @@ class BackgammonNonDoublingMovesTest : AbstractSingleMovesTest() {
         val board = Board(player1Checkers, PlayerBoard())
         val dice = dice(1, 2)
 
-        val attempts = 10000
+        val attempts = 100000
 
-        val startTime = System.currentTimeMillis()
+        val startTime = System.nanoTime()
         for (i in 1..attempts) {
             FullMovesSearchNonDoubling(board, Player.MCTS, dice).findAll()
         }
-        val endTime = System.currentTimeMillis()
+        val endTime = System.nanoTime()
+        val microseconds = (endTime - startTime) / 1000
 
-        println("Average time: ${(endTime - startTime) / attempts} ms")
+        println("Average time: ${microseconds / attempts} μs")
     }
 
     //    @Test

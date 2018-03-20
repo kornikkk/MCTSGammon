@@ -1,6 +1,7 @@
 package pl.kkarolcz.mcts
 
 import pl.kkarolcz.mcts.node.selectionpolicies.NodeSelectionPolicy
+import pl.kkarolcz.utils.randomElement
 
 /**
  * Created by kkarolcz on 07.08.2017.
@@ -23,17 +24,16 @@ protected constructor(private val nodeSelectionPolicy: NodeSelectionPolicy,
         get() = _wins
 
     val isFullyExpanded: Boolean
-        get() = !state.hasUntriedMoves() && _children.isEmpty()
+        get() = !state.hasUntriedMoves()
 
-    val result: Result? = state.result
+    val result: Result? get() = state.result
 
     protected abstract fun newNode(nodeSelectionPolicy: NodeSelectionPolicy, state: MCTSState<M, T>, originMove: M?): Self
 
     override fun toString() = "$wins / $visits"
 
-    fun getBestMove(trace: MCTSTraceableMove.Trace): Self
-            = _children.getChildrenWithTrace(trace).maxBy(MCTSNode<Self, M, T>::_visits) ?:
-            throw IllegalStateException("No untriedMoves available. Check isFullyExpanded() before call")
+    fun getBestMove(trace: T): Self = _children.getChildrenWithTrace(trace).maxBy(MCTSNode<Self, M, T>::_wins)
+            ?: throw IllegalStateException("No untriedMoves available. Check isFullyExpanded() before call")
 
     fun monteCarloRound() {
         val path = selectAndExpand()
@@ -43,8 +43,14 @@ protected constructor(private val nodeSelectionPolicy: NodeSelectionPolicy,
         path.forEach { node -> node.update(result) }
     }
 
-    fun findChildNode(state: MCTSState<M, T>): Self? =
-            _children.allChildren().find { childNode -> childNode.state == state }
+    fun findChildNode(state: MCTSState<M, T>, trace: T): Self? {
+        val node = _children.allChildren().find { childNode -> childNode.state == state }
+        if (node != null) {
+            node.state.updateTrace(trace)
+            _children.removeChildrenWithoutTrace(trace)
+        }
+        return node
+    }
 
     private fun selectAndExpand(): List<Self> {
         val path = select()
@@ -56,12 +62,13 @@ protected constructor(private val nodeSelectionPolicy: NodeSelectionPolicy,
         return path
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun select(): MutableList<Self> {
         this as Self
-        val path = mutableListOf<Self>(this)
+        val path = mutableListOf(this)
         var node = this
         while (!node.state.hasUntriedMoves() && node._children.isNotEmpty()) {
-            node = nodeSelectionPolicy.selectNode(node._children.allChildren())
+            node = nodeSelectionPolicy.selectNode(node._children.childrenForRandomDice())
             path.add(node)
         }
 
@@ -82,7 +89,7 @@ protected constructor(private val nodeSelectionPolicy: NodeSelectionPolicy,
 
     private fun update(result: Result?) {
         _visits++
-        if (result?.get(state.currentPlayer) == Result.PlayerResult.WIN)
+        if (result?.get(state.currentPlayer.opponent()) == Result.PlayerResult.WIN)
             _wins++
     }
 
@@ -98,7 +105,13 @@ protected constructor(private val nodeSelectionPolicy: NodeSelectionPolicy,
             childrenWithTrace.add(node)
         }
 
-        fun getChildrenWithTrace(trace: MCTSTraceableMove.Trace): Collection<N> = children.getOrElse(trace) { emptyList() }
+        fun getChildrenWithTrace(trace: T): Collection<N> = children.getOrElse(trace) { emptyList() }
+
+        fun removeChildrenWithoutTrace(trace: T) {
+            children.keys.removeIf { key -> key != trace }
+        }
+
+        fun childrenForRandomDice(): Collection<N> = children.values.toList().randomElement()
 
         fun allChildren(): Collection<N> = children.values.flatten()
 

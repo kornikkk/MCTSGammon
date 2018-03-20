@@ -6,6 +6,7 @@ import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.board.Board
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BAR_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.PlayerBoard
+import pl.kkarolcz.mcts.mctsbackgammon.settings.TestSettings
 import java.util.*
 
 /**
@@ -17,6 +18,7 @@ class BackgammonDoublingMovesTest : AbstractSingleMovesTest() {
     @Ignore
     @Test
     fun testPerformance2() {
+        TestSettings.sortBoard = false
         val player1Checkers = PlayerBoard()
         for (i in 1..15)
             player1Checkers.put((BAR_INDEX - i.toByte()).toByte(), 1)
@@ -24,22 +26,28 @@ class BackgammonDoublingMovesTest : AbstractSingleMovesTest() {
         val board = Board(player1Checkers, PlayerBoard())
         val dices = dice(3, 3)
 
-        val attempts = 100000
+        val attempts = 20000
 
-        val startTime = System.currentTimeMillis()
+        for (i in 1..15000) { // Warm up
+            FullMovesSearchDoubling(board, Player.MCTS, dices).findAll()
+        }
+
+        val startTime = System.nanoTime()
         for (i in 1..attempts) {
             FullMovesSearchDoubling(board, Player.MCTS, dices).findAll()
         }
-        val endTime = System.currentTimeMillis()
+        val endTime = System.nanoTime()
+        val microseconds = (endTime - startTime) / 1000
 
-        println("Average time: ${(endTime - startTime) / attempts} ms")
+        println("Average time: ${microseconds / attempts} μs")
     }
 
     @Ignore
     @Test
     fun testPerformance() {
+        TestSettings.sortBoard = false
         val random = Random()
-        for (i in 1..100_000) {
+        for (i in 1..10_000) {
             val player1Checkers = PlayerBoard()
             val player1RandomCheckers = ByteArray(26)
 
@@ -83,12 +91,9 @@ class BackgammonDoublingMovesTest : AbstractSingleMovesTest() {
         val movesSequence = listOf(
                 movesSequence(move(24, 22), move(22, 20), move(20, 18), move(18, 16)),
                 movesSequence(move(24, 22), move(23, 21), move(22, 20), move(20, 18)),
-                movesSequence(move(24, 22), move(23, 21), move(22, 20), move(21, 19)),
                 movesSequence(move(24, 22), move(23, 21), move(21, 19), move(19, 17)),
-                movesSequence(move(23, 21), move(21, 19), move(19, 17), move(17, 15)),
-                movesSequence(move(23, 21), move(24, 22), move(21, 19), move(19, 17)),
-                movesSequence(move(23, 21), move(24, 22), move(21, 19), move(22, 20)),
-                movesSequence(move(23, 21), move(24, 22), move(22, 20), move(20, 18))
+                movesSequence(move(24, 22), move(23, 21), move(22, 20), move(21, 19)),
+                movesSequence(move(23, 21), move(21, 19), move(19, 17), move(17, 15))
         )
         assertAllMovesFound(dice(2, 2), movesSequence)
     }
@@ -181,8 +186,7 @@ class BackgammonDoublingMovesTest : AbstractSingleMovesTest() {
 
         val movesSequence = listOf(
                 movesSequence(move(24, 22), move(22, 20), move(20, 18), move(18, 16)),
-                movesSequence(move(24, 22), move(23, 21), move(22, 20), move(20, 18)),
-                movesSequence(move(23, 21), move(24, 22), move(22, 20), move(20, 18))
+                movesSequence(move(24, 22), move(23, 21), move(22, 20), move(20, 18))
         )
         assertAllMovesFound(dice(2, 2), movesSequence)
     }
@@ -202,30 +206,7 @@ class BackgammonDoublingMovesTest : AbstractSingleMovesTest() {
         player2Board.put(toOpponentsIndex(3), 2)
 
         val movesSequence = listOf(
-                movesSequence(move(20, 19), move(15, 14), move(10, 9), move(5, 4)),
-                movesSequence(move(20, 19), move(15, 14), move(5, 4), move(10, 9)),
-                movesSequence(move(20, 19), move(10, 9), move(15, 14), move(5, 4)),
-                movesSequence(move(20, 19), move(10, 9), move(5, 4), move(15, 14)),
-                movesSequence(move(20, 19), move(5, 4), move(15, 14), move(10, 9)),
-                movesSequence(move(20, 19), move(5, 4), move(10, 9), move(15, 14)),
-                movesSequence(move(15, 14), move(20, 19), move(10, 9), move(5, 4)),
-                movesSequence(move(15, 14), move(20, 19), move(5, 4), move(10, 9)),
-                movesSequence(move(15, 14), move(10, 9), move(20, 19), move(5, 4)),
-                movesSequence(move(15, 14), move(10, 9), move(5, 4), move(20, 19)),
-                movesSequence(move(15, 14), move(5, 4), move(20, 19), move(10, 9)),
-                movesSequence(move(15, 14), move(5, 4), move(10, 9), move(20, 19)),
-                movesSequence(move(10, 9), move(20, 19), move(15, 14), move(5, 4)),
-                movesSequence(move(10, 9), move(20, 19), move(5, 4), move(15, 14)),
-                movesSequence(move(10, 9), move(15, 14), move(20, 19), move(5, 4)),
-                movesSequence(move(10, 9), move(15, 14), move(5, 4), move(20, 19)),
-                movesSequence(move(10, 9), move(5, 4), move(20, 19), move(15, 14)),
-                movesSequence(move(10, 9), move(5, 4), move(15, 14), move(20, 19)),
-                movesSequence(move(5, 4), move(20, 19), move(15, 14), move(10, 9)),
-                movesSequence(move(5, 4), move(20, 19), move(10, 9), move(15, 14)),
-                movesSequence(move(5, 4), move(15, 14), move(20, 19), move(10, 9)),
-                movesSequence(move(5, 4), move(15, 14), move(10, 9), move(20, 19)),
-                movesSequence(move(5, 4), move(10, 9), move(20, 19), move(15, 14)),
-                movesSequence(move(5, 4), move(10, 9), move(15, 14), move(20, 19))
+                movesSequence(move(20, 19), move(15, 14), move(10, 9), move(5, 4))
         )
         assertAllMovesFound(dice(1, 1), movesSequence)
     }
@@ -244,15 +225,10 @@ class BackgammonDoublingMovesTest : AbstractSingleMovesTest() {
         val movesSequence = listOf(
                 movesSequence(move(BAR_INDEX, 23), move(24, 22), move(23, 21), move(21, 19)),
                 movesSequence(move(BAR_INDEX, 23), move(24, 22), move(16, 14), move(10, 8)),
-                movesSequence(move(BAR_INDEX, 23), move(24, 22), move(10, 8), move(16, 14)),
                 movesSequence(move(BAR_INDEX, 23), move(23, 21), move(21, 19), move(19, 17)),
-                movesSequence(move(BAR_INDEX, 23), move(16, 14), move(24, 22), move(10, 8)),
                 movesSequence(move(BAR_INDEX, 23), move(16, 14), move(23, 21), move(21, 19)),
-                movesSequence(move(BAR_INDEX, 23), move(16, 14), move(10, 8), move(24, 22)),
-                movesSequence(move(BAR_INDEX, 23), move(10, 8), move(24, 22), move(16, 14)),
                 movesSequence(move(BAR_INDEX, 23), move(10, 8), move(23, 21), move(21, 19)),
                 movesSequence(move(BAR_INDEX, 23), move(10, 8), move(23, 21), move(8, 6)),
-                movesSequence(move(BAR_INDEX, 23), move(10, 8), move(16, 14), move(24, 22)),
                 movesSequence(move(BAR_INDEX, 23), move(10, 8), move(8, 6), move(6, 4))
         )
         assertAllMovesFound(dice(2, 2), movesSequence)

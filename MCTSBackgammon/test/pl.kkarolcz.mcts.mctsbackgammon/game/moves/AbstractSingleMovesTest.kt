@@ -6,7 +6,8 @@ import pl.kkarolcz.mcts.mctsbackgammon.board.Board
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex
 import pl.kkarolcz.mcts.mctsbackgammon.board.PlayerBoard
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
-import pl.kkarolcz.mcts.mctsbackgammon.game.statistics.Statistics
+import pl.kkarolcz.mcts.mctsbackgammon.settings.Statistics
+import pl.kkarolcz.mcts.mctsbackgammon.settings.TestSettings
 import java.util.*
 import kotlin.test.assertEquals
 
@@ -21,6 +22,8 @@ open class AbstractSingleMovesTest {
 
     @Before
     fun initialize() {
+        TestSettings.sortBoard = true
+
         Statistics.newGame()
         Statistics.currentGame.newRound()
 
@@ -55,7 +58,7 @@ open class AbstractSingleMovesTest {
 
     protected fun move(oldIndex: Number, newIndex: Number) = SingleMove(oldIndex.toByte(), newIndex.toByte())
 
-    protected fun movesSequence(vararg moves: SingleMove) = FullMove(*moves)
+    protected fun movesSequence(vararg moves: SingleMove) = FullMove(arrayOf(*moves))
 
     protected fun toOpponentsIndex(index: Number) = BoardIndex.toOpponentsIndex(index.toByte())
 

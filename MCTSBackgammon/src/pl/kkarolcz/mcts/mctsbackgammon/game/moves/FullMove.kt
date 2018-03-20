@@ -11,13 +11,15 @@ class FullMove : MCTSMove, Cloneable {
     private val _moves: Array<SingleMove>
     val moves get() = _moves
 
-    constructor(moves: List<SingleMove>) {
-        this._moves = moves.toTypedArray()
+    constructor(moves: Array<SingleMove>) {
+        this._moves = moves
     }
 
-    constructor(vararg moves: SingleMove) {
-        this._moves = arrayOf(*moves)
-    }
+    constructor() : this(arrayOf())
+
+    constructor(move: SingleMove) : this(arrayOf(move))
+
+    constructor(move1: SingleMove, move2: SingleMove) : this(arrayOf(move1, move2))
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -34,12 +36,6 @@ class FullMove : MCTSMove, Cloneable {
         return Arrays.hashCode(_moves)
     }
 
-    override fun toString(): String {
-        val builder = StringBuilder("[${_moves.joinToString(" -> ")}")
-        for (i in 1..4 - moves.size)
-            builder.append("                ")
-        builder.append("]")
-        return builder.toString()
-    }
+    override fun toString() = "[${_moves.joinToString(" -> ")}]\n"
 
 }

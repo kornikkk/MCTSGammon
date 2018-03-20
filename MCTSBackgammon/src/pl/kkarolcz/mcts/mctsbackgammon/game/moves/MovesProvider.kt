@@ -6,7 +6,6 @@ import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.board.Board
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
 import pl.kkarolcz.utils.randomElement
-import java.util.*
 
 /**
  * Created by kkarolcz on 24.02.2018.
@@ -20,7 +19,7 @@ class MovesProvider(private val board: Board, private var player: Player) : MCTS
 
     private val moves = MovesForDice()
 
-    override fun hasUntriedMoves(): Boolean = remainingDice.isNotEmpty() || moves.isNotEmpty()
+    override fun hasUntriedMoves(): Boolean = remainingDice.isNotEmpty()
 
     override fun nextRandomUntriedMove(): MCTSTraceableMove<FullMove, Dice> {
         val dice = nextRemainingDice()
@@ -41,9 +40,19 @@ class MovesProvider(private val board: Board, private var player: Player) : MCTS
         reset()
     }
 
-    /** Reset before setting new dice
-     * @see MovesProvider.reset
-     */
+    override fun updateTrace(trace: Dice) {
+        initialDice.removeIf { dice -> dice != trace }
+        remainingDice.removeIf { dice -> dice != trace }
+        untriedDice.removeIf { dice -> dice != trace }
+
+        if (initialDice.isEmpty()) {
+            remainingDice.addAll(initialDice)
+            untriedDice.addAll(initialDice)
+        }
+
+        moves.removeMovesWithoutDice(trace)
+    }
+
     fun setDice(dice: Dice?) {
         initialDice.clear()
 
@@ -76,7 +85,7 @@ class MovesProvider(private val board: Board, private var player: Player) : MCTS
 
     private fun shuffledDiceCombinations(): List<Dice> {
         val combinations = Dice.PERMUTATIONS.toMutableList()
-        Collections.shuffle(combinations)
+        combinations.shuffle()
         return combinations
     }
 
@@ -84,6 +93,10 @@ class MovesProvider(private val board: Board, private var player: Player) : MCTS
         private val map = mutableMapOf<Dice, MutableList<FullMove>>()
 
         fun isNotEmpty(): Boolean = map.isNotEmpty()
+
+        fun removeMovesWithoutDice(dice: Dice) {
+            map.keys.removeIf { key -> key != dice }
+        }
 
         fun hasMoves(dice: Dice): Boolean = map[dice]?.isNotEmpty() ?: false
 

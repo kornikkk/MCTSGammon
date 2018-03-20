@@ -5,6 +5,7 @@ import com.carrotsearch.hppc.ByteByteMap
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BAR_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BEAR_OFF_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.SingleMove
+import pl.kkarolcz.mcts.mctsbackgammon.settings.TestSettings
 import pl.kkarolcz.utils.ByteMath.ZERO_BYTE
 import pl.kkarolcz.utils.clearBit
 import pl.kkarolcz.utils.setBit
@@ -100,13 +101,29 @@ class PlayerBoard : Cloneable {
         return Tower(found.key, found.value)
     }
 
-    fun towerIterator() = object : Iterator<Tower> {
-        private val mapIterator = towers.iterator()
-        override fun hasNext() = mapIterator.hasNext()
+    fun towerIterator() = when (TestSettings.sortBoard) {
+        true -> object : Iterator<Tower> {
+            private val keysIterator = towers.keys().toArray().toList()
+                    .sortedWith(Comparator(Byte::compareTo))
+                    .reversed()
+                    .iterator()
 
-        override fun next(): Tower {
-            val cursor = mapIterator.next()
-            return Tower(cursor.key, cursor.value)
+            override fun hasNext() = keysIterator.hasNext()
+
+            override fun next(): Tower {
+                val key = keysIterator.next()
+                return Tower(key, towers[key])
+            }
+        }
+        else -> object : Iterator<Tower> {
+            private val mapIterator = towers.iterator()
+
+            override fun hasNext() = mapIterator.hasNext()
+
+            override fun next(): Tower {
+                val cursor = mapIterator.next()
+                return Tower(cursor.key, cursor.value)
+            }
         }
     }
 

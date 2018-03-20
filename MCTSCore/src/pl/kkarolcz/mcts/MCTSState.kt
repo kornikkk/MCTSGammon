@@ -10,6 +10,10 @@ abstract class MCTSState<M : MCTSMove, T : MCTSTraceableMove.Trace> {
 
     protected abstract val movesProvider: MCTSMovesProvider<M, T>
 
+    fun updateTrace(trace: T) {
+        movesProvider.updateTrace(trace)
+    }
+
     abstract fun copyForExpanding(): MCTSState<M, T>
 
     protected abstract fun copyForPlayout(): MCTSState<M, T>
@@ -25,9 +29,9 @@ abstract class MCTSState<M : MCTSMove, T : MCTSTraceableMove.Trace> {
         doMoveImpl(move)
     }
 
-    abstract protected fun doMoveImpl(move: M)
+    protected abstract fun doMoveImpl(move: M)
 
-    abstract protected fun afterSwitchPlayerForPlayout()
+    protected abstract fun afterSwitchPlayerForPlayout()
 
     /**
      * Return random possible move if present or null for not possible move

@@ -2,9 +2,9 @@ package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.mcts
 
 import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonNode
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
-import pl.kkarolcz.mcts.mctsbackgammon.game.statistics.Statistics
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.server.BoardInfo
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.server.GNUBackgammonReceiver
+import pl.kkarolcz.mcts.mctsbackgammon.settings.Statistics
 import pl.kkarolcz.mcts.node.selectionpolicies.UCTNodeSelectionPolicy
 
 /**
@@ -15,7 +15,7 @@ class GNUBackgammonMCTS : GNUBackgammonReceiver {
     private lateinit var currentNode: BackgammonNode
 
     companion object {
-        val SIMULATIONS_LIMIT = 10_000
+        const val SIMULATIONS_LIMIT = 10_000
     }
 
     override fun onBoardInfoReceived(boardInfo: BoardInfo, callback: (String) -> Unit) {
@@ -29,7 +29,7 @@ class GNUBackgammonMCTS : GNUBackgammonReceiver {
             }
             else -> {
                 // Opponent's move
-                val existingNode = currentNode.findChildNode(backgammonState)
+                val existingNode = currentNode.findChildNode(backgammonState, backgammonState.dice!!)
                 when (existingNode) {
                     null -> BackgammonNode.createRootNode(UCTNodeSelectionPolicy(), backgammonState)
                     else -> existingNode

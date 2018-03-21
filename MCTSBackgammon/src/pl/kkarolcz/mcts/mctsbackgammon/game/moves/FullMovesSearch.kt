@@ -9,15 +9,9 @@ import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
  */
 object FullMovesSearch {
 
-    fun findAll(board: Board, player: Player, dice: Dice): MutableList<FullMove> {
-        val moves = when (dice.doubling) {
-            true -> FullMovesSearchDoubling(board, player, dice).findAll()
-            false -> FullMovesSearchNonDoubling(board, player, dice).findAll()
-        }
-        return when {
-            moves.isEmpty() -> mutableListOf(FullMove())
-            else -> moves
-        }
+    fun findAll(board: Board, player: Player, dice: Dice): MutableList<FullMove> = when (dice.doubling) {
+        true -> FullMovesSearchDoubling(board, player, dice).findAll()
+        false -> FullMovesSearchNonDoubling(board, player, dice).findAll()
     }
 
 }

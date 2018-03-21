@@ -20,20 +20,24 @@ class BackgammonNonDoublingMovesTest : AbstractSingleMovesTest() {
         player2Board.put(toOpponentsIndex(BAR_INDEX - 1), 2)
         player2Board.put(toOpponentsIndex(BAR_INDEX - 6 - 1), 2)
 
+        dice = dice(6, 1)
+
         val barMove = move(BAR_INDEX, 19)
-        assertAllMovesFound(dice(6, 1), movesSequence(barMove))
+        assertAllMovesFound(movesSequence(barMove))
     }
 
     @Test
     fun `Test move from bar on an empty point and then further`() {
         player1Board.put(BAR_INDEX, 1)
 
+        dice = dice(6, 3)
+
         val moveFromBar1 = move(BAR_INDEX, BAR_INDEX - 6)
         val nextMove1 = move(BAR_INDEX - 6, BAR_INDEX - 6 - 3)
 
         val moveFromBar2 = move(BAR_INDEX, BAR_INDEX - 3)
         val nextMove2 = move(BAR_INDEX - 3, BAR_INDEX - 3 - 6)
-        assertAllMovesFound(dice(6, 3), movesSequence(moveFromBar1, nextMove1), movesSequence(moveFromBar2, nextMove2))
+        assertAllMovesFound(movesSequence(moveFromBar1, nextMove1), movesSequence(moveFromBar2, nextMove2))
     }
 
     @Test
@@ -41,9 +45,11 @@ class BackgammonNonDoublingMovesTest : AbstractSingleMovesTest() {
         player1Board.put(BAR_INDEX, 2)
         player2Board.put(toOpponentsIndex(BAR_INDEX - 6), 1)
 
+        dice = dice(6, 1)
+
         val firstBarMove = move(BAR_INDEX, BAR_INDEX - 6)
         val secondBarMove = move(BAR_INDEX, BAR_INDEX - 1)
-        assertAllMovesFound(dice(6, 1), movesSequence(firstBarMove, secondBarMove))
+        assertAllMovesFound(movesSequence(firstBarMove, secondBarMove))
     }
 
 
@@ -53,7 +59,9 @@ class BackgammonNonDoublingMovesTest : AbstractSingleMovesTest() {
         player2Board.put(toOpponentsIndex(BAR_INDEX - 6), 2)
         player2Board.put(toOpponentsIndex(BAR_INDEX - 3), 2)
 
-        assertNoMovesFound(dice(3, 6))
+        dice = dice(3, 6)
+
+        assertNoMovesFound()
     }
 
     @Test
@@ -63,8 +71,10 @@ class BackgammonNonDoublingMovesTest : AbstractSingleMovesTest() {
         player2Board.put(toOpponentsIndex(24 - 6), 1) // That one should be hit
         player2Board.put(toOpponentsIndex(24 - 6 - 2), 2) // Move would be possible for dice 6, then 2
 
+        dice = dice(6, 2)
+
         val possibleMove = move(24, 24 - 6)
-        assertAllMovesFound(dice(6, 2), movesSequence(possibleMove))
+        assertAllMovesFound(movesSequence(possibleMove))
     }
 
     @Test
@@ -74,7 +84,9 @@ class BackgammonNonDoublingMovesTest : AbstractSingleMovesTest() {
         player1Board.put(10, 1)
         player2Board.put(toOpponentsIndex(10 - 4), 2)
 
-        assertAllMovesFound(dice(5, 4),
+        dice = dice(5, 4)
+
+        assertAllMovesFound(
                 // Sequences from 24
                 movesSequence(move(24, 24 - 5), move(24 - 5, 24 - 5 - 4)),
                 movesSequence(move(24, 24 - 4), move(24 - 4, 24 - 4 - 5)),
@@ -173,9 +185,11 @@ class BackgammonNonDoublingMovesTest : AbstractSingleMovesTest() {
     fun `Test bear off move for new index just out of the board`() {
         player1Board.put(5, 1)
 
+        dice = dice(6, 5)
+
         val possibleMove = move(5, BEAR_OFF_INDEX)
 
-        assertAllMovesFound(dice(6, 5), movesSequence(possibleMove))
+        assertAllMovesFound(movesSequence(possibleMove))
     }
 
     //
@@ -184,8 +198,10 @@ class BackgammonNonDoublingMovesTest : AbstractSingleMovesTest() {
     fun `Test bear off move for new index farther out of the board`() {
         player1Board.put(2, 1)
 
+        dice = dice(6, 5)
+
         val possibleMove = move(2, BEAR_OFF_INDEX)
-        assertAllMovesFound(dice(6, 5), movesSequence(possibleMove))
+        assertAllMovesFound(movesSequence(possibleMove))
     }
 
     @Test
@@ -196,7 +212,9 @@ class BackgammonNonDoublingMovesTest : AbstractSingleMovesTest() {
 
         player1Board.put(2, 1)
 
-        assertNoMovesFound(dice(4, 2))
+        dice = dice(4, 2)
+
+        assertNoMovesFound()
     }
 
     @Test
@@ -206,7 +224,9 @@ class BackgammonNonDoublingMovesTest : AbstractSingleMovesTest() {
         player2Board.put(toOpponentsIndex(23), 2)
         player2Board.put(toOpponentsIndex(21), 2)
 
-        assertNoMovesFound(dice(4, 2))
+        dice = dice(4, 2)
+
+        assertNoMovesFound()
     }
 
     @Test

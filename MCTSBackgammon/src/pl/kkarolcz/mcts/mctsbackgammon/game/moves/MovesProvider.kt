@@ -1,7 +1,6 @@
 package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 
 import pl.kkarolcz.mcts.MCTSMovesProvider
-import pl.kkarolcz.mcts.MCTSTraceableMove
 import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.board.Board
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
@@ -10,10 +9,9 @@ import pl.kkarolcz.utils.randomElement
 /**
  * Created by kkarolcz on 24.02.2018.
  */
-class MovesProvider(private val board: Board, private var player: Player) : MCTSMovesProvider<FullMove, Dice> {
+class MovesProvider(private val board: Board, private var player: Player) : MCTSMovesProvider<FullMove> {
 
     private val initialDice = mutableListOf<Dice>()
-
     private val remainingDice = mutableListOf<Dice>()
     private val untriedDice = mutableListOf<Dice>()
 
@@ -21,7 +19,7 @@ class MovesProvider(private val board: Board, private var player: Player) : MCTS
 
     override fun hasUntriedMoves(): Boolean = remainingDice.isNotEmpty()
 
-    override fun nextRandomUntriedMove(): MCTSTraceableMove<FullMove, Dice> {
+    override fun pollNextRandomUntriedMove(): FullMove {
         val dice = nextRemainingDice()
         if (!wasTried(dice)) {
             updateMovesForDice(dice)
@@ -32,7 +30,7 @@ class MovesProvider(private val board: Board, private var player: Player) : MCTS
             remainingDice.remove(dice)
         }
 
-        return MCTSTraceableMove(randomMove, dice)
+        return randomMove
     }
 
     override fun reset(player: Player) {
@@ -40,25 +38,33 @@ class MovesProvider(private val board: Board, private var player: Player) : MCTS
         reset()
     }
 
-    override fun updateTrace(trace: Dice) {
-        initialDice.removeIf { dice -> dice != trace }
-        remainingDice.removeIf { dice -> dice != trace }
-        untriedDice.removeIf { dice -> dice != trace }
+    /**
+     * Discards all moves for other dice and leaves only the provided one
+     * @param dice dice which won't be discarded
+     */
+    fun discardOtherDice(dice: Dice) {
+        initialDice.removeIf { it != dice }
+        remainingDice.removeIf { it != dice }
+        untriedDice.removeIf { it != dice }
 
         if (initialDice.isEmpty()) {
             remainingDice.addAll(initialDice)
             untriedDice.addAll(initialDice)
         }
 
-        moves.removeMovesWithoutDice(trace)
+        moves.removeMovesWithoutDice(dice)
     }
 
-    fun setDice(dice: Dice?) {
+    /**
+     * Clears the moves and set a new dice
+     * @param newDice if null all possible dice will be used for moves search
+     */
+    fun resetDice(newDice: Dice?) {
         initialDice.clear()
 
-        when (dice) {
+        when (newDice) {
             null -> initialDice.addAll(shuffledDiceCombinations())
-            else -> initialDice.add(dice)
+            else -> initialDice.add(newDice)
         }
 
         reset()
@@ -91,8 +97,6 @@ class MovesProvider(private val board: Board, private var player: Player) : MCTS
 
     class MovesForDice {
         private val map = mutableMapOf<Dice, MutableList<FullMove>>()
-
-        fun isNotEmpty(): Boolean = map.isNotEmpty()
 
         fun removeMovesWithoutDice(dice: Dice) {
             map.keys.removeIf { key -> key != dice }

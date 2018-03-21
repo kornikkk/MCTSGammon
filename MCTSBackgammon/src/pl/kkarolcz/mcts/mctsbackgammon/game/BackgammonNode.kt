@@ -1,7 +1,6 @@
 package pl.kkarolcz.mcts.mctsbackgammon.game
 
 import pl.kkarolcz.mcts.MCTSNode
-import pl.kkarolcz.mcts.MCTSState
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMove
 import pl.kkarolcz.mcts.node.selectionpolicies.NodeSelectionPolicy
@@ -9,8 +8,8 @@ import pl.kkarolcz.mcts.node.selectionpolicies.NodeSelectionPolicy
 /**
  * Created by kkarolcz on 25.02.2018.
  */
-class BackgammonNode(nodeSelectionPolicy: NodeSelectionPolicy, state: MCTSState<FullMove, Dice>, originMove: FullMove?)
-    : MCTSNode<BackgammonNode, FullMove, Dice>(nodeSelectionPolicy, state, originMove) {
+class BackgammonNode(nodeSelectionPolicy: NodeSelectionPolicy, state: BackgammonState, originMove: FullMove?)
+    : MCTSNode<BackgammonNode, BackgammonState, FullMove>(nodeSelectionPolicy, state, originMove) {
 
     companion object {
 
@@ -19,7 +18,12 @@ class BackgammonNode(nodeSelectionPolicy: NodeSelectionPolicy, state: MCTSState<
 
     }
 
-    override fun newNode(nodeSelectionPolicy: NodeSelectionPolicy, state: MCTSState<FullMove, Dice>, originMove: FullMove?): BackgammonNode
+    override fun newNode(nodeSelectionPolicy: NodeSelectionPolicy, state: BackgammonState, originMove: FullMove?): BackgammonNode
             = BackgammonNode(nodeSelectionPolicy, state, originMove)
+
+    fun discardOtherDice(dice: Dice) {
+        children.removeIf { child -> child.originMove!!.dice == dice } //Can't be null here. If it is that's probably an error in the code
+        state.movesProvider.discardOtherDice(dice)
+    }
 
 }

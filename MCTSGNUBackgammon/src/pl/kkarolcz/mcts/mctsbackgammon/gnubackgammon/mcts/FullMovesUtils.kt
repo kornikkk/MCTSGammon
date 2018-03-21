@@ -12,7 +12,7 @@ fun convertToGNUBackgammonMove(fullMove: FullMove?): String {
     if (fullMove == null) {
         return ""
     }
-    return fullMove.moves.joinToString(" ") { singleMove -> singleMove.convertToGNUBackgammonSingleMove() }
+    return fullMove.joinToString(" ") { singleMove -> singleMove.convertToGNUBackgammonSingleMove() }
 }
 
 private fun SingleMove.convertToGNUBackgammonSingleMove(): String =

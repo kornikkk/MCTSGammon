@@ -1,18 +1,29 @@
 package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 
+import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
+
 /**
  * Created by kkarolcz on 11.02.2018.
  */
 class FullMovesBuilder : Cloneable {
 
-    private val moves = arrayOfNulls<SingleMove>(4)
+    private val dice: Dice
+    private val moves: Array<SingleMove?>
     private var realSize = 0
 
     val length get() = realSize
 
-    constructor()
+    constructor(dice: Dice) {
+        this.dice = dice
 
-    private constructor(other: FullMovesBuilder) {
+        val maxSize = when (dice.doubling) {
+            true -> 4
+            false -> 2
+        }
+        this.moves = arrayOfNulls(maxSize)
+    }
+
+    private constructor(other: FullMovesBuilder) : this(other.dice) {
         System.arraycopy(other.moves, 0, this.moves, 0, other.realSize)
         this.realSize = other.realSize
     }
@@ -53,6 +64,6 @@ class FullMovesBuilder : Cloneable {
     fun build(): FullMove {
         val nonNullMoves: Array<SingleMove?> = arrayOfNulls(realSize)
         System.arraycopy(moves, 0, nonNullMoves, 0, realSize)
-        return FullMove(nonNullMoves as Array<SingleMove>)
+        return FullMove(nonNullMoves as Array<SingleMove>, dice)
     }
 }

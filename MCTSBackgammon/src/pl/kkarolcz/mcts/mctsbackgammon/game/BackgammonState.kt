@@ -12,7 +12,7 @@ import pl.kkarolcz.utils.randomElement
 /**
  * Created by kkarolcz on 24.08.2017.
  */
-class BackgammonState(private val board: Board, override var currentPlayer: Player, val dice: Dice?) : MCTSState<FullMove, Dice>() {
+class BackgammonState(private val board: Board, currentPlayer: Player, val dice: Dice?) : MCTSState<FullMove>(currentPlayer) {
 
     override val result: Result?
         get() = when {
@@ -24,7 +24,7 @@ class BackgammonState(private val board: Board, override var currentPlayer: Play
     override val movesProvider: MovesProvider = MovesProvider(board, currentPlayer)
 
     init {
-        movesProvider.setDice(dice)
+        movesProvider.resetDice(dice)
     }
 
     override fun copyForExpanding() = BackgammonState(board.clone(), currentPlayer, null)
@@ -32,18 +32,12 @@ class BackgammonState(private val board: Board, override var currentPlayer: Play
     override fun copyForPlayout() = BackgammonState(board.clone(), currentPlayer, Dice.PERMUTATIONS.randomElement())
 
     override fun doMoveImpl(move: FullMove) {
-        for (currentMove in move.moves)
+        for (currentMove in move)
             board.doSingleMove(currentPlayer, currentMove)
     }
 
     override fun afterSwitchPlayerForPlayout() {
-        movesProvider.setDice(Dice.PERMUTATIONS.randomElement())
-    }
-
-    override fun toString(): String {
-        val currentPlayer = "Current player: $currentPlayer"
-        val result = this.result ?: return currentPlayer
-        return currentPlayer + ", Winner: ${result.winner()}"
+        movesProvider.resetDice(Dice.PERMUTATIONS.randomElement())
     }
 
     override fun equals(other: Any?): Boolean {

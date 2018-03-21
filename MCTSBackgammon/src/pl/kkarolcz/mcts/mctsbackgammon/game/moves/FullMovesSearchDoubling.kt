@@ -23,7 +23,7 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
 
     private var diceLeft = 4
 
-    private val initialFullMoveBuilder = FullMovesBuilder()
+    private val initialFullMoveBuilder = FullMovesBuilder(dice)
 
     private var longestFullMove = 0
 

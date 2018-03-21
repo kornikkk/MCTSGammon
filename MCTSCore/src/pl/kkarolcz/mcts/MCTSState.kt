@@ -3,66 +3,72 @@ package pl.kkarolcz.mcts
 /**
  * Created by kkarolcz on 07.08.2017.
  */
-abstract class MCTSState<M : MCTSMove, T : MCTSTraceableMove.Trace> {
-    abstract var currentPlayer: Player
+abstract class MCTSState<M : MCTSMove>(private var _currentPlayer: Player) {
+
+    val currentPlayer get() = _currentPlayer
+
 
     abstract val result: Result?
 
-    protected abstract val movesProvider: MCTSMovesProvider<M, T>
+    abstract val movesProvider: MCTSMovesProvider<M>
 
-    fun updateTrace(trace: T) {
-        movesProvider.updateTrace(trace)
-    }
 
-    abstract fun copyForExpanding(): MCTSState<M, T>
+    abstract override fun equals(other: Any?): Boolean
 
-    protected abstract fun copyForPlayout(): MCTSState<M, T>
+    abstract override fun hashCode(): Int
 
-    override fun toString() = "" +
-            "Current Player: $currentPlayer" +
-            "\nWinner: ${result?.winner() ?: "NONE"}"
+ 
+    abstract fun copyForExpanding(): MCTSState<M>
 
-    fun hasUntriedMoves(): Boolean = movesProvider.hasUntriedMoves()
-
-    internal fun doMove(move: M) {
-        // movesProvider.remove(move)
-        doMoveImpl(move)
-    }
+    protected abstract fun copyForPlayout(): MCTSState<M>
 
     protected abstract fun doMoveImpl(move: M)
 
     protected abstract fun afterSwitchPlayerForPlayout()
 
+
+    internal fun hasUntriedMoves(): Boolean = movesProvider.hasUntriedMoves()
+
+    internal fun doMove(move: M) {
+        doMoveImpl(move)
+    }
+
     /**
      * Return random possible move if present or null for not possible move
      */
-    internal fun pollRandomMove(): MCTSTraceableMove<M, T> = movesProvider.nextRandomUntriedMove()
+    internal fun pollRandomMove(): M = movesProvider.pollNextRandomUntriedMove()
 
     internal fun playout(): Result? {
         val newState = copyForPlayout()
         var newStateResult = newState.result
 
         while (newStateResult == null && newState.hasUntriedMoves()) {
-            newState.doMoveImpl(newState.pollRandomMove().move)
-
+            newState.doMove(newState.pollRandomMove())
             newState.switchPlayerForPlayout()
+
             newStateResult = newState.result
         }
+
         return newStateResult
     }
 
     internal fun switchPlayer() {
-        currentPlayer = currentPlayer.opponent()
-        movesProvider.reset(currentPlayer)
+        _currentPlayer = _currentPlayer.opponent()
+        movesProvider.reset(_currentPlayer)
     }
 
-    protected open fun switchPlayerForPlayout() {
+    private fun switchPlayerForPlayout() {
         switchPlayer()
         afterSwitchPlayerForPlayout()
     }
 
-    abstract override fun equals(other: Any?): Boolean
 
-    abstract override fun hashCode(): Int
+    override fun toString(): String {
+        val result = this.result
+        return when (result) {
+            null -> "Current player: $_currentPlayer"
+            else -> "Current player: $_currentPlayer, Winner: ${result.winner()}"
+        }
+    }
 
 }

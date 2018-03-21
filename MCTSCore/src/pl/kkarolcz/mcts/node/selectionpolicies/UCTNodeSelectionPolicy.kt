@@ -2,7 +2,7 @@ package pl.kkarolcz.mcts.node.selectionpolicies
 
 import pl.kkarolcz.mcts.MCTSMove
 import pl.kkarolcz.mcts.MCTSNode
-import pl.kkarolcz.mcts.MCTSTraceableMove
+import pl.kkarolcz.mcts.MCTSState
 import java.lang.Math.log
 import java.lang.Math.sqrt
 
@@ -12,20 +12,21 @@ import java.lang.Math.sqrt
 class UCTNodeSelectionPolicy : NodeSelectionPolicy {
 
     companion object {
-        val C = sqrt(2.0)
+        val C: Double = sqrt(2.0)
     }
 
     /**
      * @throws IllegalArgumentException if childNodes is empty
      */
-    override fun <N : MCTSNode<N, M, T>, M : MCTSMove, T : MCTSTraceableMove.Trace> selectNode(childNodes: Iterable<N>): N {
-        val totalVisits = childNodes.map(MCTSNode<N, M, T>::visits).sum()
-        return childNodes.maxBy { node -> countUCT(totalVisits, node) } ?:
-                throw IllegalArgumentException("Child nodes expected not empty")
+    override fun <N : MCTSNode<N, S, M>, S : MCTSState<M>, M : MCTSMove> selectChildNode(node: N): N {
+        return node.children.maxBy { child -> countUCT(node.visits, child) }
+                ?: throw IllegalArgumentException("Child nodes expected not empty")
     }
 
-    private fun <N : MCTSNode<N, M, T>, M : MCTSMove, T : MCTSTraceableMove.Trace> countUCT(totalVisits: Int, node: N) =
-            // wi / ni + c * √(ln(t) / ni)
-            node.wins / node.visits + C * sqrt(log(totalVisits.toDouble()) / node.visits)
+    /**
+     * Wi / Ni + C * √(ln(T) / Ni)
+     */
+    private fun <N : MCTSNode<N, S, M>, S : MCTSState<M>, M : MCTSMove> countUCT(totalVisits: Int, node: N): Double =
+            node.wins.toDouble() / node.visits + C * sqrt(log(totalVisits.toDouble()) / node.visits)
 
 }

@@ -24,6 +24,8 @@ class Dice(value1: Byte, value2: Byte) : MCTSTraceableMove.Trace {
         )
     }
 
+    override fun toString(): String = "($first, $second)"
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

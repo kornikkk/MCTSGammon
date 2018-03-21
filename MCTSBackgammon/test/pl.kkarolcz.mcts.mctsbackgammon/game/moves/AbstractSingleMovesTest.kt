@@ -18,6 +18,8 @@ open class AbstractSingleMovesTest {
 
     protected lateinit var player1Board: PlayerBoard
     protected lateinit var player2Board: PlayerBoard
+    protected lateinit var dice: Dice
+
     private lateinit var board: Board
 
     @Before
@@ -34,16 +36,16 @@ open class AbstractSingleMovesTest {
     }
 
 
-    protected fun assertNoMovesFound(dice: Dice) {
+    protected fun assertNoMovesFound() {
         val searcher = FullMovesSearchNonDoubling(board, Player.MCTS, dice)
-        assertEquals(emptyList(), searcher.findAll().toList())
+        assertEquals(listOf(FullMove(emptyArray(), dice)), searcher.findAll().toList())
     }
 
-    protected fun assertAllMovesFound(dice: Dice, vararg expectedMoves: FullMove) {
-        assertAllMovesFound(dice, expectedMoves.toList())
+    protected fun assertAllMovesFound(vararg expectedMoves: FullMove) {
+        assertAllMovesFound(expectedMoves.toList())
     }
 
-    protected fun assertAllMovesFound(dice: Dice, expectedMoves: Iterable<FullMove>) {
+    protected fun assertAllMovesFound(expectedMoves: Iterable<FullMove>) {
         val expectedSet = sortMoves(expectedMoves)
         val actualSet = sortMoves(searcher(dice).findAll())
         assertEquals(expectedSet, actualSet)
@@ -58,20 +60,22 @@ open class AbstractSingleMovesTest {
 
     protected fun move(oldIndex: Number, newIndex: Number) = SingleMove(oldIndex.toByte(), newIndex.toByte())
 
-    protected fun movesSequence(vararg moves: SingleMove) = FullMove(arrayOf(*moves))
+    protected fun movesSequence(vararg moves: SingleMove) = FullMove(arrayOf(*moves), dice)
 
     protected fun toOpponentsIndex(index: Number) = BoardIndex.toOpponentsIndex(index.toByte())
 
     private fun sortMoves(moves: Iterable<FullMove>): List<FullMove> {
         val movesList = moves.toMutableList()
         movesList.sortWith(Comparator { move1, move2 ->
+            val moves1 = move1.toList()
+            val moves2 = move2.toList()
             when {
-                move1.moves.size > move2.moves.size -> return@Comparator -1
-                move1.moves.size < move2.moves.size -> return@Comparator 1
+                moves1.size > moves2.size -> return@Comparator -1
+                moves1.size < moves2.size -> return@Comparator 1
                 else ->
-                    for (i in 0 until move1.moves.size) {
-                        val singleMove1 = move1.moves[i]
-                        val singleMove2 = move2.moves[i]
+                    for (i in 0 until moves1.size) {
+                        val singleMove1 = moves1[i]
+                        val singleMove2 = moves2[i]
                         when {
                             singleMove1.oldIndex > singleMove2.oldIndex -> return@Comparator -1
                             singleMove1.oldIndex < singleMove2.oldIndex -> return@Comparator 1

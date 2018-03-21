@@ -11,9 +11,7 @@ import org.jgrapht.ext.JGraphXAdapter
 import org.jgrapht.ext.StringComponentNameProvider
 import org.jgrapht.graph.DefaultDirectedGraph
 import org.jgrapht.graph.DefaultEdge
-import pl.kkarolcz.mcts.MCTSMove
 import pl.kkarolcz.mcts.MCTSNode
-import pl.kkarolcz.mcts.MCTSTraceableMove
 import java.awt.Dimension
 import java.io.File
 import java.util.*
@@ -26,17 +24,17 @@ import javax.swing.WindowConstants
  */
 object GraphGenerator {
 
-    fun <N : MCTSNode<N, M, T>, M : MCTSMove, T : MCTSTraceableMove.Trace> generateGraph(rootNode: N):
-            DirectedGraph<N, DefaultEdge> {
-
+    fun <N : MCTSNode<*, *, *>> generateGraph(rootNode: N): DirectedGraph<N, DefaultEdge> {
         val graph = DefaultDirectedGraph<N, DefaultEdge>(DefaultEdge::class.java)
         addNodeToGraph(graph, rootNode)
         return graph
     }
 
-    fun <N : MCTSNode<N, M, T>, M : MCTSMove, T : MCTSTraceableMove.Trace> addNodeToGraph(graph: DirectedGraph<N, DefaultEdge>, node: N) {
+    @Suppress("UNCHECKED_CAST")
+    fun <N : MCTSNode<*, *, *>> addNodeToGraph(graph: DirectedGraph<N, DefaultEdge>, node: N) {
         graph.addVertex(node)
-        node.children.forEach { child ->
+        for (child in node.children) {
+            child as N
             graph.addVertex(child)
             graph.addEdge(node, child)
             addNodeToGraph(graph, child)

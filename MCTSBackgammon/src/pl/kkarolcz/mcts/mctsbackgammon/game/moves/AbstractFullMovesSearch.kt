@@ -19,6 +19,9 @@ abstract class AbstractFullMovesSearch(board: Board, currentPlayer: Player, prot
 
     fun findAll(): MutableList<FullMove> {
         findAllImpl()
+        if (fullMoves.isEmpty()) {
+            fullMoves.add(FullMovesBuilder(dice).build())
+        }
         return fullMoves
     }
 

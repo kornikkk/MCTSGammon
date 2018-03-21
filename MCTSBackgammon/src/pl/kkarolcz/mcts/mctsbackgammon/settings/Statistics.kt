@@ -24,6 +24,7 @@ object Statistics {
     fun newGame() {
         _currentGame = Game()
         _games.add(_currentGame)
+        _currentGame.newRound()
     }
 
     override fun toString(): String {
@@ -34,7 +35,7 @@ object Statistics {
         return builder.toString()
     }
 
-    fun logCurrentRound() {
+    fun logRound() {
         System.out.println(currentGame.currentRound.toString())
         if (logFile != null) {
             logFile!!.appendText(currentGame.currentRound.toString())

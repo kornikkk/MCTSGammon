@@ -27,7 +27,7 @@ open class AbstractSingleMovesTest {
         TestSettings.sortBoard = true
 
         Statistics.newGame()
-        Statistics.currentGame.newRound()
+        Statistics.Game.newRound()
 
         player1Board = PlayerBoard()
         player2Board = PlayerBoard()

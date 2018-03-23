@@ -7,6 +7,7 @@ import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BAR_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.NO_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.toOpponentsIndex
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
+import java.util.*
 
 /**
  * Created by kkarolcz on 19.11.2017.
@@ -50,17 +51,20 @@ abstract class AbstractFullMovesSearch(board: Board, currentPlayer: Player, prot
         return NO_INDEX
     }
 
-    protected fun firstForBearingOff(homeTowersIndices: Collection<Byte>, dice: Byte): SingleMove? {
+    protected fun firstForBearingOff(homeTowersIndices: Collection<Byte>, dieValue: Byte): SingleMove? {
+        val indices: MutableSet<Byte> = sortedSetOf(Comparator.reverseOrder())
+        indices.addAll(homeTowersIndices)
+
         var greaterThanDiceFound = false
-        for (index in homeTowersIndices) {
-            if (index == dice)
+        for (index in indices) {
+            if (index == dieValue)
                 return SingleMove(index, BoardIndex.BEAR_OFF_INDEX)
 
-            if (index > dice) {
+            if (index > dieValue) {
                 greaterThanDiceFound = true
                 continue
             }
-            if (!greaterThanDiceFound && index < dice)
+            if (!greaterThanDiceFound && index < dieValue)
                 return SingleMove(index, BoardIndex.BEAR_OFF_INDEX)
 
             break

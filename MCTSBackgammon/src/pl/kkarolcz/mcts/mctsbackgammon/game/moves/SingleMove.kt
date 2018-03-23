@@ -1,5 +1,6 @@
 package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 
+import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BAR_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BEAR_OFF_INDEX
 
@@ -11,6 +12,8 @@ class SingleMove constructor(val oldIndex: Byte, val newIndex: Byte) : Cloneable
     fun reversed() = SingleMove(newIndex, oldIndex)
 
     public override fun clone(): SingleMove = SingleMove(oldIndex, newIndex)
+
+    fun isBearingOff(): Boolean = newIndex == BoardIndex.BEAR_OFF_INDEX
 
     override fun toString(): String = "(${toString(oldIndex)} -> ${toString(newIndex)})"
 

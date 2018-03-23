@@ -1,5 +1,7 @@
 package pl.kkarolcz.mcts.mctsbackgammon.settings
 
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMove
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.formatForGNUBackgammon
 import java.io.File
 
 /**
@@ -7,12 +9,15 @@ import java.io.File
  */
 object Statistics {
     private var logFile: File? = null
+    private var logToFile: Boolean = false
+    private var logToConsole: Boolean = true
 
-    private lateinit var _currentGame: Game
-    val currentGame get() = _currentGame
+    private var currentGame: Int = 0
 
-    private val _games = mutableListOf<Game>()
-    val games: List<Game> get() = _games
+    fun setUp(logToFile: Boolean, logToConsole: Boolean) {
+        this.logToFile = logToFile
+        this.logToConsole = logToConsole
+    }
 
     fun setLogFile(logFile: File) {
         if (logFile.exists()) {
@@ -22,66 +27,67 @@ object Statistics {
     }
 
     fun newGame() {
-        _currentGame = Game()
-        _games.add(_currentGame)
-        _currentGame.newRound()
+        Game.reset()
+        currentGame += 1
+        log("Game: $currentGame")
     }
 
-    override fun toString(): String {
-        val builder = StringBuilder()
-        games.forEachIndexed { index, game ->
-            builder.append("Game $index:\n$game")
-        }
-        return builder.toString()
-    }
-
-    fun logRound() {
-        System.out.println(currentGame.currentRound.toString())
-        if (logFile != null) {
-            logFile!!.appendText(currentGame.currentRound.toString())
-        }
-    }
-
-
-    class Game {
-        private lateinit var _currentRound: Round
-        val currentRound get() = _currentRound
-
-        private val _rounds = mutableListOf<Round>()
-        val rounds: List<Round> get() = _rounds
+    object Game {
+        private var currentRound: Int = 0
 
         fun newRound() {
-            _currentRound = Round()
-            _rounds.add(_currentRound)
+            if (currentGame == 0) throw IllegalStateException("Game not started. Cannot start a new round")
+
+            Round.reset()
+            currentRound += 1
+            log("  Round: $currentRound")
         }
 
-        override fun toString(): String {
-            val builder = StringBuilder()
-            rounds.forEachIndexed { index, round ->
-                builder.append("Round $index:\n$round")
-            }
-            return builder.toString()
+        internal fun reset() {
+            currentRound = 0
         }
 
-        class Round {
-            private var _nonDoublingSearches: Long = 0
-            val nonDoublingSearches get() = _nonDoublingSearches
+        object Round {
+            internal var nonDoublingSearches: Long = 0
+                private set
 
-            private var _doublingSearches: Long = 0
-            val doublingSearches get() = _doublingSearches
+            internal var doublingSearches: Long = 0
+                private set
 
             fun incNonDoublingSearches() {
-                _nonDoublingSearches += 1
+                if (currentRound == 0) throw IllegalStateException("Round not started")
+                nonDoublingSearches += 1
             }
 
             fun incDoublingSearches() {
-                _doublingSearches += 1
+                if (currentRound == 0) throw IllegalStateException("Round not started")
+                doublingSearches += 1
             }
 
-            override fun toString() =
-                    "Non doubling searches: $nonDoublingSearches\n" +
-                            "Doubling searches:     $doublingSearches"
+            fun finishRound(move: FullMove) {
+                if (currentRound == 0) throw IllegalStateException("Round not started")
+                log("    Non doubling searches: ${Round.nonDoublingSearches}")
+                log("    Doubling searches: ${Round.doublingSearches}")
+                log("    Moving checkers: ${formatForGNUBackgammon(move)}")
+            }
+
+            internal fun reset() {
+                nonDoublingSearches = 0
+                doublingSearches = 0
+            }
 
         }
+    }
+
+    fun log(message: String) {
+        if (logToConsole)
+            println(message)
+
+        if (logToFile)
+            printToFile(message)
+    }
+
+    private fun printToFile(message: String) {
+        logFile?.appendText(message, Charsets.UTF_8) ?: IllegalStateException("Log file not set")
     }
 }

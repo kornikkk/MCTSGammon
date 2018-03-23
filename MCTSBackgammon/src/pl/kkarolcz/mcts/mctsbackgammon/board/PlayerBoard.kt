@@ -127,9 +127,9 @@ class PlayerBoard : Cloneable {
         }
     }
 
-    fun homeTowersIndices(): Collection<Byte> = setBitsFromMostSignificant(homeTowersMask)
-            .map { i -> (i + 1).toByte() }
-            .toList()
+    fun homeTowersIndices(): Collection<Byte> = towersIndices(homeTowersMask)
+
+    fun nonHomeTowersIndices(): Collection<Byte> = towersIndices(nonHomeTowersMask)
 
     fun isOccupied(index: Byte): Boolean = get(index) > 0
 
@@ -172,6 +172,10 @@ class PlayerBoard : Cloneable {
             }
         }
     }
+
+    private fun towersIndices(towersMask: Int): Collection<Byte> = setBitsFromMostSignificant(towersMask)
+            .map { i -> (i + 1).toByte() }
+            .toList()
 
     class Tower(val index: Byte, val checkers: Byte)
 

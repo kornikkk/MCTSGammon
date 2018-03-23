@@ -5,6 +5,7 @@ import org.junit.Test
 import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.board.Board
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BAR_INDEX
+import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BEAR_OFF_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.PlayerBoard
 import pl.kkarolcz.mcts.mctsbackgammon.settings.TestSettings
 import java.util.*
@@ -32,14 +33,15 @@ class BackgammonDoublingMovesTest : AbstractSingleMovesTest() {
             FullMovesSearchDoubling(board, Player.MCTS, dices).findAll()
         }
 
-        val startTime = System.nanoTime()
+        var fullTime = 0L
         for (i in 1..attempts) {
+            val startTime = System.nanoTime()
             FullMovesSearchDoubling(board, Player.MCTS, dices).findAll()
+            val endTime = System.nanoTime()
+            fullTime += endTime - startTime
         }
-        val endTime = System.nanoTime()
-        val microseconds = (endTime - startTime) / 1000
 
-        println("Average time: ${microseconds / attempts} μs")
+        println("Average time: ${fullTime / 1000 / attempts} μs")
     }
 
     @Ignore
@@ -47,14 +49,17 @@ class BackgammonDoublingMovesTest : AbstractSingleMovesTest() {
     fun testPerformance() {
         TestSettings.sortBoard = false
         val random = Random()
-        for (i in 1..10_000) {
+
+        var fullTime = 0L
+        val attempts = 100_000
+        for (i in 1..attempts) {
             val player1Checkers = PlayerBoard()
             val player1RandomCheckers = ByteArray(26)
 
             val player2Checkers = PlayerBoard()
             val player2RandomCheckers = ByteArray(26)
 
-            for (j in 1..15) {
+            for (j in 1..random.nextInt(15) + 1) {
                 player1RandomCheckers[random.nextInt(26)] = 1
                 player2RandomCheckers[random.nextInt(26)] = 1
             }
@@ -67,8 +72,13 @@ class BackgammonDoublingMovesTest : AbstractSingleMovesTest() {
             val board = Board(player1Checkers, player2Checkers)
             val die = 1 + random.nextInt(6)
             val dices = dice(die, die)
+
+            val startTime = System.nanoTime()
             FullMovesSearchDoubling(board, Player.MCTS, dices).findAll()
+            val endTime = System.nanoTime()
+            fullTime += endTime - startTime
         }
+        println("Average time: ${fullTime / 1000 / attempts} μs")
     }
 
     @Test
@@ -259,6 +269,102 @@ class BackgammonDoublingMovesTest : AbstractSingleMovesTest() {
                 movesSequence(move(BAR_INDEX, 23), move(10, 8), move(23, 21), move(8, 6)),
                 movesSequence(move(BAR_INDEX, 23), move(10, 8), move(8, 6), move(6, 4))
         )
+        assertAllMovesFound(movesSequence)
+    }
+
+    @Test
+    fun `Test simple bearing off`() {
+        player1Board.put(6, 4)
+        dice = dice(6, 6)
+        val movesSequence = listOf(
+                movesSequence(move(6, BEAR_OFF_INDEX), move(6, BEAR_OFF_INDEX), move(6, BEAR_OFF_INDEX), move(6, BEAR_OFF_INDEX))
+        )
+
+        assertAllMovesFound(movesSequence)
+    }
+
+    @Test
+    fun `Test bearing off with one checker outside the home board`() {
+        player1Board.put(10, 1)
+        player1Board.put(6, 3)
+        dice = dice(6, 6)
+        val movesSequence = listOf(
+                movesSequence(move(10, 4), move(6, BEAR_OFF_INDEX), move(6, BEAR_OFF_INDEX), move(6, BEAR_OFF_INDEX))
+        )
+
+        assertAllMovesFound(movesSequence)
+    }
+
+    @Test
+    fun `Test bearing off with one checker outside the home board which needs the sequence to get into the home board`() {
+        player1Board.put(14, 1)
+        player1Board.put(6, 3)
+        dice = dice(6, 6)
+        val movesSequence = listOf(
+                movesSequence(move(14, 8), move(8, 2), move(6, BEAR_OFF_INDEX), move(6, BEAR_OFF_INDEX))
+        )
+
+        assertAllMovesFound(movesSequence)
+    }
+
+    @Test
+    fun `Test bearing off with one checker outside the home board which needs two sequences to get into the home board`() {
+        player1Board.put(22, 1)
+        player1Board.put(6, 3)
+        dice = dice(6, 6)
+        val movesSequence = listOf(
+                movesSequence(move(22, 16), move(16, 10), move(10, 4), move(6, BEAR_OFF_INDEX))
+        )
+
+        assertAllMovesFound(movesSequence)
+    }
+
+    @Test
+    fun `Test bearing off with two checkers outside the home board`() {
+        player1Board.put(10, 2)
+        player1Board.put(6, 4)
+        dice = dice(6, 6)
+        val movesSequence = listOf(
+                movesSequence(move(10, 4), move(10, 4), move(6, BEAR_OFF_INDEX), move(6, BEAR_OFF_INDEX))
+        )
+
+        assertAllMovesFound(movesSequence)
+    }
+
+    @Test
+    fun `Test bearing off with three checkers outside the home board`() {
+        player1Board.put(11, 1)
+        player1Board.put(10, 2)
+        player1Board.put(6, 4)
+        dice = dice(6, 6)
+        val movesSequence = listOf(
+                movesSequence(move(11, 5), move(10, 4), move(10, 4), move(6, BEAR_OFF_INDEX))
+        )
+
+        assertAllMovesFound(movesSequence)
+    }
+
+    @Test
+    fun `Test bearing off with partial moves inside the home board`() {
+        player1Board.put(6, 2)
+        dice = dice(4, 4)
+        val movesSequence = listOf(
+                movesSequence(move(6, 2), move(6, 2), move(2, BEAR_OFF_INDEX), move(2, BEAR_OFF_INDEX))
+        )
+
+        assertAllMovesFound(movesSequence)
+    }
+
+    @Test
+    fun `Test bearing off with partial and sequential move inside the home board`() {
+        player1Board.put(6, 2)
+        dice = dice(2, 2)
+        val movesSequence = listOf(
+                movesSequence(move(6, 4), move(6, 4), move(4, 2), move(4, 2)),
+                movesSequence(move(6, 4), move(6, 4), move(4, 2), move(2, BEAR_OFF_INDEX)),
+                movesSequence(move(6, 4), move(6, 4), move(4, 2), move(2, BEAR_OFF_INDEX))
+        )
+
         assertAllMovesFound(movesSequence)
     }
 

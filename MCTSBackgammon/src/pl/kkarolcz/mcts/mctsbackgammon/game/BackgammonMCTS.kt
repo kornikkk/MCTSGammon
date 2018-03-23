@@ -6,13 +6,25 @@ import pl.kkarolcz.mcts.node.selectionpolicies.NodeSelectionPolicy
 /**
  * Created by kkarolcz on 21.03.2018.
  */
-class BackgammonMCTS(private val selectionPolicy: NodeSelectionPolicy, private val simulationsLimit: Int) {
-    private lateinit var currentNode: BackgammonNode
+class BackgammonMCTS(private val selectionPolicy: NodeSelectionPolicy) {
+    private var simulationsLimit: Int = 0
+    private var currentNode: BackgammonNode? = null
 
-    val gameStarted = this::currentNode.isInitialized
+    val gameStarted get() = currentNode != null
+
+    fun reset(simulationsLimit: Int?) {
+        this.currentNode = null
+        if (simulationsLimit != null)
+            this.simulationsLimit = simulationsLimit
+
+        Statistics.newGame()
+        Statistics.Game.newRound()
+    }
 
     fun newGame(backgammonState: BackgammonState) {
         Statistics.newGame()
+        Statistics.Game.newRound()
+
         currentNode = BackgammonNode.createRootNode(selectionPolicy, backgammonState)
     }
 
@@ -20,9 +32,11 @@ class BackgammonMCTS(private val selectionPolicy: NodeSelectionPolicy, private v
      * Call after opponent's move
      */
     fun nextRound(backgammonState: BackgammonState) {
-        Statistics.currentGame.newRound() //TODO make non static?
+        if (currentNode == null) throw IllegalStateException("Game not started")
 
-        val existingNode = currentNode.findChildNode(backgammonState)
+        Statistics.Game.newRound()
+
+        val existingNode = currentNode!!.findChildNode(backgammonState)
         currentNode = when (existingNode) {
             null -> BackgammonNode.createRootNode(selectionPolicy, backgammonState)
             else -> {
@@ -38,12 +52,14 @@ class BackgammonMCTS(private val selectionPolicy: NodeSelectionPolicy, private v
      * @return Best node which should be played
      */
     fun playRound(): BackgammonNode {
+        if (currentNode == null) throw IllegalStateException("Game not started")
+        if (simulationsLimit == 0) throw IllegalStateException("Simulations limit not set")
+
         for (i in 1..simulationsLimit)
-            currentNode.monteCarloRound()
+            currentNode!!.monteCarloRound()
 
-        Statistics.logRound()
-
-        currentNode = currentNode.getBestMove() //TODO set dice before and discard wrong moves
-        return currentNode
+        currentNode = currentNode!!.getBestMove()
+        Statistics.Game.Round.finishRound(currentNode!!.originMove!!)
+        return currentNode!!
     }
 }

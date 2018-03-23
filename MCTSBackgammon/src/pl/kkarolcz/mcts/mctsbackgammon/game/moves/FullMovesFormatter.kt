@@ -1,9 +1,7 @@
-package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.mcts
+package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BAR_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BEAR_OFF_INDEX
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMove
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.SingleMove
 
 /**
  * Created by kkarolcz on 30.08.2017.

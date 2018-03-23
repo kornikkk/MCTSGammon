@@ -9,7 +9,6 @@ import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
 import pl.kkarolcz.mcts.mctsbackgammon.settings.Statistics
 import pl.kkarolcz.utils.ByteMath.ONE_BYTE
 import pl.kkarolcz.utils.singletonOrEmptyList
-import java.util.*
 
 /**
  * Created by kkarolcz on 21.11.2017.
@@ -29,7 +28,7 @@ class FullMovesSearchNonDoubling(board: Board, currentPlayer: Player, dice: Dice
     private var anyFullSequenceFound = false
 
     override fun findAllImpl() {
-        Statistics.currentGame.currentRound.incNonDoublingSearches()
+        Statistics.Game.Round.incNonDoublingSearches()
 
         // Find bar untriedMoves only when there are any checkers which must be moved
         if (playerCheckers.barCheckers > 0) {
@@ -203,10 +202,7 @@ class FullMovesSearchNonDoubling(board: Board, currentPlayer: Player, dice: Dice
 
 
     private fun findPartialBearOffMove(previousMove: SingleMove?, die: Byte): SingleMove? {
-        val indices: MutableSet<Byte> = sortedSetOf(Comparator.reverseOrder())
-
-        //Add all home towers
-        indices.addAll(playerCheckers.homeTowersIndices())
+        val indices = playerCheckers.homeTowersIndices().toMutableSet()
 
         if (previousMove != null) {
             // Remove the tower if it's empty after move

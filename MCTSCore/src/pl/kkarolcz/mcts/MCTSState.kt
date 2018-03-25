@@ -17,7 +17,15 @@ abstract class MCTSState<M : MCTSMove>(private var _currentPlayer: Player) {
 
     abstract override fun hashCode(): Int
 
- 
+    override fun toString(): String {
+        val result = this.result
+        return when (result) {
+            null -> "Current player: $_currentPlayer"
+            else -> "Current player: $_currentPlayer, Winner: ${result.winner()}"
+        }
+    }
+
+
     abstract fun copyForExpanding(): MCTSState<M>
 
     protected abstract fun copyForPlayout(): MCTSState<M>
@@ -29,22 +37,20 @@ abstract class MCTSState<M : MCTSMove>(private var _currentPlayer: Player) {
 
     internal fun hasUntriedMoves(): Boolean = movesProvider.hasUntriedMoves()
 
+    internal fun pollRandomUntriedMove(): M = movesProvider.pollNextRandomUntriedMove()
+
     internal fun doMove(move: M) {
         doMoveImpl(move)
     }
-
-    /**
-     * Return random possible move if present or null for not possible move
-     */
-    internal fun pollRandomMove(): M = movesProvider.pollNextRandomUntriedMove()
 
     internal fun playout(): Result? {
         val newState = copyForPlayout()
         var newStateResult = newState.result
 
         while (newStateResult == null && newState.hasUntriedMoves()) {
-            newState.doMove(newState.pollRandomMove())
-            newState.switchPlayerForPlayout()
+            newState.doMove(newState.pollRandomUntriedMove())
+            newState.switchPlayer()
+            newState.afterSwitchPlayerForPlayout()
 
             newStateResult = newState.result
         }
@@ -55,20 +61,6 @@ abstract class MCTSState<M : MCTSMove>(private var _currentPlayer: Player) {
     internal fun switchPlayer() {
         _currentPlayer = _currentPlayer.opponent()
         movesProvider.reset(_currentPlayer)
-    }
-
-    private fun switchPlayerForPlayout() {
-        switchPlayer()
-        afterSwitchPlayerForPlayout()
-    }
-
-
-    override fun toString(): String {
-        val result = this.result
-        return when (result) {
-            null -> "Current player: $_currentPlayer"
-            else -> "Current player: $_currentPlayer, Winner: ${result.winner()}"
-        }
     }
 
 }

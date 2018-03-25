@@ -11,25 +11,22 @@ import pl.kkarolcz.mcts.node.selectionpolicies.NodeSelectionPolicy
 abstract class MCTSNode<Self : MCTSNode<Self, S, M>, S : MCTSState<M>, M : MCTSMove>
 protected constructor(private val nodeSelectionPolicy: NodeSelectionPolicy, protected val state: S, val originMove: M?) : Cloneable {
 
-    val children = mutableListOf<Self>()
+    var visits: Int = 0
+        private set
 
-    private var _visits: Int = 0
-    val visits: Int get() = _visits
+    var wins: Int = 0
+        private set
 
-    private var _wins: Int = 0
-    val wins: Int get() = _wins
+    val children: MutableList<Self> = mutableListOf()
 
-    val isFullyExpanded get() = !state.hasUntriedMoves()
+    val bestNode: Self
+        get() = children.maxBy { child -> child.wins.toDouble() / child.visits } ?: throw IllegalStateException("No child nodes")
+
+    val isFullyExpanded: Boolean get() = !state.hasUntriedMoves()
 
     val result: Result? get() = state.result
 
-    protected abstract fun newNode(nodeSelectionPolicy: NodeSelectionPolicy, state: S, originMove: M?): Self
-
     override fun toString() = "$wins / $visits"
-
-    //TODO wins to visits
-    fun getBestMove(): Self =
-            children.maxBy { child -> child._wins.toDouble() / child._visits } ?: throw IllegalStateException("No child nodes")
 
     fun monteCarloRound() {
         val path = select()
@@ -46,6 +43,7 @@ protected constructor(private val nodeSelectionPolicy: NodeSelectionPolicy, prot
 
     fun findChildNode(state: S): Self? = children.find { childNode -> childNode.state == state }
 
+    protected abstract fun newNode(nodeSelectionPolicy: NodeSelectionPolicy, state: S, originMove: M?): Self
 
     private fun select(): MutableList<Self> {
         var node = this as Self
@@ -61,7 +59,7 @@ protected constructor(private val nodeSelectionPolicy: NodeSelectionPolicy, prot
 
     private fun expand(): Self {
         val newState = state.copyForExpanding() as S
-        val move = state.pollRandomMove()
+        val move = state.pollRandomUntriedMove()
 
         newState.doMove(move)
         newState.switchPlayer()
@@ -73,9 +71,9 @@ protected constructor(private val nodeSelectionPolicy: NodeSelectionPolicy, prot
 
     private fun update(result: Result?) {
         //TODO: Check what happens when we decrement lost games
-        _visits++
+        visits++
         if (result?.get(state.currentPlayer.opponent()) == Result.PlayerResult.WIN)
-            _wins++
+            wins++
     }
 
 }

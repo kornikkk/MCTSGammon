@@ -7,7 +7,7 @@ import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BEAR_OFF_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.PlayerBoard
 import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonState
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
-import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.server.BoardInfo
+import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gnubackgammon.server.BoardInfo
 
 /**
  * Created by kkarolcz on 29.08.2017.

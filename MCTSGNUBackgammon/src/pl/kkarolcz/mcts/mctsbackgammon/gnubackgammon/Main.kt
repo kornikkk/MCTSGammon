@@ -1,8 +1,6 @@
 package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon
 
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gui.utils.DPIUtils
-import pl.kkarolcz.mcts.mctsbackgammon.settings.Statistics
-import java.io.File
 
 
 /**
@@ -11,7 +9,7 @@ import java.io.File
 
 fun main(args: Array<String>) {
     DPIUtils.setDPIScaledLookAndFeel()
-    Statistics.setLogFile(File("log.log"))
+    // StatisticsLogger.setLogFile("log.log")
     Application.run()
 }
 

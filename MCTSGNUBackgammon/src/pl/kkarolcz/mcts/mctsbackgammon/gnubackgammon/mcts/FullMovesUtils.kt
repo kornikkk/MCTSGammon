@@ -8,18 +8,15 @@ import pl.kkarolcz.mcts.mctsbackgammon.game.moves.SingleMove
 /**
  * Created by kkarolcz on 30.08.2017.
  */
-fun formatForGNUBackgammon(fullMove: FullMove?): String {
-    if (fullMove == null) {
-        return ""
-    }
-    return fullMove.joinToString(" ") { singleMove -> singleMove.formatForGNUBackgammon() }
+fun FullMove.toGNUBackgammonFormat(): String {
+    return this.joinToString(" ") { singleMove -> singleMove.toGNUBackgammonFormat() }
 }
 
-private fun SingleMove.formatForGNUBackgammon(): String =
-        formatIndexForGNUBackgammon(oldIndex) + "/" + formatIndexForGNUBackgammon(newIndex)
+private fun SingleMove.toGNUBackgammonFormat(): String =
+        toGNUBackgammonFormat(oldIndex) + "/" + toGNUBackgammonFormat(newIndex)
 
 
-private fun formatIndexForGNUBackgammon(checkerIndex: Byte): String = when (checkerIndex) {
+private fun toGNUBackgammonFormat(checkerIndex: Byte): String = when (checkerIndex) {
     BEAR_OFF_INDEX -> "off"
     BAR_INDEX -> "bar"
     else -> checkerIndex.toString()

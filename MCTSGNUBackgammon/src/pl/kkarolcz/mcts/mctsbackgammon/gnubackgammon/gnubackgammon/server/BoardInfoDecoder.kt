@@ -1,6 +1,6 @@
-package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.server
+package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gnubackgammon.server
 
-import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.server.BoardInfo.Player
+import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gnubackgammon.server.BoardInfo.Player
 import pl.kkarolcz.utils.ByteMath
 
 /**

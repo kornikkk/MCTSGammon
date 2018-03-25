@@ -16,6 +16,8 @@ object DPIUtils {
 
     }
 
+    fun getScaleFactor() = Toolkit.getDefaultToolkit().screenResolution.toDouble() / 96
+
     private fun setDefaultSize(size: Int) {
         UIManager.getLookAndFeelDefaults().keys
                 .filterNotNull()
@@ -29,5 +31,4 @@ object DPIUtils {
                 }
     }
 
-    private fun getScaleFactor() = Toolkit.getDefaultToolkit().screenResolution.toDouble() / 96
 }

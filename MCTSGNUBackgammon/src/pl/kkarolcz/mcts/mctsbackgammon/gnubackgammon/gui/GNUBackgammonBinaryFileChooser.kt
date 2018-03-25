@@ -26,7 +26,7 @@ object GNUBackgammonBinaryFileChooser {
     }
 
     object GNUBackgammonBinaryFilter : FileFilter() {
-        override fun getDescription(): String = "GNU Backgammon Command Line Interface (gnubg-cli.exe)"
+        override fun getDescription(): String = "GNU Backgammon CommandBuilder Line Interface (gnubg-cli.exe)"
 
         override fun accept(file: File): Boolean = when (file.isDirectory) {
             true -> true

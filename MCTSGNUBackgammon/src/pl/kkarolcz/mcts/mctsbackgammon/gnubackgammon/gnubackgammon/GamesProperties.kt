@@ -5,4 +5,4 @@ import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gnubackgammon.difficulty.GN
 /**
  * Created by kkarolcz on 23.03.2018.
  */
-data class GameSettings(val simulationsLimit: Int, val numberOfGames: Int, val difficulty: GNUBackgammonDifficulty)
+data class GamesProperties(val simulationsLimit: Int, val numberOfGames: Int, val difficulty: GNUBackgammonDifficulty)

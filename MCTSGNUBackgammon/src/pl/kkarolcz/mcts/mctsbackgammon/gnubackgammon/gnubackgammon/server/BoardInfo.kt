@@ -1,4 +1,4 @@
-package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.server
+package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gnubackgammon.server
 
 /**
  * Created by kkarolcz on 29.08.2017.

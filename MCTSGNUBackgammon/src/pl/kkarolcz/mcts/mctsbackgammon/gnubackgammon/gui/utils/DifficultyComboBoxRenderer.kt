@@ -1,4 +1,4 @@
-package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gui
+package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gui.utils
 
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gnubackgammon.difficulty.GNUBackgammonDifficulty
 import java.awt.Component

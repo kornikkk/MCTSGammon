@@ -4,8 +4,9 @@ import com.jgoodies.forms.builder.FormBuilder
 import com.jgoodies.forms.factories.CC.*
 import com.jgoodies.forms.factories.Paddings
 import com.jgoodies.forms.layout.FormLayout
-import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gnubackgammon.GameSettings
+import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gnubackgammon.GamesProperties
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gnubackgammon.difficulty.GNUBackgammonDifficulty
+import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gui.utils.DifficultyComboBoxRenderer
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gui.utils.TextAreaOutputStream
 import javax.swing.*
 
@@ -13,7 +14,7 @@ import javax.swing.*
 /**
  * Created by kkarolcz on 22.03.2018.
  */
-class MainWindow(private val onStarted: ((gameSettings: GameSettings) -> Unit)) : JFrame("GNU Backgammon MCTS") {
+class MainWindow(private val onGamesStarted: ((gamesProperties: GamesProperties) -> Unit)) : JFrame("GNU Backgammon MCTS") {
 
     private val simulationsLimitTextField = JTextField()
     private val numberOfGamesTextField = JTextField()
@@ -46,7 +47,10 @@ class MainWindow(private val onStarted: ((gameSettings: GameSettings) -> Unit)) 
             val simulationsLimit = simulationsLimitTextField.text.toInt()
             val numberOfGames = numberOfGamesTextField.text.toInt()
             val difficulty = difficultyComboBox.selectedItem as GNUBackgammonDifficulty
-            onStarted(GameSettings(simulationsLimit, numberOfGames, difficulty))
+
+            SwingUtilities.invokeLater {
+                onGamesStarted(GamesProperties(simulationsLimit, numberOfGames, difficulty))
+            }
         }
     }
 

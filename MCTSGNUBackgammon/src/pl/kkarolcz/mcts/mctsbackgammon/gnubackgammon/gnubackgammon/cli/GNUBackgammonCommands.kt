@@ -13,6 +13,7 @@ object GNUBackgammonCommands {
             .append("set player 1 name ${GNUBackgammonApplication.GNU_BACKGAMMON_PLAYER_NAME}")
             .append("set player 1 gnubg")
             .append("set player 0 external localhost:$port")
+            .append("set sound enable off")
             .append("set automatic game off")
             .build()
 

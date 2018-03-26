@@ -9,7 +9,7 @@ import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gui.utils.DPIUtils
 
 fun main(args: Array<String>) {
     DPIUtils.setDPIScaledLookAndFeel()
-    // StatisticsLogger.setLogFile("log.log")
+    // BackgammonMCTSProgressLogger.setLogFile("log.log")
     Application.run()
 }
 

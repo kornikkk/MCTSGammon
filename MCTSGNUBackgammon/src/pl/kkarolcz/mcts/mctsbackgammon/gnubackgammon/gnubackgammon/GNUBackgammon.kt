@@ -4,12 +4,13 @@ import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMove
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gnubackgammon.cli.GNUBackgammonApplication
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gnubackgammon.difficulty.GNUBackgammonDifficulty
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gnubackgammon.server.GNUBackgammonServerSocket
+import java.io.Closeable
 import java.io.OutputStream
 
 /**
  * Created by kkarolcz on 25.03.2018.
  */
-class GNUBackgammon(binaryPath: String) : AutoCloseable {
+class GNUBackgammon(binaryPath: String) : Closeable {
     private val serverSocket = GNUBackgammonServerSocket()
     private val application = GNUBackgammonApplication(binaryPath)
 

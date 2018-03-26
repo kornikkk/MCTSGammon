@@ -3,7 +3,6 @@ package pl.kkarolcz.mcts.mctsbackgammon.game.moves
 import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.board.Board
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex
-import pl.kkarolcz.mcts.mctsbackgammon.board.PlayerBoard
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
 import java.util.*
 
@@ -230,8 +229,6 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
                 // Non full moves (2)
                 if (sequence0x1 != null)
                     addFullMoveIfValid(builder, sequence0x1)
-
-                //TODO bearing off, for each sequence?
             }
             3 -> { // 1 partialMove from the bar
                 // Full moves (4)
@@ -284,8 +281,6 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
                     addFullMoveIfValid(builder, sequence1x1)
                 if (sequence2x1 != null)
                     addFullMoveIfValid(builder, sequence2x1)
-
-                //TODO bearing off
             }
         }
     }
@@ -308,8 +303,6 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
                     addFullMoveIfValid(builder, sequence2x1)
                 if (sequence3x1 != null)
                     addFullMoveIfValid(builder, sequence3x1)
-
-                //TODO bearing off for each sequence
             }
         }
     }
@@ -444,15 +437,6 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
             true -> firstForBearingOff(tempPlayerCheckers.homeTowersIndices(), dieValue)
             false -> null
         }
-    }
-
-    private fun isBearOffPossibleAfterMoves(vararg moves: SingleMove): Boolean {
-        val fakeBoard = PlayerBoard()
-        playerCheckers.nonHomeTowersIndices().forEach { fakeBoard.put(it, playerCheckers.get(it)) }
-
-        moves.forEach { move -> fakeBoard.move(move) }
-
-        return fakeBoard.canBearOff
     }
 
     private fun getBuilder() = initialFullMoveBuilder.clone()

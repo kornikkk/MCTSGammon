@@ -6,15 +6,18 @@ import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gnubackgammon.GamesProperti
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gui.GNUBackgammonBinaryFileChooser
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gui.MainWindow
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gui.utils.ApplicationIconUtils
+import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.statistics.BackgammonMCTSProgressLogger
+import java.io.Closeable
 import java.io.PrintStream
 import javax.swing.WindowConstants
 
 /**
  * Created by kkarolcz on 22.03.2018.
  */
-object Application : AutoCloseable {
+object Application : Closeable {
+    private val settings = Settings()
 
-    private val mainWindow = MainWindow(::onGamesStarted)
+    private val mainWindow = MainWindow()
 
     private lateinit var gnuBackgammon: GNUBackgammon
     private lateinit var gnuBackgammonMCTS: GNUBackgammonMCTS
@@ -23,21 +26,26 @@ object Application : AutoCloseable {
         ApplicationIconUtils.setIcons(mainWindow)
         mainWindow.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
         mainWindow.setLocationRelativeTo(null)
+        mainWindow.addGamesStartedListener(::onGamesStarted)
+
+        Runtime.getRuntime().addShutdownHook(Thread { close() })
     }
 
     fun run() {
         mainWindow.isVisible = true
 
+        settings.load()
         checkIfGnuBackgammonBinarySet()
 
         System.setOut(PrintStream(mainWindow.programConsoleTextAreaOutputStream))
 
-        gnuBackgammon = GNUBackgammon(Settings.gnuBackgammonBinary!!)
+        gnuBackgammon = GNUBackgammon(settings.gnuBackgammonBinary!!)
         gnuBackgammon.start()
         gnuBackgammon.redirectInputStream(mainWindow.gnuBackgammonTextAreaOutputStream)
 
         gnuBackgammonMCTS = GNUBackgammonMCTS(gnuBackgammon)
-        //TODO gnuBackgammonMCTS.progress.addProgressListener() for window (button etc.) and statistics
+        gnuBackgammonMCTS.addProgressListener(BackgammonMCTSProgressLogger())
+        mainWindow.progressListeners.forEach(gnuBackgammonMCTS::addProgressListener)
     }
 
     override fun close() {
@@ -49,8 +57,8 @@ object Application : AutoCloseable {
     }
 
     private fun checkIfGnuBackgammonBinarySet() {
-        if (Settings.gnuBackgammonBinary == null) {
-            Settings.gnuBackgammonBinary = GNUBackgammonBinaryFileChooser.chooseFile(mainWindow).absolutePath
+        if (settings.gnuBackgammonBinary == null) {
+            settings.gnuBackgammonBinary = GNUBackgammonBinaryFileChooser.chooseFile(mainWindow).absolutePath
         }
     }
 

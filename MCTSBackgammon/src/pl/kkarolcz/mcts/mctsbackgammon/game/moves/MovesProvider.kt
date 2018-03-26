@@ -48,6 +48,7 @@ class MovesProvider(private val board: Board, private var player: Player) : MCTS
         untriedDice.removeIf { it != dice }
 
         if (initialDice.isEmpty()) {
+            initialDice.add(dice)
             remainingDice.addAll(initialDice)
             untriedDice.addAll(initialDice)
         }

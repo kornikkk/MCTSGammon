@@ -30,7 +30,7 @@
         </layout>
     </appender>
 
-    <logger name="pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.statistics.StatisticsLogger">
+    <logger name="pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.statistics.BackgammonMCTSProgressLogger">
         <level value="INFO"/>
         <appender-ref ref="statistics"/>
         <appender-ref ref="file"/>

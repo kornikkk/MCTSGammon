@@ -9,10 +9,11 @@ import java.util.*
 /**
  * Created by kkarolcz on 22.03.2018.
  */
-object Settings {
-    private const val FILE_NAME = "gnubg.properties"
-
-    private const val GNU_BACKGAMMON_BINARY = "gnubgbinpath"
+class Settings {
+    companion object {
+        private const val FILE_NAME = "gnubg.properties"
+        private const val GNU_BACKGAMMON_BINARY = "gnubgbinpath"
+    }
 
     private val properties = Properties()
 
@@ -27,7 +28,7 @@ object Settings {
         load()
     }
 
-    private fun load() {
+    fun load() {
         val propertiesFile = File(FILE_NAME)
         if (!propertiesFile.exists()) {
             propertiesFile.createNewFile()

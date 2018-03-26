@@ -1,5 +1,6 @@
 package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gnubackgammon.server
 
+import org.apache.log4j.Logger
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMove
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gnubackgammon.GameListener
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.mcts.convertToBackgammonState
@@ -15,16 +16,17 @@ import java.net.SocketException
  * Created by kkarolcz on 29.08.2017.
  */
 class GNUBackgammonServerSocket : AutoCloseable {
-
-    val port: Int get() = server.localPort
+    private val log = Logger.getLogger(this.javaClass)
 
     private val server = ServerSocket(0)
     private lateinit var outputWriter: PrintWriter
 
     private val gameListeners = mutableListOf<GameListener>()
 
+    val port: Int get() = server.localPort
+
     fun startServer() {
-        println("Server socket started. Waiting for connection on port ${server.localPort}...")
+        log.info("Server socket started. Waiting for connection on port ${server.localPort}...")
         Thread {
             listenOnSocket()
         }.start()
@@ -49,7 +51,7 @@ class GNUBackgammonServerSocket : AutoCloseable {
 
     private fun listenOnSocket() {
         val socket = server.accept()
-//        println("Connected to " + socket.remoteSocketAddress)
+        log.info("Server socket  connected to " + socket.remoteSocketAddress)
 
         try {
             outputWriter = PrintWriter(socket.getOutputStream(), true)

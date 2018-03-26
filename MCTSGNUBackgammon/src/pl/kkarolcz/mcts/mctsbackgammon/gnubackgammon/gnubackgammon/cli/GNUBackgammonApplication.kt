@@ -4,6 +4,7 @@ import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gnubackgammon.GameListener
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gnubackgammon.difficulty.GNUBackgammonDifficulty
 import java.io.BufferedReader
+import java.io.Closeable
 import java.io.InputStreamReader
 import java.io.Reader
 import java.util.concurrent.BlockingQueue
@@ -13,7 +14,7 @@ import java.util.concurrent.SynchronousQueue
 /**
  * Created by kkarolcz on 22.03.2018.
  */
-class GNUBackgammonApplication(private val binaryPath: String) : AutoCloseable {
+class GNUBackgammonApplication(private val binaryPath: String) : Closeable {
 
     var connected = false
         private set
@@ -29,12 +30,6 @@ class GNUBackgammonApplication(private val binaryPath: String) : AutoCloseable {
     companion object {
         const val MCTS_PLAYER_NAME = "MCTS"
         const val GNU_BACKGAMMON_PLAYER_NAME = "GNUBackgammon"
-    }
-
-    init {
-        Runtime.getRuntime().addShutdownHook(Thread {
-            if (::process.isInitialized) process.destroy()
-        })
     }
 
     fun startApplication() {
@@ -75,6 +70,7 @@ class GNUBackgammonApplication(private val binaryPath: String) : AutoCloseable {
     }
 
     override fun close() {
+        if (::process.isInitialized) process.destroy()
         if (::inputReaderProxy.isInitialized) inputReaderProxy.close()
         if (::commandWriter.isInitialized) commandWriter.close()
     }

@@ -1,17 +1,15 @@
 package pl.kkarolcz.mcts.mctsbackgammon.game.dices
 
-import pl.kkarolcz.mcts.MCTSTraceableMove
 import java.util.*
 
 /**
  * Created by kkarolcz on 24.08.2017.
  */
-class Dice(value1: Byte, value2: Byte) : MCTSTraceableMove.Trace {
+class Dice(value1: Byte, value2: Byte) {
     val first: Byte = maxOf(value1, value2)
     val second: Byte = minOf(value1, value2)
 
     val doubling = first == second
-
 
     companion object {
         val PERMUTATIONS = listOf(

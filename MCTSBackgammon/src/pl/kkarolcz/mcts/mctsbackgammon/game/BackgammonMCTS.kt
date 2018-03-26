@@ -15,7 +15,6 @@ class BackgammonMCTS(private val selectionPolicy: NodeSelectionPolicy, private v
     fun reset(simulationsLimit: Int) {
         this.simulationsLimit = simulationsLimit
         currentNode = null
-        progress.setSimulationsLimit(simulationsLimit)
     }
 
     fun endGame(winner: Player) {
@@ -26,6 +25,7 @@ class BackgammonMCTS(private val selectionPolicy: NodeSelectionPolicy, private v
     fun newGame(backgammonState: BackgammonState) {
         currentNode = BackgammonNode.createRootNode(selectionPolicy, backgammonState)
         progress.newGame()
+        progress.newGameRound()
     }
 
     /**
@@ -61,6 +61,7 @@ class BackgammonMCTS(private val selectionPolicy: NodeSelectionPolicy, private v
         }
 
         currentNode = currentNode!!.bestNode
+        progress.endGameRound(currentNode!!.originMove!!)
         return currentNode!!
     }
 }

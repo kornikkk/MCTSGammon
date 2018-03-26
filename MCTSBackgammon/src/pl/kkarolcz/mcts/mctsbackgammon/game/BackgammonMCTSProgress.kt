@@ -1,6 +1,7 @@
 package pl.kkarolcz.mcts.mctsbackgammon.game
 
 import pl.kkarolcz.mcts.Player
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMove
 
 /**
  * Created by kkarolcz on 24.03.2018.
@@ -18,44 +19,63 @@ class BackgammonMCTSProgress {
         listeners.add(listener)
     }
 
-    fun reset(gamesCount: Int) {
+    fun newGamesSequence(gamesCount: Int, simulationsLimit: Int) {
         this.gamesCount = gamesCount
-        this.simulationsLimit = 0
+        this.simulationsLimit = simulationsLimit
         this.game = 0
         this.round = 0
         this.simulation = 0
-    }
 
-    fun setSimulationsLimit(simulationsLimit: Int) {
-        this.simulationsLimit = 0
-        this.simulation = 0
+        listeners.forEach { it.onGamesSequenceStart(gamesCount, simulationsLimit) }
     }
 
     fun newGame() {
         game += 1
         round = 0
-        listeners.forEach { it.onNewGame(game, gamesCount) }
+        listeners.forEach { it.onGameStart(game) }
     }
 
     fun newGameRound() {
         round += 1
         simulation = 0
-        listeners.forEach { it.onNewGameRound(round) }
+        listeners.forEach { it.onGameRoundStart(round) }
     }
 
     fun newMonteCarloRound() {
         simulation += 1
-        listeners.forEach { it.onNewMonteCarloSimulation(simulation, simulationsLimit) }
+        listeners.forEach { it.onMonteCarloSimulationStart(simulation) }
+    }
+
+    fun endGameRound(move: FullMove) {
+        listeners.forEach { it.onGameRoundEnd(round, simulationsLimit, move) }
     }
 
     fun endGame(winner: Player) {
-        listeners.forEach { it.onGameEnd(game, gamesCount, winner) }
+        listeners.forEach { it.onGameEnd(game, round, winner) }
+    }
+
+    fun endGamesSequence(games: Int) {
+        listeners.forEach { it.onGamesSequenceEnd(games) }
+    }
+
+    abstract class BackgammonMCTSProgressListenerAdapter : BackgammonMCTSProgressListener {
+        override fun onGamesSequenceStart(gamesCount: Int, simulationsLimit: Int) {}
+        override fun onGameStart(game: Int) {}
+        override fun onGameRoundStart(round: Int) {}
+        override fun onMonteCarloSimulationStart(simulation: Int) {}
+        override fun onGameRoundEnd(round: Int, simulationsLimit: Int, move: FullMove) {}
+        override fun onGameEnd(game: Int, gameRounds: Int, winner: Player) {}
+        override fun onGamesSequenceEnd(games: Int) {}
+
     }
 
     interface BackgammonMCTSProgressListener {
-        fun onNewGame(game: Int, gamesCount: Int)
-        fun onGameEnd(game: Int, gamesCount: Int, winner: Player)
-        fun onNewGameRound(round: Int)
-        fun onNewMonteCarloSimulation(simulation: Int, simulationsLimit: Int)
+        fun onGamesSequenceStart(gamesCount: Int, simulationsLimit: Int)
+        fun onGameStart(game: Int)
+        fun onGameRoundStart(round: Int)
+        fun onMonteCarloSimulationStart(simulation: Int)
+        fun onGameRoundEnd(round: Int, simulationsLimit: Int, move: FullMove)
+        fun onGameEnd(game: Int, gameRounds: Int, winner: Player)
+        fun onGamesSequenceEnd(games: Int)
     }
 }

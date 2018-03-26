@@ -43,11 +43,11 @@ abstract class MCTSState<M : MCTSMove>(private var _currentPlayer: Player) {
         doMoveImpl(move)
     }
 
-    internal fun playout(): Result? {
+    internal fun playout(): Result {
         val newState = copyForPlayout()
         var newStateResult = newState.result
 
-        while (newStateResult == null && newState.hasUntriedMoves()) {
+        while (newStateResult == null) {
             newState.doMove(newState.pollRandomUntriedMove())
             newState.switchPlayer()
             newState.afterSwitchPlayerForPlayout()

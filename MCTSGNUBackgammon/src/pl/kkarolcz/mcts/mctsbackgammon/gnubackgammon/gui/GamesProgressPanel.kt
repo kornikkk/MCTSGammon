@@ -5,6 +5,7 @@ import com.jgoodies.forms.layout.FormLayout
 import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonMCTSProgress.BackgammonMCTSProgressListener
 import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonMCTSProgress.BackgammonMCTSProgressListenerAdapter
+import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMove
 import javax.swing.JLabel
 import javax.swing.JPanel
@@ -51,7 +52,7 @@ class GamesProgressPanel : JPanel() {
             }
         }
 
-        override fun onGameRoundStart(round: Int) {
+        override fun onGameRoundStart(round: Int, dice: Dice) {
             SwingUtilities.invokeLater {
                 gameRoundLabel.text = round.toString()
                 simulationsProgressBar.value = 0

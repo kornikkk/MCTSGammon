@@ -1,4 +1,4 @@
-package pl.kkarolcz.mcts.mctsbackgammon.game.moves
+package pl.kkarolcz.mcts.mctsbackgammon.game.moves.search
 
 import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.board.Board
@@ -6,6 +6,8 @@ import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BEAR_OFF_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.NO_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.isOnHomeBoard
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMovesBuilder
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.SingleMove
 import pl.kkarolcz.utils.ByteMath.ONE_BYTE
 import pl.kkarolcz.utils.singletonOrEmptyList
 
@@ -13,7 +15,7 @@ import pl.kkarolcz.utils.singletonOrEmptyList
  * Created by kkarolcz on 21.11.2017.
  */
 class FullMovesSearchNonDoubling(board: Board, currentPlayer: Player, dice: Dice)
-    : AbstractFullMovesSearch(board, currentPlayer, dice) {
+    : AbstractMovesSearch(board, currentPlayer, dice) {
 
     private var moveFromBarFirstDie: SingleMove? = null
     private var moveFromBarSecondDie: SingleMove? = null

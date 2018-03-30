@@ -1,25 +1,25 @@
-package pl.kkarolcz.mcts.mctsbackgammon.game.moves
+package pl.kkarolcz.mcts.mctsbackgammon.game.moves.search
 
 import org.junit.Before
-import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.board.Board
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex
 import pl.kkarolcz.mcts.mctsbackgammon.board.PlayerBoard
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMove
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.SingleMove
 import pl.kkarolcz.mcts.mctsbackgammon.settings.TestSettings
 import java.util.*
-import kotlin.test.assertEquals
 
 /**
  * Created by kkarolcz on 11.02.2018.
  */
-open class AbstractSingleMovesTest {
+open class AbstractFullMovesSearchTest {
 
     protected lateinit var player1Board: PlayerBoard
     protected lateinit var player2Board: PlayerBoard
     protected lateinit var dice: Dice
 
-    private lateinit var board: Board
+    protected lateinit var board: Board
 
     @Before
     fun initialize() {
@@ -31,36 +31,17 @@ open class AbstractSingleMovesTest {
         board = Board(player1Board, player2Board)
     }
 
-
-    protected fun assertNoMovesFound() {
-        val searcher = FullMovesSearchNonDoubling(board, Player.MCTS, dice)
-        assertEquals(listOf(FullMove(emptyArray(), dice)), searcher.findAll().toList())
-    }
-
-    protected fun assertAllMovesFound(vararg expectedMoves: FullMove) {
-        assertAllMovesFound(expectedMoves.toList())
-    }
-
-    protected fun assertAllMovesFound(expectedMoves: Iterable<FullMove>) {
-        val expectedSet = sortMoves(expectedMoves)
-        val actualSet = sortMoves(searcher(dice).findAll())
-        assertEquals(expectedSet, actualSet)
-    }
-
-    protected fun searcher(dice: Dice) = when (dice.doubling) {
-        true -> FullMovesSearchDoubling(board, Player.MCTS, dice)
-        false -> FullMovesSearchNonDoubling(board, Player.MCTS, dice)
-    }
-
     protected fun dice(firstDice: Number, secondDice: Number) = Dice(firstDice.toByte(), secondDice.toByte())
 
     protected fun move(oldIndex: Number, newIndex: Number) = SingleMove(oldIndex.toByte(), newIndex.toByte())
 
     protected fun movesSequence(vararg moves: SingleMove) = FullMove(arrayOf(*moves), dice)
 
+    protected fun movesSequence(moves: List<SingleMove>) = FullMove(moves.toTypedArray(), dice)
+
     protected fun toOpponentsIndex(index: Number) = BoardIndex.toOpponentsIndex(index.toByte())
 
-    private fun sortMoves(moves: Iterable<FullMove>): List<FullMove> {
+    protected fun sortMoves(moves: Iterable<FullMove>): List<FullMove> {
         val movesList = moves.toMutableList()
         movesList.sortWith(Comparator { move1, move2 ->
             val moves1 = move1.toList()

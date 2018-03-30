@@ -1,4 +1,4 @@
-package pl.kkarolcz.mcts.mctsbackgammon.game.moves
+package pl.kkarolcz.mcts.mctsbackgammon.game.moves.search
 
 import org.junit.Ignore
 import org.junit.Test
@@ -13,7 +13,7 @@ import java.util.*
 /**
  * Created by kkarolcz on 27.08.2017.
  */
-class BackgammonDoublingMovesTest : AbstractSingleMovesTest() {
+class FullMovesSearchDoublingTest : AbstractAllFullMovesSearchTest() {
 
 
     @Ignore

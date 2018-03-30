@@ -20,7 +20,7 @@ object GNUBackgammonCommands {
     fun setUpNewGames(difficulty: GNUBackgammonDifficulty): Command = CommandBuilder()
             .append("set matchlength 1")
             .append(setPlayerEvaluationParameter("chequerplay", difficulty.chequerPlay))
-            .append(setPlayerEvaluationParameter("cubedecisions", difficulty.cubeDecisions))
+            .append(setPlayerEvaluationParameter("cubedecision", difficulty.cubeDecisions))
             .build()
 
     fun startGame(): Command = CommandBuilder()

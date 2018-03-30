@@ -37,7 +37,7 @@ class PlayerBoard : Cloneable {
     val anyLeftOnBoard: Boolean get() = _barCheckers != ZERO_BYTE || !towers.isEmpty
 
     constructor() {
-        this.towers = ByteByteHashMap()
+        this.towers = ByteByteHashMap(15)
         this.towersMask = 0x000000000000000000000000 //All 24 board points. Some of them will be always 0
         this._barCheckers = 0
         this._bearOffCheckers = 0

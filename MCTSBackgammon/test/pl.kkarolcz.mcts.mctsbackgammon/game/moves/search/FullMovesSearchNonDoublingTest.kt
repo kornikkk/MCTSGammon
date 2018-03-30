@@ -1,4 +1,4 @@
-package pl.kkarolcz.mcts.mctsbackgammon.game.moves
+package pl.kkarolcz.mcts.mctsbackgammon.game.moves.search
 
 import org.junit.Ignore
 import org.junit.Test
@@ -7,12 +7,13 @@ import pl.kkarolcz.mcts.mctsbackgammon.board.Board
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BAR_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BEAR_OFF_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.PlayerBoard
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMove
 import java.util.*
 
 /**
  * Created by kkarolcz on 27.08.2017.
  */
-class BackgammonNonDoublingMovesTest : AbstractSingleMovesTest() {
+class FullMovesSearchNonDoublingTest : AbstractAllFullMovesSearchTest() {
 
     @Test
     fun `Test move from bar on an empty point and then locked`() {
@@ -62,6 +63,22 @@ class BackgammonNonDoublingMovesTest : AbstractSingleMovesTest() {
         dice = dice(3, 6)
 
         assertNoMovesFound()
+    }
+
+    @Test
+    fun `Test complex move from bar`() {
+        player1Board.put(BAR_INDEX, 1)
+        player2Board.put(toOpponentsIndex(24), 2)
+        player2Board.put(toOpponentsIndex(23), 2)
+        player2Board.put(toOpponentsIndex(22), 2)
+        player2Board.put(toOpponentsIndex(21), 2)
+        player2Board.put(toOpponentsIndex(19), 2)
+        player2Board.put(toOpponentsIndex(18), 1)
+
+        dice = dice(2, 5)
+
+        val movesSequence = movesSequence(move(BAR_INDEX, 20), move(20, 18))
+        assertAllMovesFound(movesSequence)
     }
 
     @Test
@@ -251,7 +268,7 @@ class BackgammonNonDoublingMovesTest : AbstractSingleMovesTest() {
         player2Board.put(22, 1)
         player2Board.put(23, 1)
 
-        searcher(dice(3, 1)).findAll()
+        findAll(dice(3, 1))
     }
 //
 //    @Test

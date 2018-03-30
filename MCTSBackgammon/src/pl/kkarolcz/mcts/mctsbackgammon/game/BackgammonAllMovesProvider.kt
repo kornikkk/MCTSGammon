@@ -1,15 +1,16 @@
-package pl.kkarolcz.mcts.mctsbackgammon.game.moves
+package pl.kkarolcz.mcts.mctsbackgammon.game
 
-import pl.kkarolcz.mcts.MCTSMovesProvider
 import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.board.Board
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMove
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.FullMovesSearch
 import pl.kkarolcz.utils.randomElement
 
 /**
  * Created by kkarolcz on 24.02.2018.
  */
-class MovesProvider(private val board: Board, private var player: Player) : MCTSMovesProvider<FullMove> {
+class BackgammonAllMovesProvider(private val board: Board, private var player: Player) : BackgammonMovesProvider {
 
     private val initialDice = mutableListOf<Dice>()
     private val remainingDice = mutableListOf<Dice>()
@@ -42,7 +43,7 @@ class MovesProvider(private val board: Board, private var player: Player) : MCTS
      * Discards all moves for other dice and leaves only the provided one
      * @param dice dice which won't be discarded
      */
-    fun discardOtherDice(dice: Dice) {
+    override fun discardOtherDice(dice: Dice) {
         initialDice.removeIf { it != dice }
         remainingDice.removeIf { it != dice }
         untriedDice.removeIf { it != dice }
@@ -60,7 +61,7 @@ class MovesProvider(private val board: Board, private var player: Player) : MCTS
      * Clears the moves and set a new dice
      * @param newDice if null all possible dice will be used for moves search
      */
-    fun resetDice(newDice: Dice?) {
+    override fun resetDice(newDice: Dice?) {
         initialDice.clear()
 
         when (newDice) {

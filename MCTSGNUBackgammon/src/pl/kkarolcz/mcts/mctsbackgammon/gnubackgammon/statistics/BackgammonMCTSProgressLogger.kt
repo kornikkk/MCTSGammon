@@ -3,6 +3,7 @@ package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.statistics
 import org.apache.log4j.Logger
 import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonMCTSProgress.BackgammonMCTSProgressListener
+import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMove
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.mcts.toGNUBackgammonFormat
 import java.io.BufferedWriter
@@ -32,8 +33,8 @@ class BackgammonMCTSProgressLogger : BackgammonMCTSProgressListener {
         log("Game: $game")
     }
 
-    override fun onGameRoundStart(round: Int) {
-        log("  Round: $round")
+    override fun onGameRoundStart(round: Int, dice: Dice) {
+        log("  Round: $round, Dice: $dice")
     }
 
     override fun onMonteCarloSimulationStart(simulation: Int) {}

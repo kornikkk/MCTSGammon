@@ -1,4 +1,4 @@
-package pl.kkarolcz.mcts.mctsbackgammon.game.moves
+package pl.kkarolcz.mcts.mctsbackgammon.game.moves.search
 
 import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.board.Board
@@ -7,16 +7,21 @@ import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BAR_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.NO_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.toOpponentsIndex
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMove
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMovesBuilder
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.SingleMove
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by kkarolcz on 19.11.2017.
  */
-abstract class AbstractFullMovesSearch(board: Board, currentPlayer: Player, protected val dice: Dice) {
+abstract class AbstractMovesSearch(board: Board, currentPlayer: Player, protected val dice: Dice) {
 
     protected val playerCheckers = board.getPlayerBoard(currentPlayer)
     private val opponentCheckers = board.getPlayerBoard(currentPlayer.opponent())
-    protected val fullMoves = mutableListOf<FullMove>()
+
+    protected val fullMoves: MutableList<FullMove> = ArrayList(50)
 
     fun findAll(): MutableList<FullMove> {
         findAllImpl()

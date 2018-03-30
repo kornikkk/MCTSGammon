@@ -30,6 +30,14 @@ class FullMovesBuilder : Cloneable {
 
     public override fun clone(): FullMovesBuilder = FullMovesBuilder(this)
 
+    fun append(moves: Iterable<SingleMove>): FullMovesBuilder {
+        for (move in moves) {
+            this.moves[realSize] = move
+            this.realSize += 1
+        }
+        return this
+    }
+
     fun append(move: SingleMove): FullMovesBuilder {
         this.moves[realSize] = move
         this.realSize += 1

@@ -20,11 +20,18 @@ protected constructor(private val nodeSelectionPolicy: NodeSelectionPolicy, prot
     val children: MutableList<Self> = mutableListOf()
 
     val bestNode: Self
-        get() = children.maxBy { child -> child.wins.toDouble() / child.visits } ?: throw IllegalStateException("No child nodes")
+        get() {
+            val asdsadsad = children.maxBy { child -> child.wins.toDouble() / child.visits }
+            if (asdsadsad != null) {
+                return asdsadsad
+            }
+            throw IllegalStateException("No child nodes")
+        }
 
     val isFullyExpanded: Boolean get() = !state.hasUntriedMoves()
 
     val result: Result? get() = state.result
+
 
     override fun toString() = "$wins / $visits"
 
@@ -69,11 +76,12 @@ protected constructor(private val nodeSelectionPolicy: NodeSelectionPolicy, prot
         return newNode
     }
 
-    private fun update(result: Result?) {
+    private fun update(result: Result) {
         //TODO: Check what happens when we decrement lost games
         visits++
-        if (result?.get(state.currentPlayer.opponent()) == Result.PlayerResult.WIN)
+        if (result[state.currentPlayer.opponent()] == Result.PlayerResult.WIN)
             wins++
     }
 
 }
+

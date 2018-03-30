@@ -22,7 +22,7 @@ class BackgammonNode(nodeSelectionPolicy: NodeSelectionPolicy, state: Backgammon
             = BackgammonNode(nodeSelectionPolicy, state, originMove)
 
     fun discardOtherDice(dice: Dice) {
-        children.removeIf { child -> child.originMove!!.dice == dice } //Can't be null here. If it is that's probably an error in the code
+        children.removeIf { child -> child.originMove!!.dice != dice } //Can't be null here. If it is that's probably an error in the code
         state.movesProvider.discardOtherDice(dice)
     }
 

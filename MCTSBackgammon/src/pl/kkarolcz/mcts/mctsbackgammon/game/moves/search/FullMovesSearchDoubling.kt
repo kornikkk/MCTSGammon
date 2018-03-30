@@ -1,126 +1,41 @@
-package pl.kkarolcz.mcts.mctsbackgammon.game.moves
+package pl.kkarolcz.mcts.mctsbackgammon.game.moves.search
 
 import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.board.Board
-import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
-import java.util.*
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMovesBuilder
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.SingleMove
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.AbstractMovesSearchDoubling
 
 /**
  * Created by kkarolcz on 27.12.2017.
  */
-class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
-    : AbstractFullMovesSearch(board, currentPlayer, dice) {
+class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice) : AbstractMovesSearchDoubling(board, currentPlayer, dice) {
 
-    private val dieValue: Byte = dice.first
-
-    private var barMove: SingleMove? = null
-    private var barSequentialMoves = SequencesForPartialMoves()
-    private var diceLeft: Int = 4
-
-    private var bearOffPossibleInitially = false
-    private var bearOffPossibleConditionally = false
-
-    private val partialMoves = mutableListOf<SingleMove>()
-    private val standardSequentialMoves = SequencesForPartialMoves()
-
-    private val initialFullMoveBuilder = FullMovesBuilder(dice)
     private var longestFullMove: Int = 0
 
-
     override fun findAllImpl() {
-        if (playerCheckers.barCheckers > 0) {
-            barMove = findPartialBarMove(dieValue)
-            if (barMove == null) {
-                return // No moves possible
-            }
-            diceLeft -= playerCheckers.barCheckers // Subtract number of required bar moves to save finding other moves later
-
-            // Add all possible bar moves to the builder. Maximum number is 4 as there are 4 dice available
-            for (i in 1..minOf(playerCheckers.barCheckers, 4)) {
-                initialFullMoveBuilder.append(barMove!!)
-            }
-
-            if (diceLeft == 0) {
-                addFullMoveIfValid(initialFullMoveBuilder) //Bar moves are already in the builder so just move the full move
-                return // No need to do anything more when there's >= 4 checkers on the bar
-            }
-
-            findBarSequentialMoves()
-        }
-
-        findBearOffPossibilities()
-
-        findStandardPartialMoves()
-        findStandardSequentialMoves()
-
-        findFullMoves()
-    }
-
-    private fun findBearOffPossibilities() {
-        bearOffPossibleInitially = playerCheckers.canBearOff
-        bearOffPossibleConditionally = diceLeft == 4 && playerCheckers.numberOfNonHomeTowers <= 3
-    }
-
-    private fun findStandardPartialMoves() {
-        for (tower in playerCheckers.towerIterator()) {
-            val move = findStandardPartialMoveForTower(tower.index, dieValue)
-            if (move != null) {
-                for (i in 1..minOf(tower.checkers.toInt(), diceLeft)) {
-                    partialMoves.add(move.clone())
-                }
-            }
-        }
-    }
-
-    private fun findBarSequentialMoves() {
-        // No need to decrement dice like in findStandardSequentialMoves(). It was already done because bar moves exist
-        findSequentialMoves(Collections.singleton(barMove!!), barSequentialMoves, diceLeft)
-    }
-
-    private fun findStandardSequentialMoves() {
-        // We assume that one of the partial moves is used so dice are decremented
-        findSequentialMoves(partialMoves, standardSequentialMoves, diceLeft - 1)
-    }
-
-    private fun findSequentialMoves(partialMoves: Iterable<SingleMove>, sequences: SequencesForPartialMoves, initialDiceLeft: Int) {
-        if (initialDiceLeft == 0)
-            return
-
-        for (partialMove in partialMoves) {
-            var diceLeft = initialDiceLeft
-            var oldIndex: Byte
-            var newIndex = partialMove.newIndex
-            val sequenceForPartialMove = sequences.getOrCreateSequence(partialMove)
-
-            while (diceLeft > 0) {
-                oldIndex = newIndex
-                newIndex = findMove(oldIndex, dieValue)
-                diceLeft -= 1
-
-                if (newIndex == BoardIndex.NO_INDEX) {
-                    break
-                }
-
-                sequenceForPartialMove.add(SingleMove(oldIndex, newIndex))
-            }
+        initialize()
+        when {
+            diceLeft > 0 -> findFullMoves()
+            possibleMoves.barMove != null -> addFullMoveIfValid(initialFullMoveBuilder)
         }
     }
 
     private fun findFullMoves() {
-        if (barMove != null) {
+        if (possibleMoves.barMove != null) {
             findSequencesWithBarPartialMovesOnly()
         }
 
         findBearOffMovesOnly()
 
-        if (partialMoves.isEmpty() && fullMoves.isEmpty()) {
+        if (possibleMoves.partialMoves.isEmpty() && fullMoves.isEmpty()) {
             addFullMoveIfValid(getBuilder())
             return
         }
 
-        if (partialMoves.isNotEmpty()) {
-            findFullMovesIteration(partialMoves.toMutableList(), PartialMovesIteration())
+        if (possibleMoves.partialMoves.isNotEmpty()) {
+            findFullMovesIteration(possibleMoves.partialMoves.toMutableList(), PartialMovesIteration())
         }
     }
 
@@ -166,7 +81,7 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
 
     private fun findSequencesWithBarPartialMovesOnly() {
         val builder = getBuilder()
-        val barSequence = barMove?.let { barSequentialMoves.getSequence(it) }
+        val barSequence = possibleMoves.barMove?.let { possibleMoves.barSequentialMoves.getSequence(it) }
         when (diceLeft) {
             3 -> { // 1 partial move from the bar
                 val barSequence0x1 = barSequence?.get(0)
@@ -207,11 +122,11 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
         val builder = getBuilder()
         builder.append(partialMove)
 
-        val barSequence = barMove?.let { barSequentialMoves.getSequence(it) }
+        val barSequence = possibleMoves.barMove?.let { possibleMoves.barSequentialMoves.getSequence(it) }
         val barSequence0x1 = barSequence?.get(0)
         val barSequence0x2 = barSequence?.get(1)
 
-        val standardSequence = standardSequentialMoves.getSequence(partialMove)
+        val standardSequence = possibleMoves.standardSequentialMoves.getSequence(partialMove)
         val sequence0x1 = standardSequence?.get(0)
         val sequence0x2 = standardSequence?.get(1)
         val sequence0x3 = standardSequence?.get(2)
@@ -258,11 +173,11 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
         val builder = getBuilder()
         builder.append(partialMove1, partialMove2)
 
-        val standardSequence1 = standardSequentialMoves.getSequence(partialMove1)
+        val standardSequence1 = possibleMoves.standardSequentialMoves.getSequence(partialMove1)
         val sequence1x1 = standardSequence1?.get(0)
         val sequence1x2 = standardSequence1?.get(1)
 
-        val standardSequence2 = standardSequentialMoves.getSequence(partialMove2)
+        val standardSequence2 = possibleMoves.standardSequentialMoves.getSequence(partialMove2)
         val sequence2x1 = standardSequence2?.get(0)
         val sequence2x2 = standardSequence2?.get(1)
 
@@ -290,9 +205,9 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
         val builder = getBuilder()
         builder.append(partialMove1, partialMove2, partialMove3)
 
-        val sequence1x1 = standardSequentialMoves.getSequence(partialMove1)?.get(0)
-        val sequence2x1 = standardSequentialMoves.getSequence(partialMove2)?.get(0)
-        val sequence3x1 = standardSequentialMoves.getSequence(partialMove3)?.get(0)
+        val sequence1x1 = possibleMoves.standardSequentialMoves.getSequence(partialMove1)?.get(0)
+        val sequence2x1 = possibleMoves.standardSequentialMoves.getSequence(partialMove2)?.get(0)
+        val sequence3x1 = possibleMoves.standardSequentialMoves.getSequence(partialMove3)?.get(0)
 
         when (diceLeft) {
             4 -> { // Bar is empty
@@ -309,7 +224,7 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
 
 
     private fun findBearOffMovesOnly() {
-        if (!bearOffPossibleInitially) {
+        if (!possibleMoves.bearOffPossibleInitially) {
             return
         }
 
@@ -336,11 +251,11 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
     }
 
     private fun findBearOffFullMoveWith1PartialMove(partialMove: SingleMove) {
-        if (!(bearOffPossibleInitially || bearOffPossibleConditionally)) {
+        if (!(possibleMoves.bearOffPossibleInitially || possibleMoves.bearOffPossibleConditionally)) {
             return
         }
 
-        val standardSequence = standardSequentialMoves.getSequence(partialMove)
+        val standardSequence = possibleMoves.standardSequentialMoves.getSequence(partialMove)
         val sequence0x1 = standardSequence?.get(0)
         val sequence0x2 = standardSequence?.get(1)
 
@@ -381,12 +296,12 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
 
 
     private fun findBearOffFullMoveWith2PartialMoves(partialMove1: SingleMove, partialMove2: SingleMove) {
-        if (!(bearOffPossibleInitially || bearOffPossibleConditionally)) {
+        if (!(possibleMoves.bearOffPossibleInitially || possibleMoves.bearOffPossibleConditionally)) {
             return
         }
 
-        val sequence1x1 = standardSequentialMoves.getSequence(partialMove1)?.get(0)
-        val sequence2x1 = standardSequentialMoves.getSequence(partialMove2)?.get(0)
+        val sequence1x1 = possibleMoves.standardSequentialMoves.getSequence(partialMove1)?.get(0)
+        val sequence2x1 = possibleMoves.standardSequentialMoves.getSequence(partialMove2)?.get(0)
 
         if (sequence1x1 != null) {
             val bearOffMove = firstForBearingOffAfterMoves(partialMove1, partialMove2, sequence1x1)
@@ -415,7 +330,7 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
 
 
     private fun findBearOffFullMoveWith3PartialMoves(partialMove1: SingleMove, partialMove2: SingleMove, partialMove3: SingleMove) {
-        if (!(bearOffPossibleInitially || bearOffPossibleConditionally)) {
+        if (!(possibleMoves.bearOffPossibleInitially || possibleMoves.bearOffPossibleConditionally)) {
             return
         }
 
@@ -425,19 +340,6 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
         }
     }
 
-    private fun firstForBearingOffAfterMoves(vararg moves: SingleMove): SingleMove? {
-        if (moves.isEmpty() && playerCheckers.canBearOff) {
-            return firstForBearingOff(playerCheckers.homeTowersIndices(), dieValue)
-        }
-
-        val tempPlayerCheckers = playerCheckers.clone()
-        moves.forEach { move -> tempPlayerCheckers.move(move) }
-
-        return when (tempPlayerCheckers.canBearOff) {
-            true -> firstForBearingOff(tempPlayerCheckers.homeTowersIndices(), dieValue)
-            false -> null
-        }
-    }
 
     private fun getBuilder() = initialFullMoveBuilder.clone()
 
@@ -490,30 +392,6 @@ class FullMovesSearchDoubling(board: Board, currentPlayer: Player, dice: Dice)
         }
 
         return length == longestFullMove
-    }
-
-    private class SequencesForPartialMoves {
-        private val map = IdentityHashMap<SingleMove, SequenceForPartialMove>(15)
-
-        fun getOrCreateSequence(partialMove: SingleMove): SequenceForPartialMove =
-                map.computeIfAbsent(partialMove) { SequenceForPartialMove() }
-
-        fun getSequence(partialMove: SingleMove): SequenceForPartialMove? = map.getOrDefault(partialMove, null)
-
-    }
-
-    private class SequenceForPartialMove : Iterable<SingleMove> {
-
-        private val sequence = ArrayList<SingleMove>(3)
-
-        override fun iterator(): Iterator<SingleMove> = sequence.iterator()
-
-        operator fun get(index: Int): SingleMove? = sequence.getOrNull(index)
-
-        fun add(move: SingleMove) {
-            sequence.add(move)
-        }
-
     }
 
     private inner class PartialMovesIteration {

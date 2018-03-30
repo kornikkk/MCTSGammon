@@ -25,7 +25,7 @@ class BackgammonMCTS(private val selectionPolicy: NodeSelectionPolicy, private v
     fun newGame(backgammonState: BackgammonState) {
         currentNode = BackgammonNode.createRootNode(selectionPolicy, backgammonState)
         progress.newGame()
-        progress.newGameRound()
+        progress.newGameRound(backgammonState.dice!!)
     }
 
     /**
@@ -44,7 +44,7 @@ class BackgammonMCTS(private val selectionPolicy: NodeSelectionPolicy, private v
             }
         }
 
-        progress.newGameRound()
+        progress.newGameRound(backgammonState.dice!!)
     }
 
     /**

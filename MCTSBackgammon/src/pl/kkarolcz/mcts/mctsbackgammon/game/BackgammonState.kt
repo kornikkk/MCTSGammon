@@ -6,13 +6,14 @@ import pl.kkarolcz.mcts.Result
 import pl.kkarolcz.mcts.mctsbackgammon.board.Board
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMove
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.MovesProvider
 import pl.kkarolcz.utils.randomElement
 
 /**
  * Created by kkarolcz on 24.08.2017.
  */
-class BackgammonState(private val board: Board, currentPlayer: Player, val dice: Dice?) : MCTSState<FullMove>(currentPlayer) {
+class BackgammonState(private val board: Board, currentPlayer: Player, val dice: Dice?,
+                      override val movesProvider: BackgammonMovesProvider = BackgammonAllMovesProvider(board, currentPlayer))
+    : MCTSState<FullMove>(currentPlayer) {
 
     override val result: Result?
         get() = when {
@@ -21,15 +22,17 @@ class BackgammonState(private val board: Board, currentPlayer: Player, val dice:
             else -> null
         }
 
-    override val movesProvider: MovesProvider = MovesProvider(board, currentPlayer)
-
     init {
         movesProvider.resetDice(dice)
     }
 
     override fun copyForExpanding() = BackgammonState(board.clone(), currentPlayer, null)
 
-    override fun copyForPlayout() = BackgammonState(board.clone(), currentPlayer, Dice.PERMUTATIONS.randomElement())
+    override fun copyForPlayout(): BackgammonState {
+        val newBoard = board.clone()
+        val randomDice = Dice.PERMUTATIONS.randomElement()
+        return BackgammonState(newBoard, currentPlayer, randomDice, BackgammonRandomMoveProvider(newBoard, currentPlayer))
+    }
 
     override fun doMoveImpl(move: FullMove) {
         for (currentMove in move)

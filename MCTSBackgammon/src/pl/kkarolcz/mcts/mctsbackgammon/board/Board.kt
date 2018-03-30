@@ -5,7 +5,6 @@ import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BAR_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.isOnBoard
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.toOpponentsIndex
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.SingleMove
-import java.util.*
 
 /**
  * Created by kkarolcz on 24.08.2017.
@@ -14,10 +13,9 @@ class Board : Cloneable {
 
     private val mctsBoard: PlayerBoard
     private val opponentsBoard: PlayerBoard
-    private var doneMoves: Stack<DoneMove>? = null
 
     companion object {
-        val SIZE: Byte = 25
+        const val SIZE: Byte = 25
     }
 
     constructor(mctsBoard: PlayerBoard, opponentsBoard: PlayerBoard) {
@@ -56,50 +54,19 @@ class Board : Cloneable {
         Player.OPPONENT -> opponentsBoard
     }
 
-    // TODO Simplify if undo is removed
     fun doSingleMove(player: Player, move: SingleMove) {
         val playerBoard = getPlayerBoard(player)
         playerBoard.move(move)
-
-        val opponentsMove: SingleMove? = hitOpponentIfOccupied(player.opponent(), move)
-
-        //  addDoneMove(DoneMove(player, move, opponentsMove))
+        hitOpponentIfOccupied(player.opponent(), move)
     }
 
-    //TODO Remove in the future?
-    fun undoLastMove() {
-        val doneMove = popDoneMove()
-        val player = doneMove.player
-
-        val playerCheckers = getPlayerBoard(player)
-        val opponentCheckers = getPlayerBoard(player.opponent())
-
-        playerCheckers.move(doneMove.playersMove.reversed())
-        if (doneMove.opponentsMove != null)
-            opponentCheckers.move(doneMove.opponentsMove.reversed())
-    }
-
-    private fun hitOpponentIfOccupied(opponent: Player, move: SingleMove): SingleMove? {
+    private fun hitOpponentIfOccupied(opponent: Player, move: SingleMove) {
         val opponentCheckers = getPlayerBoard(opponent)
         val opponentsIndex = toOpponentsIndex(move.newIndex)
         if (isOnBoard(move.newIndex) && opponentCheckers.isOccupied(opponentsIndex)) {
             val opponentsMove = SingleMove(opponentsIndex, BAR_INDEX)
             opponentCheckers.move(opponentsMove)
-            return opponentsMove
         }
-        return null
     }
-
-    private fun addDoneMove(doneMove: DoneMove) {
-        if (doneMoves == null)
-            doneMoves = Stack()
-        doneMoves!!.add(doneMove)
-    }
-
-    private fun popDoneMove(): DoneMove {
-        return doneMoves?.pop() ?: throw IllegalStateException("No untriedMoves to undo")
-    }
-
-    private class DoneMove(val player: Player, val playersMove: SingleMove, val opponentsMove: SingleMove?)
 
 }

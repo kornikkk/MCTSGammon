@@ -3,10 +3,9 @@ package pl.kkarolcz.mcts
 /**
  * Created by kkarolcz on 07.08.2017.
  */
-abstract class MCTSState<M : MCTSMove>(private var _currentPlayer: Player) {
-
-    val currentPlayer get() = _currentPlayer
-
+abstract class MCTSState<M : MCTSMove>(currentPlayer: Player) {
+    var currentPlayer = currentPlayer
+        private set
 
     abstract val result: Result?
 
@@ -20,8 +19,8 @@ abstract class MCTSState<M : MCTSMove>(private var _currentPlayer: Player) {
     override fun toString(): String {
         val result = this.result
         return when (result) {
-            null -> "Current player: $_currentPlayer"
-            else -> "Current player: $_currentPlayer, Winner: ${result.winner()}"
+            null -> "Current player: $currentPlayer"
+            else -> "Current player: $currentPlayer, Winner: ${result.winner()}"
         }
     }
 
@@ -32,7 +31,7 @@ abstract class MCTSState<M : MCTSMove>(private var _currentPlayer: Player) {
 
     protected abstract fun doMoveImpl(move: M)
 
-    protected abstract fun afterSwitchPlayerForPlayout()
+    protected abstract fun beforeSwitchPlayerForPlayout()
 
 
     internal fun hasUntriedMoves(): Boolean = movesProvider.hasUntriedMoves()
@@ -49,8 +48,8 @@ abstract class MCTSState<M : MCTSMove>(private var _currentPlayer: Player) {
 
         while (newStateResult == null) {
             newState.doMove(newState.pollRandomUntriedMove())
+            newState.beforeSwitchPlayerForPlayout()
             newState.switchPlayer()
-            newState.afterSwitchPlayerForPlayout()
 
             newStateResult = newState.result
         }
@@ -59,8 +58,8 @@ abstract class MCTSState<M : MCTSMove>(private var _currentPlayer: Player) {
     }
 
     internal fun switchPlayer() {
-        _currentPlayer = _currentPlayer.opponent()
-        movesProvider.reset(_currentPlayer)
+        currentPlayer = currentPlayer.opponent()
+        movesProvider.findMovesForPlayer(currentPlayer)
     }
 
 }

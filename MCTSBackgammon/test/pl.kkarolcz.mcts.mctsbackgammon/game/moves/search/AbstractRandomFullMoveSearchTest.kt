@@ -4,7 +4,7 @@ import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMove
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMovesBuilder
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.playout.RandomFullMoveSearchDoubling
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.random.RandomFullMoveSearchDoubling
 import kotlin.test.assertEquals
 import kotlin.test.fail
 

@@ -7,7 +7,7 @@ import pl.kkarolcz.mcts.mctsbackgammon.board.Board
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BAR_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BEAR_OFF_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.PlayerBoard
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.playout.RandomFullMoveSearchDoubling
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.random.RandomFullMoveSearchDoubling
 import pl.kkarolcz.mcts.mctsbackgammon.settings.TestSettings
 import java.util.*
 

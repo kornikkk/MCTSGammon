@@ -9,19 +9,21 @@ import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.FullMovesSearch
 /**
  * Created by kkarolcz on 24.02.2018.
  */
-class BackgammonRandomMoveProvider(private val board: Board, private var player: Player) : BackgammonMovesProvider {
+class BackgammonRandomMoveProvider(private val board: Board) : BackgammonMovesProvider {
     private var dice: Dice? = null
+    private var randomMove: FullMove? = null
 
-    override fun hasUntriedMoves(): Boolean = dice != null
+    override fun hasUntriedMoves(): Boolean = randomMove != null
 
     override fun pollNextRandomUntriedMove(): FullMove {
-        if (dice == null) throw IllegalStateException("Random move provider cannot be reused without resetting dice")
-        return FullMovesSearch.findAll(board, player, dice!!).first()
+        return randomMove ?: throw IllegalStateException("Call resetDice method before polling random move")
     }
 
-    override fun reset(player: Player) {
-        this.player = player
-        reset()
+    override fun findMovesForPlayer(player: Player) {
+        if (dice == null) throw IllegalStateException("Dice not set")
+
+        randomMove = FullMovesSearch.findRandom(board, player, dice!!)
+        dice = null
     }
 
     /**
@@ -29,16 +31,15 @@ class BackgammonRandomMoveProvider(private val board: Board, private var player:
      * @param newDice new dice, cannot be null
      */
     override fun resetDice(newDice: Dice?) {
-        if (newDice == null) throw IllegalArgumentException("Dice cannot be null in RandomMoveProvider")
-        dice = newDice
-    }
+        if (newDice == null) throw IllegalArgumentException("Dice cannot be null in BackgammonRandomMoveProvider")
 
-    private fun reset() {
-        dice = null
+        dice = newDice
+        randomMove = null
+
     }
 
     override fun discardOtherDice(dice: Dice) {
-        throw IllegalStateException("Random move provider cannot be used")
+        throw IllegalStateException("Random move provider cannot be used here")
     }
 
 }

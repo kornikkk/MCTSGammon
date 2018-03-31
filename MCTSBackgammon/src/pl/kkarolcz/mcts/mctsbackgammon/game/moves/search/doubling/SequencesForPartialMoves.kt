@@ -1,6 +1,5 @@
 package pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling
 
-import org.apache.commons.collections4.CollectionUtils
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.SingleMove
 import pl.kkarolcz.utils.randomElement
 import java.util.*
@@ -29,16 +28,19 @@ class SequencesForPartialMoves {
     fun filteredByNotContains(partialMoves: Collection<SingleMove>): SequencesForPartialMoves {
         val filteredSequences = SequencesForPartialMoves()
         for ((key, value) in map) {
-            for (partialMove in partialMoves) {
-                if (key !== partialMove) {
-                    filteredSequences.map[key] = value
-                }
+            if (!containsMove(partialMoves, key)) {
+                filteredSequences.map[key] = value
             }
         }
         return filteredSequences
     }
 
-    fun containsAnyMove(moves: Collection<SingleMove>) = CollectionUtils.containsAny(map.keys, moves)
+    private fun containsMove(partialMoves: Collection<SingleMove>, move: SingleMove): Boolean {
+        for (partialMove in partialMoves) {
+            if (move === partialMove) return true
+        }
+        return false
+    }
 
     fun randomSequence(): SequenceForPartialMove = map.values.toList().randomElement()
 }

@@ -1,12 +1,11 @@
-package pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.playout
+package pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling
 
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.SingleMove
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.SequencesForPartialMoves
 
 /**
  * Created by kkarolcz on 29.03.2018.
  */
-class PossibleMoves {
+class PossibleMovesDoubling {
     var barMove: SingleMove? = null
 
     val barSequentialMoves = SequencesForPartialMoves()

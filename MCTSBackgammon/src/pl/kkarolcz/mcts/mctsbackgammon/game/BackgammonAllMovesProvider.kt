@@ -6,37 +6,54 @@ import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMove
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.FullMovesSearch
 import pl.kkarolcz.utils.randomElement
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.Executors
 
 /**
  * Created by kkarolcz on 24.02.2018.
  */
-class BackgammonAllMovesProvider(private val board: Board, private var player: Player) : BackgammonMovesProvider {
-
-    private val initialDice = mutableListOf<Dice>()
-    private val remainingDice = mutableListOf<Dice>()
-    private val untriedDice = mutableListOf<Dice>()
-
+class BackgammonAllMovesProvider(private val board: Board) : BackgammonMovesProvider {
+    private var dice: Dice? = null
     private val moves = MovesForDice()
 
-    override fun hasUntriedMoves(): Boolean = remainingDice.isNotEmpty()
-
-    override fun pollNextRandomUntriedMove(): FullMove {
-        val dice = nextRemainingDice()
-        if (!wasTried(dice)) {
-            updateMovesForDice(dice)
-        }
-
-        val randomMove = moves.pollRandomMove(dice)
-        if (!moves.hasMoves(dice)) {
-            remainingDice.remove(dice)
-        }
-
-        return randomMove
+    companion object {
+        private val nonDoublingSearchExecutor = Executors.newSingleThreadExecutor()
     }
 
-    override fun reset(player: Player) {
-        this.player = player
-        reset()
+    override fun hasUntriedMoves(): Boolean = !moves.isEmpty()
+
+    override fun pollNextRandomUntriedMove(): FullMove {
+        if (moves.isEmpty()) throw IllegalStateException("No moves available. Check hasUntriedMovesBefore call")
+
+        return moves.pollRandomMove()
+    }
+
+    override fun findMovesForPlayer(player: Player) {
+        when (dice) {
+            null -> {
+                val future = nonDoublingSearchExecutor.submit {
+                    Dice.NON_DOUBLING_PERMUTATIONS.forEach { dice -> findMoves(dice, player) }
+                }
+
+                Dice.DOUBLING_PERMUTATIONS.parallelStream().forEach { dice -> findMoves(dice, player) }
+
+                future.get()
+            }
+            else -> findMoves(dice!!, player)
+        }
+    }
+
+    private fun findMoves(dice: Dice, player: Player) {
+        moves.put(dice, FullMovesSearch.findAll(board, player, dice))
+    }
+
+    /**
+     * Clears the moves, sets a new dice
+     * @param newDice if null all possible dice permutations will be used for moves search
+     */
+    override fun resetDice(newDice: Dice?) {
+        dice = newDice
+        moves.clear()
     }
 
     /**
@@ -44,67 +61,17 @@ class BackgammonAllMovesProvider(private val board: Board, private var player: P
      * @param dice dice which won't be discarded
      */
     override fun discardOtherDice(dice: Dice) {
-        initialDice.removeIf { it != dice }
-        remainingDice.removeIf { it != dice }
-        untriedDice.removeIf { it != dice }
-
-        if (initialDice.isEmpty()) {
-            initialDice.add(dice)
-            remainingDice.addAll(initialDice)
-            untriedDice.addAll(initialDice)
-        }
-
-        moves.removeMovesWithoutDice(dice)
-    }
-
-    /**
-     * Clears the moves and set a new dice
-     * @param newDice if null all possible dice will be used for moves search
-     */
-    override fun resetDice(newDice: Dice?) {
-        initialDice.clear()
-
-        when (newDice) {
-            null -> initialDice.addAll(shuffledDiceCombinations())
-            else -> initialDice.add(newDice)
-        }
-
-        reset()
-    }
-
-    private fun reset() {
-        remainingDice.clear()
-        untriedDice.clear()
-
-        remainingDice.addAll(initialDice)
-        untriedDice.addAll(initialDice)
-
-        moves.clear()
-    }
-
-    private fun updateMovesForDice(dice: Dice) {
-        untriedDice.remove(dice)
-        moves.put(dice, FullMovesSearch.findAll(board, player, dice))
-    }
-
-    private fun nextRemainingDice(): Dice = remainingDice.randomElement()
-
-    private fun wasTried(dice: Dice): Boolean = !untriedDice.contains(dice)
-
-    private fun shuffledDiceCombinations(): List<Dice> {
-        val combinations = Dice.PERMUTATIONS.toMutableList()
-        combinations.shuffle()
-        return combinations
+        moves.discardOtherDice(dice)
     }
 
     class MovesForDice {
-        private val map = mutableMapOf<Dice, MutableList<FullMove>>()
+        private val map: MutableMap<Dice, MutableList<FullMove>> = ConcurrentHashMap()
 
-        fun removeMovesWithoutDice(dice: Dice) {
+        fun isEmpty() = map.isEmpty()
+
+        fun discardOtherDice(dice: Dice) {
             map.keys.removeIf { key -> key != dice }
         }
-
-        fun hasMoves(dice: Dice): Boolean = map[dice]?.isNotEmpty() ?: false
 
         fun clear() {
             map.clear()
@@ -114,14 +81,15 @@ class BackgammonAllMovesProvider(private val board: Board, private var player: P
             map[dice] = moves
         }
 
-        fun pollRandomMove(dice: Dice): FullMove {
-            val movesForDice = map[dice] ?: throw IllegalArgumentException("Dice not present: $dice")
+        fun pollRandomMove(): FullMove {
+            val randomDice = map.keys.randomElement()
+            val movesForRandomDice = map[randomDice] ?: throw IllegalArgumentException("Value cannot be null")
 
-            val randomMove = movesForDice.randomElement()
-            movesForDice.remove(randomMove)
+            val randomMove = movesForRandomDice.randomElement()
+            movesForRandomDice.remove(randomMove)
 
-            if (movesForDice.isEmpty()) {
-                map.remove(dice)
+            if (movesForRandomDice.isEmpty()) {
+                map.remove(randomDice)
             }
 
             return randomMove

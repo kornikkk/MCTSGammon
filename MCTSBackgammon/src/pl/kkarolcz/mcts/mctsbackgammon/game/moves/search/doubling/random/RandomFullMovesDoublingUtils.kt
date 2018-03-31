@@ -1,4 +1,4 @@
-package pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.playout
+package pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.random
 
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMove
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMovesBuilder
@@ -8,7 +8,7 @@ import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.SequencesForPa
 /**
  * Created by kkarolcz on 30.03.2018.
  */
-object RandomMovesHelper {
+object RandomFullMovesDoublingUtils {
 
     fun randomFromPartial(builder: FullMovesBuilder, partialMoves: List<SingleMove>, partialCount: Int): FullMove {
         checkLength(builder, partialCount)
@@ -73,7 +73,7 @@ object RandomMovesHelper {
         val randomPartialMoves = randomPartialMoves(partialMoves, partialCount)
         builder.append(randomPartialMoves)
 
-        val randomSequence = sequences.filteredByNotContains(partialMoves).randomSequence()
+        val randomSequence = sequences.filteredByNotContains(randomPartialMoves).randomSequence()
         builder.append(randomSequence.partialMove)
         builder.append(randomSequence.trimmed(sequenceLength))
 

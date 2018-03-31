@@ -1,4 +1,4 @@
-package pl.kkarolcz.mcts.mctsbackgammon.game.moves.search
+package pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.allmoves
 
 import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.board.Board

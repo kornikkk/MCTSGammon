@@ -6,5 +6,5 @@ package pl.kkarolcz.mcts
 interface MCTSMovesProvider<out M : MCTSMove> {
     fun hasUntriedMoves(): Boolean
     fun pollNextRandomUntriedMove(): M
-    fun reset(player: Player)
+    fun findMovesForPlayer(player: Player)
 }

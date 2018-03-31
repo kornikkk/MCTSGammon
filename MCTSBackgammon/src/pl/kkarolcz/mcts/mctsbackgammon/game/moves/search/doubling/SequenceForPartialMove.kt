@@ -3,7 +3,6 @@ package pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.SingleMove
 
 class SequenceForPartialMove(val partialMove: SingleMove) {
-
     private val sequence = ArrayList<SingleMove>(3)
 
     val length get() = sequence.size

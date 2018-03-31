@@ -3,6 +3,7 @@ package pl.kkarolcz.mcts.mctsbackgammon.game.moves.search
 import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMove
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.allmoves.FullMovesSearchDoubling
 import kotlin.test.assertEquals
 
 /**

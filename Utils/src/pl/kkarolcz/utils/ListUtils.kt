@@ -15,7 +15,15 @@ fun <T> List<T>.randomOrNullElement(): T? {
 }
 
 /**
- * @throws IllegalArgumentException if list is empty
+ * @throws IllegalArgumentException if Collection is empty
+ */
+fun <T> Collection<T>.randomElement(): T {
+    val asList = this.toList()
+    return asList[random.nextInt(asList.size)]
+}
+
+/**
+ * @throws IllegalArgumentException if List is empty
  */
 fun <T> List<T>.randomElement(): T {
     return this[random.nextInt(size)]

@@ -11,9 +11,10 @@ import pl.kkarolcz.utils.randomElement
 /**
  * Created by kkarolcz on 24.08.2017.
  */
-class BackgammonState(private val board: Board, currentPlayer: Player, val dice: Dice?,
-                      override val movesProvider: BackgammonMovesProvider = BackgammonAllMovesProvider(board, currentPlayer))
-    : MCTSState<FullMove>(currentPlayer) {
+class BackgammonState : MCTSState<FullMove> {
+    private val board: Board
+    val dice: Dice?
+    override val movesProvider: BackgammonMovesProvider
 
     override val result: Result?
         get() = when {
@@ -22,24 +23,49 @@ class BackgammonState(private val board: Board, currentPlayer: Player, val dice:
             else -> null
         }
 
-    init {
+    /**
+     * Created manually
+     */
+    constructor(board: Board, currentPlayer: Player, dice: Dice?) : super(currentPlayer) {
+        this.board = board
+        this.dice = dice
+
+        movesProvider = BackgammonAllMovesProvider(board)
+        movesProvider.resetDice(dice)
+        movesProvider.findMovesForPlayer(currentPlayer)
+    }
+
+    /**
+     * Expanding
+     */
+    private constructor(other: BackgammonState) : super(other.currentPlayer) {
+        this.board = other.board.clone()
+        this.dice = null
+
+        movesProvider = BackgammonAllMovesProvider(board)
         movesProvider.resetDice(dice)
     }
 
-    override fun copyForExpanding() = BackgammonState(board.clone(), currentPlayer, null)
+    private constructor(other: BackgammonState, dice: Dice) : super(other.currentPlayer) {
+        this.board = other.board.clone()
+        this.dice = dice
 
-    override fun copyForPlayout(): BackgammonState {
-        val newBoard = board.clone()
-        val randomDice = Dice.PERMUTATIONS.randomElement()
-        return BackgammonState(newBoard, currentPlayer, randomDice, BackgammonRandomMoveProvider(newBoard, currentPlayer))
+        movesProvider = BackgammonRandomMoveProvider(board)
+        movesProvider.resetDice(dice)
+        movesProvider.findMovesForPlayer(currentPlayer)
     }
+
+    override fun copyForExpanding() = BackgammonState(this)
+
+    override fun copyForPlayout(): BackgammonState = BackgammonState(this, Dice.PERMUTATIONS.randomElement())
+
 
     override fun doMoveImpl(move: FullMove) {
         for (currentMove in move)
             board.doSingleMove(currentPlayer, currentMove)
     }
 
-    override fun afterSwitchPlayerForPlayout() {
+    override fun beforeSwitchPlayerForPlayout() {
         movesProvider.resetDice(Dice.PERMUTATIONS.randomElement())
     }
 

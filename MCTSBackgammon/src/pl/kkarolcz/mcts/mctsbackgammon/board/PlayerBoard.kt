@@ -137,7 +137,8 @@ class PlayerBoard : Cloneable {
 
     fun move(move: SingleMove) {
         val checkers = get(move.oldIndex)
-        if (checkers == 0.toByte()) throw IllegalStateException("No checkers to move")
+        if (checkers == 0.toByte())
+            throw IllegalStateException("No checkers to move")
         remove(move.oldIndex)
         add(move.newIndex)
     }

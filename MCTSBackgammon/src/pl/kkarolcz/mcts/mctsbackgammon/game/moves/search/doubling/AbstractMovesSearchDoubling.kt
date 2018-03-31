@@ -7,7 +7,6 @@ import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMovesBuilder
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.SingleMove
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.AbstractMovesSearch
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.playout.PossibleMoves
 import java.util.*
 
 /**
@@ -20,7 +19,7 @@ abstract class AbstractMovesSearchDoubling(board: Board, currentPlayer: Player, 
     protected var diceLeft: Int = 4
         private set
 
-    protected val possibleMoves = PossibleMoves()
+    protected val possibleMoves = PossibleMovesDoubling()
     protected val initialFullMoveBuilder = FullMovesBuilder(dice)
 
     protected fun initialize() {

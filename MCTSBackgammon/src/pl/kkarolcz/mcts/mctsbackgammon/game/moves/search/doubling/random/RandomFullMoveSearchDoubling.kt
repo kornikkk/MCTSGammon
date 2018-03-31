@@ -1,19 +1,19 @@
-package pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.playout
+package pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.random
 
 import pl.kkarolcz.mcts.Player
 import pl.kkarolcz.mcts.mctsbackgammon.board.Board
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.AbstractMovesSearchDoubling
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.playout.dice1.FullMoveTypeDice1Possible1
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.playout.dice2.FullMoveTypeDice2Possible1
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.playout.dice2.FullMoveTypeDice2Possible2
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.playout.dice3.FullMoveTypeDice3Possible1
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.playout.dice3.FullMoveTypeDice3Possible2
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.playout.dice3.FullMoveTypeDice3Possible3
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.playout.dice4.FullMoveTypeDice4Possible1
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.playout.dice4.FullMoveTypeDice4Possible2
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.playout.dice4.FullMoveTypeDice4Possible3
-import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.playout.dice4.FullMoveTypeDice4Possible4
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.random.dice1.FullMoveTypeDice1Possible1
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.random.dice2.FullMoveTypeDice2Possible1
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.random.dice2.FullMoveTypeDice2Possible2
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.random.dice3.FullMoveTypeDice3Possible1
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.random.dice3.FullMoveTypeDice3Possible2
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.random.dice3.FullMoveTypeDice3Possible3
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.random.dice4.FullMoveTypeDice4Possible1
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.random.dice4.FullMoveTypeDice4Possible2
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.random.dice4.FullMoveTypeDice4Possible3
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.random.dice4.FullMoveTypeDice4Possible4
 import kotlin.reflect.KClass
 
 /**
@@ -35,7 +35,7 @@ class RandomFullMoveSearchDoubling(board: Board, currentPlayer: Player, dice: Di
                     1 -> randomMoveTypeDice1()
                     else -> null
                 }
-                val randomMove = fullMoveType?.randomMove(initialFullMoveBuilder, possibleMoves)
+                val randomMove = fullMoveType?.randomMove(initialFullMoveBuilder.clone(), possibleMoves)
                 when {
                     randomMove != null -> fullMoves.add(randomMove)
                     else -> fullMoves.add(initialFullMoveBuilder.build())

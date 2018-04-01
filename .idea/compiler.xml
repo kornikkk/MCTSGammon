@@ -16,13 +16,13 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="mcts-graph" target="1.5" />
-      <module name="MCTSBackgammon" target="1.9" />
-      <module name="MCTSCore" target="1.9" />
+      <module name="MCTSBackgammon" target="1.5" />
+      <module name="MCTSCore" target="1.5" />
       <module name="MCTSCoreTest" target="1.8" />
       <module name="MCTSGammon" target="1.5" />
-      <module name="MCTSGNUBackgammon" target="1.9" />
-      <module name="MCTSGraph" target="1.9" />
-      <module name="Utils" target="1.9" />
+      <module name="MCTSGNUBackgammon" target="1.5" />
+      <module name="MCTSGraph" target="1.5" />
+      <module name="Utils" target="1.5" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -17,8 +17,6 @@
 
     <properties>
         <kotlin.version>LATEST</kotlin.version>
-        <maven.compiler.source>1.9</maven.compiler.source>
-        <maven.compiler.target>1.9</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -65,6 +63,7 @@
             <version>1.7.25</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <build>
@@ -80,6 +79,13 @@
                         <phase>compile</phase>
                         <goals>
                             <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>test-compile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>test-compile</goal>
                         </goals>
                     </execution>
                 </executions>

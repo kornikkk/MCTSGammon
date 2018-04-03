@@ -4,8 +4,8 @@ import com.jgoodies.forms.builder.FormBuilder
 import com.jgoodies.forms.factories.CC.*
 import com.jgoodies.forms.factories.Paddings
 import com.jgoodies.forms.layout.FormLayout
-import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonMCTSProgress.BackgammonMCTSProgressListener
-import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonMCTSProgress.BackgammonMCTSProgressListenerAdapter
+import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonGamesProgress.BackgammonMCTSProgressListener
+import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonGamesProgress.BackgammonMCTSProgressListenerAdapter
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gnubackgammon.GamesProperties
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gui.utils.TextAreaOutputStream
 import javax.swing.*

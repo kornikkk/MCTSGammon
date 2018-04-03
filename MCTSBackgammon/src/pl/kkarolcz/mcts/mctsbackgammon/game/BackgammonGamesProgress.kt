@@ -7,7 +7,7 @@ import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMove
 /**
  * Created by kkarolcz on 24.03.2018.
  */
-class BackgammonMCTSProgress {
+class BackgammonGamesProgress {
     private val listeners = mutableListOf<BackgammonMCTSProgressListener>()
 
     private var gamesCount: Int = 0

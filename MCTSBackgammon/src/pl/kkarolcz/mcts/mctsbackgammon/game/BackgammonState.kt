@@ -30,7 +30,7 @@ class BackgammonState : MCTSState<FullMove> {
         this.board = board
         this.dice = dice
 
-        movesProvider = BackgammonAllMovesProvider(board)
+        movesProvider = BackgammonIncrementalMovesProvider(board)
         movesProvider.resetDice(dice)
         movesProvider.findMovesForPlayer(currentPlayer)
     }
@@ -42,7 +42,7 @@ class BackgammonState : MCTSState<FullMove> {
         this.board = other.board.clone()
         this.dice = null
 
-        movesProvider = BackgammonAllMovesProvider(board)
+        movesProvider = BackgammonIncrementalMovesProvider(board)
         movesProvider.resetDice(dice)
     }
 

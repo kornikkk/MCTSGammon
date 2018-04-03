@@ -12,7 +12,7 @@ import java.util.concurrent.Executors
 /**
  * Created by kkarolcz on 24.02.2018.
  */
-class BackgammonAllMovesProvider(private val board: Board) : BackgammonMovesProvider {
+class BackgammonAllMovesProvider2(private val board: Board) : BackgammonMovesProvider {
     private var dice: Dice? = null
     private val moves = MovesForDice()
 

@@ -2,7 +2,7 @@ package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.statistics
 
 import org.apache.log4j.Logger
 import pl.kkarolcz.mcts.Player
-import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonMCTSProgress.BackgammonMCTSProgressListener
+import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonGamesProgress.BackgammonMCTSProgressListener
 import pl.kkarolcz.mcts.mctsbackgammon.game.dices.Dice
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMove
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.mcts.toGNUBackgammonFormat

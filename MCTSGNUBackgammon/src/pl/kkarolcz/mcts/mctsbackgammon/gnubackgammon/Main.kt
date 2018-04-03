@@ -1,6 +1,7 @@
 package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon
 
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gui.utils.DPIUtils
+import javax.swing.UIManager
 
 
 /**

@@ -9,11 +9,7 @@ import java.lang.Math.sqrt
 /**
  * Created by kkarolcz on 19.08.2017.
  */
-class UCTNodeSelectionPolicy : NodeSelectionPolicy {
-
-    companion object {
-        val C: Double = sqrt(2.0)
-    }
+class UCTNodeSelectionPolicy(private val uctConstant: Double) : NodeSelectionPolicy {
 
     /**
      * @throws IllegalArgumentException if childNodes is empty
@@ -27,6 +23,6 @@ class UCTNodeSelectionPolicy : NodeSelectionPolicy {
      * Wi / Ni + C * √(ln(T) / Ni)
      */
     private fun <N : MCTSNode<N, S, M>, S : MCTSState<M>, M : MCTSMove> countUCT(totalVisits: Int, node: N): Double =
-            node.wins.toDouble() / node.visits + C * sqrt(log(totalVisits.toDouble()) / node.visits)
+            node.wins.toDouble() / node.visits + uctConstant * sqrt(log(totalVisits.toDouble()) / node.visits)
 
 }

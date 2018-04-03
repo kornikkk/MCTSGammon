@@ -1,9 +1,9 @@
 package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gnubackgammon
 
 import pl.kkarolcz.mcts.Player
-import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonMCTS
-import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonMCTSProgress
-import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonMCTSProgress.BackgammonMCTSProgressListener
+import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonGame
+import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonGamesProgress
+import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonGamesProgress.BackgammonMCTSProgressListener
 import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonState
 import pl.kkarolcz.mcts.node.selectionpolicies.UCTNodeSelectionPolicy
 
@@ -11,11 +11,11 @@ import pl.kkarolcz.mcts.node.selectionpolicies.UCTNodeSelectionPolicy
  * Created by kkarolcz on 29.08.2017.
  */
 class GNUBackgammonMCTS(private val gnuBackgammon: GNUBackgammon) {
-    private val progress: BackgammonMCTSProgress = BackgammonMCTSProgress()
+    private val progress: BackgammonGamesProgress = BackgammonGamesProgress()
     private var gamesCount: Int = 0
     private var gamesLeft: Int = 0
 
-    private val backgammonMCTS = BackgammonMCTS(UCTNodeSelectionPolicy(), progress)
+    private val backgammonMCTS = BackgammonGame(progress)
 
     init {
         gnuBackgammon.addGameListener(GNUBackgammonMCTSGameListener())

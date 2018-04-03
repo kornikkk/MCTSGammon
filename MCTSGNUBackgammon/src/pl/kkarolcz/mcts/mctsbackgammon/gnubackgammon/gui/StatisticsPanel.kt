@@ -1,8 +1,8 @@
 package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gui
 
 import pl.kkarolcz.mcts.Player
-import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonMCTSProgress.BackgammonMCTSProgressListener
-import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonMCTSProgress.BackgammonMCTSProgressListenerAdapter
+import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonGamesProgress.BackgammonMCTSProgressListener
+import pl.kkarolcz.mcts.mctsbackgammon.game.BackgammonGamesProgress.BackgammonMCTSProgressListenerAdapter
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gui.utils.DPIUtils
 import java.awt.BorderLayout
 import javax.swing.JPanel

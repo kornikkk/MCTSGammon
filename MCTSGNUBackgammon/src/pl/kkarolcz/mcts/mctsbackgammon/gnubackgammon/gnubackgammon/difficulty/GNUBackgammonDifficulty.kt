@@ -4,6 +4,10 @@ package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gnubackgammon.difficulty
  * Created by kkarolcz on 23.03.2018.
  */
 enum class GNUBackgammonDifficulty(val userFriendlyName: String, val chequerPlay: GNUBackgammonEvaluation, val cubeDecisions: GNUBackgammonEvaluation) {
+    NOOB("Noob",
+            GNUBackgammonEvaluation(0, false, true, 0.1, true),
+            GNUBackgammonEvaluation(0, false, true, 0.1, true)
+    ),
     BEGINNER("Beginner",
             GNUBackgammonEvaluation(0, false, true, 0.060, true),
             GNUBackgammonEvaluation(0, false, true, 0.060, true)

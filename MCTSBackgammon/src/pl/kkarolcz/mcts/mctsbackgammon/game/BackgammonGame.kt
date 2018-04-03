@@ -1,14 +1,18 @@
 package pl.kkarolcz.mcts.mctsbackgammon.game
 
 import pl.kkarolcz.mcts.Player
-import pl.kkarolcz.mcts.node.selectionpolicies.NodeSelectionPolicy
+import pl.kkarolcz.mcts.mctsbackgammon.game.mcts.*
 
 /**
  * Created by kkarolcz on 21.03.2018.
  */
-class BackgammonMCTS(private val selectionPolicy: NodeSelectionPolicy, private val progress: BackgammonMCTSProgress) {
+class BackgammonGame(private val progress: BackgammonGamesProgress) {
     private var simulationsLimit: Int = 0
     private var currentNode: BackgammonNode? = null
+        private var backgammonMCTS: BackgammonMCTS = SequentialHalvingV3(progress)
+//    private var backgammonMCTS: BackgammonMCTS = SequentialHalvingV2(progress)
+//    private var backgammonMCTS: BackgammonMCTS = SequentialHalvingV1(progress)
+//    private var backgammonMCTS: BackgammonMCTS = ClassicMCTSWithUCT(progress)
 
     val gameStarted get() = currentNode != null
 
@@ -23,7 +27,7 @@ class BackgammonMCTS(private val selectionPolicy: NodeSelectionPolicy, private v
     }
 
     fun newGame(backgammonState: BackgammonState) {
-        currentNode = BackgammonNode.createRootNode(selectionPolicy, backgammonState)
+        currentNode = backgammonMCTS.createRootNode(backgammonState)
         progress.newGame()
         progress.newGameRound(backgammonState.dice!!)
     }
@@ -36,9 +40,10 @@ class BackgammonMCTS(private val selectionPolicy: NodeSelectionPolicy, private v
 
         val existingNode = currentNode!!.findChildNode(backgammonState)
         currentNode = when (existingNode) {
-            null -> BackgammonNode.createRootNode(selectionPolicy, backgammonState)
+            null -> backgammonMCTS.createRootNode(backgammonState)
             else -> {
                 val dice = backgammonState.dice ?: throw IllegalStateException("Dice has to be provided")
+                existingNode.parent = null
                 existingNode.discardOtherDice(dice)
                 existingNode
             }
@@ -55,10 +60,7 @@ class BackgammonMCTS(private val selectionPolicy: NodeSelectionPolicy, private v
         if (currentNode == null) throw IllegalStateException("Game not started")
         if (simulationsLimit == 0) throw IllegalStateException("Simulations limit not set")
 
-        for (i in 1..simulationsLimit) {
-            progress.newMonteCarloRound()
-            currentNode!!.monteCarloRound()
-        }
+        backgammonMCTS.simulate(currentNode!!, simulationsLimit)
 
         currentNode = currentNode!!.bestNode
         progress.endGameRound(currentNode!!.originMove!!)

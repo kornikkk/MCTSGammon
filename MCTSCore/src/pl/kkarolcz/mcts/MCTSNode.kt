@@ -9,7 +9,10 @@ import pl.kkarolcz.mcts.node.selectionpolicies.NodeSelectionPolicy
 
 @Suppress("UNCHECKED_CAST")
 abstract class MCTSNode<Self : MCTSNode<Self, S, M>, S : MCTSState<M>, M : MCTSMove>
-protected constructor(private val nodeSelectionPolicy: NodeSelectionPolicy, protected val state: S, val originMove: M?) : Cloneable {
+protected constructor(private val nodeSelectionPolicy: NodeSelectionPolicy,
+                      val state: S,
+                      var parent: Self?,
+                      val originMove: M?) : Cloneable {
 
     var visits: Int = 0
         private set
@@ -21,11 +24,11 @@ protected constructor(private val nodeSelectionPolicy: NodeSelectionPolicy, prot
 
     val bestNode: Self
         get() {
-            val asdsadsad = children.maxBy { child -> child.wins.toDouble() / child.visits }
-            if (asdsadsad != null) {
-                return asdsadsad
+            val bestChild = children.maxBy { child -> child.wins.toDouble() / child.visits }
+            when {
+                bestChild != null -> return bestChild
+                else -> throw IllegalStateException("No child nodes")
             }
-            throw IllegalStateException("No child nodes")
         }
 
     val isFullyExpanded: Boolean get() = !state.hasUntriedMoves()
@@ -36,35 +39,29 @@ protected constructor(private val nodeSelectionPolicy: NodeSelectionPolicy, prot
     override fun toString() = "$wins / $visits"
 
     fun monteCarloRound() {
-        val path = select()
-        val leaf = path.last()
+        var node = select()
 
-        if (!leaf.isFullyExpanded) {
-            path.add(leaf.expand())
+        if (!node.isFullyExpanded) {
+            node = node.expand()
         }
 
-        val lastNode = path.last()
-        val result = lastNode.state.playout()
-        path.forEach { node -> node.update(result) }
+        node.playout()
     }
 
     fun findChildNode(state: S): Self? = children.find { childNode -> childNode.state == state }
 
     protected abstract fun newNode(nodeSelectionPolicy: NodeSelectionPolicy, state: S, originMove: M?): Self
 
-    private fun select(): MutableList<Self> {
+    private fun select(): Self {
         var node = this as Self
-        val path = mutableListOf(node)
-
         while (!node.state.hasUntriedMoves() && node.children.isNotEmpty()) {
             node = nodeSelectionPolicy.selectChildNode(node)
-            path.add(node)
         }
 
-        return path
+        return node
     }
 
-    private fun expand(): Self {
+    fun expand(): Self {
         val newState = state.copyForExpanding() as S
         val move = state.pollRandomUntriedMove()
 
@@ -76,11 +73,26 @@ protected constructor(private val nodeSelectionPolicy: NodeSelectionPolicy, prot
         return newNode
     }
 
+    fun playout(): Result {
+        val result = state.playout()
+        update(result)
+        return result
+    }
+
     private fun update(result: Result) {
-        //TODO: Check what happens when we decrement lost games
-        visits++
-        if (result[state.currentPlayer.opponent()] == Result.PlayerResult.WIN)
-            wins++
+        var node: Self? = this as Self
+        while (node != null) {
+            node.visits++
+
+            //TODO: Check what happens when we decrement lost games
+            val opponentResult = result[node.state.currentPlayer.opponent()]
+            when (opponentResult) {
+                Result.PlayerResult.WIN -> node.wins++
+                Result.PlayerResult.LOSE -> node.wins--
+            }
+
+            node = node.parent
+        }
     }
 
 }

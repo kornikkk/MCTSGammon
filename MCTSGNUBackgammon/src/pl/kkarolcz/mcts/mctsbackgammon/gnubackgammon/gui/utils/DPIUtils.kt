@@ -17,7 +17,6 @@ object DPIUtils {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
         lafDefaults = UIManager.getLookAndFeelDefaults()
         setFontDefaultSizes()
-
     }
 
     fun getScaleFactor() = Toolkit.getDefaultToolkit().screenResolution.toDouble() / 96

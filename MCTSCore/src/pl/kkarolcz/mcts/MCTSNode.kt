@@ -84,7 +84,6 @@ protected constructor(private val nodeSelectionPolicy: NodeSelectionPolicy,
         while (node != null) {
             node.visits++
 
-            //TODO: Check what happens when we decrement lost games
             val opponentResult = result[node.state.currentPlayer.opponent()]
             when (opponentResult) {
                 Result.PlayerResult.WIN -> node.wins++

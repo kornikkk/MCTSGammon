@@ -1,7 +1,7 @@
 package pl.kkarolcz.mcts.mctsbackgammon.game
 
 import pl.kkarolcz.mcts.Player
-import pl.kkarolcz.mcts.mctsbackgammon.game.mcts.*
+import pl.kkarolcz.mcts.mctsbackgammon.game.ai.*
 
 /**
  * Created by kkarolcz on 21.03.2018.
@@ -9,16 +9,14 @@ import pl.kkarolcz.mcts.mctsbackgammon.game.mcts.*
 class BackgammonGame(private val progress: BackgammonGamesProgress) {
     private var simulationsLimit: Int = 0
     private var currentNode: BackgammonNode? = null
-        private var backgammonMCTS: BackgammonMCTS = SequentialHalvingV3(progress)
-//    private var backgammonMCTS: BackgammonMCTS = SequentialHalvingV2(progress)
-//    private var backgammonMCTS: BackgammonMCTS = SequentialHalvingV1(progress)
-//    private var backgammonMCTS: BackgammonMCTS = ClassicMCTSWithUCT(progress)
+    private var backgammonAI: BackgammonAI? = null
 
     val gameStarted get() = currentNode != null
 
-    fun reset(simulationsLimit: Int) {
+    fun reset(simulationsLimit: Int, backgammonAIType: BackgammonAIType) {
         this.simulationsLimit = simulationsLimit
-        currentNode = null
+        this.currentNode = null
+        this.backgammonAI = backgammonAIType.create(progress)
     }
 
     fun endGame(winner: Player) {
@@ -27,7 +25,9 @@ class BackgammonGame(private val progress: BackgammonGamesProgress) {
     }
 
     fun newGame(backgammonState: BackgammonState) {
-        currentNode = backgammonMCTS.createRootNode(backgammonState)
+        if (backgammonAI == null) throw IllegalStateException("Backgammon AI not set")
+
+        currentNode = backgammonAI?.createRootNode(backgammonState)
         progress.newGame()
         progress.newGameRound(backgammonState.dice!!)
     }
@@ -37,10 +37,11 @@ class BackgammonGame(private val progress: BackgammonGamesProgress) {
      */
     fun newRound(backgammonState: BackgammonState) {
         if (currentNode == null) throw IllegalStateException("Game not started")
+        if (backgammonAI == null) throw IllegalStateException("Backgammon AI not set")
 
         val existingNode = currentNode!!.findChildNode(backgammonState)
         currentNode = when (existingNode) {
-            null -> backgammonMCTS.createRootNode(backgammonState)
+            null -> backgammonAI?.createRootNode(backgammonState)
             else -> {
                 val dice = backgammonState.dice ?: throw IllegalStateException("Dice has to be provided")
                 existingNode.parent = null
@@ -59,8 +60,9 @@ class BackgammonGame(private val progress: BackgammonGamesProgress) {
     fun playRound(): BackgammonNode {
         if (currentNode == null) throw IllegalStateException("Game not started")
         if (simulationsLimit == 0) throw IllegalStateException("Simulations limit not set")
+        if (backgammonAI == null) throw IllegalStateException("Backgammon AI not set")
 
-        backgammonMCTS.simulate(currentNode!!, simulationsLimit)
+        backgammonAI?.simulate(currentNode!!, simulationsLimit)
 
         currentNode = currentNode!!.bestNode
         progress.endGameRound(currentNode!!.originMove!!)

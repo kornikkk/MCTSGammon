@@ -27,7 +27,7 @@ class GNUBackgammonMCTS(private val gnuBackgammon: GNUBackgammon) {
 
     fun startNewGamesSequence(gamesProperties: GamesProperties) {
         progress.newGamesSequence(gamesProperties.numberOfGames, gamesProperties.simulationsLimit)
-        backgammonMCTS.reset(gamesProperties.simulationsLimit)
+        backgammonMCTS.reset(gamesProperties.simulationsLimit, gamesProperties.backgammonAIType)
 
         gnuBackgammon.setDifficulty(gamesProperties.difficulty)
 

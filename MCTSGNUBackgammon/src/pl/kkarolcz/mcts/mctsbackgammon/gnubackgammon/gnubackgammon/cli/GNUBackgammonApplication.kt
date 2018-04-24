@@ -79,7 +79,7 @@ class GNUBackgammonApplication(private val binaryPath: String) : Closeable {
     private fun listenForGameEnding() {
         while (true) {
             val line = inputReaderProxy.preProcessLine() ?: break
-            if (line.contains("wins a single game")) {
+            if (line.contains("wins")) {
                 val winner = when (line.startsWith(MCTS_PLAYER_NAME)) {
                     true -> Player.MCTS
                     else -> Player.OPPONENT
@@ -87,6 +87,10 @@ class GNUBackgammonApplication(private val binaryPath: String) : Closeable {
                 gameListeners.forEach { l -> l.onGameFinished(winner) }
             }
         }
+    }
+
+    fun saveMatch() {
+        commandWriter.send(GNUBackgammonCommands.saveMatch())
     }
 
 

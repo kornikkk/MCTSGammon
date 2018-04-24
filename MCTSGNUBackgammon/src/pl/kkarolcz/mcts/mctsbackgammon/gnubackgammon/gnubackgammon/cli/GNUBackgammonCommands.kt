@@ -2,6 +2,12 @@ package pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gnubackgammon.cli
 
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gnubackgammon.difficulty.GNUBackgammonDifficulty
 import pl.kkarolcz.mcts.mctsbackgammon.gnubackgammon.gnubackgammon.difficulty.GNUBackgammonEvaluation
+import java.io.File
+import java.sql.Timestamp
+import java.util.*
+import java.text.SimpleDateFormat
+
+
 
 /**
  * Created by kkarolcz on 23.03.2018.
@@ -15,6 +21,8 @@ object GNUBackgammonCommands {
             .append("set player 0 external localhost:$port")
             .append("set sound enable off")
             .append("set automatic game off")
+            .append("set jacoby off")
+            .append("set cube use off")
             .build()
 
     fun setUpNewGames(difficulty: GNUBackgammonDifficulty): Command = CommandBuilder()
@@ -25,6 +33,10 @@ object GNUBackgammonCommands {
 
     fun startGame(): Command = CommandBuilder()
             .append("new game")
+            .build()
+
+    fun saveMatch(): Command = CommandBuilder()
+            .append("save match \"${File(".").canonicalPath}${File.separator}${SimpleDateFormat("yyyyMMddHHmm'.sgf'").format(Date())}\"")
             .build()
 
     private fun setPlayerEvaluationParameter(parameter: String, evaluation: GNUBackgammonEvaluation): Command = CommandBuilder()

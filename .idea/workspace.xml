@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="MCTSBackgammon:jar" />
+    </artifacts-to-build>
+  </component>
   <component name="BuildServerSettings">
     <option name="LOGIN" value="" />
     <option name="SERVER_URL" value="http://buildserver" />
@@ -23,27 +28,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="454a5bc3-8eed-4362-99a1-af10609abfb8" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/BackgammonAIType.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/MCTSWithUCT.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/MonteCarloTreeSearch.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/SHOnRootDoubleThenMCTSWithUCT.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/SHOnRootLogarithmicThenMCTSWithUCT.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/SHOnRootQuadrupleThenMCTSWithUCT.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/SHOnRootSingleThenMCTSWithUCT.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/SequentialHalving.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gui/utils/AIComboBoxRenderer.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/korni.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/korni.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/artifacts/MCTSBackgammon_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MCTSGNUBackgammon/src/META-INF/MANIFEST.MF" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/BackgammonGame.kt" beforeDir="false" afterPath="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/BackgammonGame.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/mcts/BackgammonMCTS.kt" beforeDir="false" afterPath="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/BackgammonAI.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/mcts/ClassicMCTSWithUCT.kt" beforeDir="false" afterPath="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/SHOnRoot.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/mcts/SequentialHalvingV1.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/mcts/SequentialHalvingV2.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/mcts/SequentialHalvingV3.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MCTSCore/src/pl/kkarolcz/mcts/MCTSNode.kt" beforeDir="false" afterPath="$PROJECT_DIR$/MCTSCore/src/pl/kkarolcz/mcts/MCTSNode.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MCTSBackgammon/MCTSBackgammon.iml" beforeDir="false" afterPath="$PROJECT_DIR$/MCTSBackgammon/MCTSBackgammon.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MCTSBackgammon/test/pl.kkarolcz.mcts.mctsbackgammon/game/moves/search/FullMovesSearchDoublingTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/MCTSBackgammon/test/pl.kkarolcz.mcts.mctsbackgammon/game/moves/search/FullMovesSearchDoublingTest.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MCTSBackgammon/test/pl.kkarolcz.mcts.mctsbackgammon/game/moves/search/FullMovesSearchNonDoublingTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/MCTSBackgammon/test/pl.kkarolcz.mcts.mctsbackgammon/game/moves/search/FullMovesSearchNonDoublingTest.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MCTSCore/MCTSCore.iml" beforeDir="false" afterPath="$PROJECT_DIR$/MCTSCore/MCTSCore.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MCTSGNUBackgammon/MCTSGNUBackgammon.iml" beforeDir="false" afterPath="$PROJECT_DIR$/MCTSGNUBackgammon/MCTSGNUBackgammon.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/GNUBackgammon.kt" beforeDir="false" afterPath="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/GNUBackgammon.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/GNUBackgammonMCTS.kt" beforeDir="false" afterPath="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/GNUBackgammonMCTS.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/GamesProperties.kt" beforeDir="false" afterPath="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/GamesProperties.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gui/GamesSettingsPanel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gui/GamesSettingsPanel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/cli/GNUBackgammonApplication.kt" beforeDir="false" afterPath="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/cli/GNUBackgammonApplication.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/cli/GNUBackgammonCommands.kt" beforeDir="false" afterPath="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/cli/GNUBackgammonCommands.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/difficulty/GNUBackgammonDifficulty.kt" beforeDir="false" afterPath="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/difficulty/GNUBackgammonDifficulty.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gui/GNUBackgammonBinaryFileChooser.kt" beforeDir="false" afterPath="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gui/GNUBackgammonBinaryFileChooser.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MCTSGraph/MCTSGraph.iml" beforeDir="false" afterPath="$PROJECT_DIR$/MCTSGraph/MCTSGraph.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils/Utils.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/Utils.iml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/MCTSCore/target/" />
     <ignored path="$PROJECT_DIR$/MCTSGNUBackgammon/target/" />
@@ -77,98 +77,87 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="SHOnRootQuadrupleThenMCTSWithUCT.kt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/SHOnRootQuadrupleThenMCTSWithUCT.kt">
+      <file leaf-file-name="GNUBackgammon.kt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/GNUBackgammon.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="12" column="30" selection-start-line="12" selection-start-column="30" selection-end-line="12" selection-end-column="30" />
+            <state relative-caret-position="218">
+              <caret line="41" column="15" selection-start-line="41" selection-start-column="15" selection-end-line="41" selection-end-column="15" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SHOnRoot.kt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/SHOnRoot.kt">
+      <file leaf-file-name="MainWindow.kt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gui/MainWindow.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="12" column="20" selection-start-line="12" selection-start-column="20" selection-end-line="12" selection-end-column="20" />
+            <state relative-caret-position="107">
+              <caret line="16" column="6" selection-start-line="16" selection-start-column="6" selection-end-line="16" selection-end-column="6" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SequentialHalving.kt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/SequentialHalving.kt">
+      <file leaf-file-name="Main.kt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/Main.kt">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file leaf-file-name="GNUBackgammonApplication.kt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/cli/GNUBackgammonApplication.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="299">
-              <caret line="24" column="60" selection-start-line="24" selection-start-column="60" selection-end-line="24" selection-end-column="60" />
+            <state relative-caret-position="390">
+              <caret line="85" column="17" lean-forward="true" selection-start-line="85" selection-start-column="17" selection-end-line="85" selection-end-column="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Application.kt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/Application.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="410">
+              <caret line="60" column="65" lean-forward="true" selection-start-line="60" selection-start-column="65" selection-end-line="60" selection-end-column="65" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GNUBackgammonCommandWriter.kt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/cli/GNUBackgammonCommandWriter.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="391">
+              <caret line="26" column="1" lean-forward="true" selection-start-line="26" selection-start-column="1" selection-end-line="26" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GNUBackgammonBinaryFileChooser.kt" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gui/GNUBackgammonBinaryFileChooser.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="408">
+              <caret line="28" column="70" selection-start-line="28" selection-start-column="70" selection-end-line="28" selection-end-column="70" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GNUBackgammonCommands.kt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/cli/GNUBackgammonCommands.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="291">
+              <caret line="33" column="14" selection-start-line="33" selection-start-column="14" selection-end-line="33" selection-end-column="14" />
               <folding>
-                <element signature="e#49#249#0" expanded="true" />
+                <element signature="e#73#375#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GNUBackgammonDifficulty.kt" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/difficulty/GNUBackgammonDifficulty.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="11" column="52" lean-forward="true" selection-start-line="11" selection-start-column="52" selection-end-line="11" selection-end-column="52" />
-            </state>
-          </provider>
+      <file leaf-file-name="MANIFEST.MF" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/META-INF/MANIFEST.MF">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
-      <file leaf-file-name="MCTSNode.kt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/MCTSCore/src/pl/kkarolcz/mcts/MCTSNode.kt">
+      <file leaf-file-name="GNUBackgammonMCTS.kt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/GNUBackgammonMCTS.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="614">
-              <caret line="85" lean-forward="true" selection-start-line="85" selection-end-line="85" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FullMove.kt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/moves/FullMove.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="10" column="6" selection-start-line="10" selection-start-column="6" selection-end-line="10" selection-end-column="6" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="BackgammonState.kt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/BackgammonState.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="15" column="11" lean-forward="true" selection-start-line="15" selection-start-column="11" selection-end-line="15" selection-end-column="11" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Dice.kt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/dices/Dice.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" column="6" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SHOnRootLogarithmicThenMCTSWithUCT.kt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/SHOnRootLogarithmicThenMCTSWithUCT.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="13" column="29" lean-forward="true" selection-start-line="13" selection-start-column="29" selection-end-line="13" selection-end-column="29" />
-              <folding>
-                <element signature="e#49#329#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SHOnRootDoubleThenMCTSWithUCT.kt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/SHOnRootDoubleThenMCTSWithUCT.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="12" column="30" selection-start-line="12" selection-start-column="30" selection-end-line="12" selection-end-column="30" />
+            <state relative-caret-position="320">
+              <caret line="60" column="26" selection-start-line="60" selection-start-column="26" selection-end-line="60" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -190,18 +179,10 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/MCTS_RENAMEME.kt" />
-        <option value="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/BackgammonMCTSProgress.kt" />
-        <option value="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/BackgammonGamesProgress.kt" />
-        <option value="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/BackgammonMCTS.kt" />
-        <option value="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/mcts/ClassicWithUCT.kt" />
-        <option value="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/mcts/SequentialHalving.kt" />
-        <option value="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/mcts/V1SequentialHalving.kt" />
         <option value="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/BackgammonAllMovesProvider2.kt" />
         <option value="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/BackgammonAllMovesProvider.kt" />
         <option value="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/BackgammonIncrementalMovesProvider.kt" />
         <option value="$PROJECT_DIR$/MCTSCore/src/pl/kkarolcz/mcts/node/selectionpolicies/UCTNodeSelectionPolicy.kt" />
-        <option value="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/difficulty/GNUBackgammonDifficulty.kt" />
         <option value="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/mcts/SequentialHalvingV1.kt" />
         <option value="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/mcts/SequentialHalvingV3.kt" />
         <option value="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/mcts/SequentialHalvingV2.kt" />
@@ -234,13 +215,21 @@
         <option value="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/BackgammonAIFactory.kt" />
         <option value="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gui/utils/AIComboBoxRenderer.kt" />
         <option value="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/GamesProperties.kt" />
-        <option value="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/GNUBackgammonMCTS.kt" />
         <option value="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/BackgammonGame.kt" />
         <option value="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gui/GamesSettingsPanel.kt" />
         <option value="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/BackgammonAIType.kt" />
         <option value="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/SHOnRootLogarithmicThenMCTSWithUCT.kt" />
-        <option value="$PROJECT_DIR$/MCTSCore/src/pl/kkarolcz/mcts/MCTSNode.kt" />
         <option value="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/SequentialHalving.kt" />
+        <option value="$PROJECT_DIR$/MCTSBackgammon/test/pl.kkarolcz.mcts.mctsbackgammon/game/moves/search/FullMovesSearchNonDoublingTest.kt" />
+        <option value="$PROJECT_DIR$/MCTSBackgammon/test/pl.kkarolcz.mcts.mctsbackgammon/game/moves/search/FullMovesSearchDoublingTest.kt" />
+        <option value="$PROJECT_DIR$/MCTSCore/src/pl/kkarolcz/mcts/MCTSNode.kt" />
+        <option value="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/difficulty/GNUBackgammonDifficulty.kt" />
+        <option value="$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/BackgammonGamesProgress.kt" />
+        <option value="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/GNUBackgammon.kt" />
+        <option value="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/GNUBackgammonMCTS.kt" />
+        <option value="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/cli/GNUBackgammonCommands.kt" />
+        <option value="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/cli/GNUBackgammonApplication.kt" />
+        <option value="$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gui/GNUBackgammonBinaryFileChooser.kt" />
       </list>
     </option>
   </component>
@@ -259,7 +248,17 @@
   </component>
   <component name="MavenProjectNavigator">
     <treeState>
-      <expand />
+      <expand>
+        <path>
+          <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
+          <item name="mcts-backgammon-gnubackgammon" type="9519ce18:MavenProjectsStructure$ProjectNode" />
+        </path>
+        <path>
+          <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
+          <item name="mcts-backgammon-gnubackgammon" type="9519ce18:MavenProjectsStructure$ProjectNode" />
+          <item name="Lifecycle" type="58874e2:MavenProjectsStructure$LifecycleNode" />
+        </path>
+      </expand>
       <select />
     </treeState>
   </component>
@@ -267,9 +266,9 @@
     <option name="skipTests" value="true" />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
-    <option name="width" value="1297" />
-    <option name="height" value="1398" />
+    <option name="x" value="-10" />
+    <option name="width" value="1299" />
+    <option name="height" value="1400" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -277,97 +276,79 @@
     </navigator>
     <panes>
       <pane id="AndroidView" />
-      <pane id="PackagesPane" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
               <item name="MCTSGammon" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MCTSBackgammon" type="462c0819:PsiDirectoryNode" />
+              <item name="MCTSGNUBackgammon" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="MCTSGammon" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MCTSBackgammon" type="462c0819:PsiDirectoryNode" />
+              <item name="MCTSGNUBackgammon" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="MCTSGammon" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MCTSBackgammon" type="462c0819:PsiDirectoryNode" />
+              <item name="MCTSGNUBackgammon" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="mctsbackgammon" type="462c0819:PsiDirectoryNode" />
+              <item name="META-INF" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="MCTSGammon" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MCTSBackgammon" type="462c0819:PsiDirectoryNode" />
+              <item name="MCTSGNUBackgammon" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="mctsbackgammon" type="462c0819:PsiDirectoryNode" />
-              <item name="game" type="462c0819:PsiDirectoryNode" />
+              <item name="gnubackgammon" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="MCTSGammon" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MCTSBackgammon" type="462c0819:PsiDirectoryNode" />
+              <item name="MCTSGNUBackgammon" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="mctsbackgammon" type="462c0819:PsiDirectoryNode" />
-              <item name="game" type="462c0819:PsiDirectoryNode" />
-              <item name="ai" type="462c0819:PsiDirectoryNode" />
+              <item name="gnubackgammon" type="462c0819:PsiDirectoryNode" />
+              <item name="gnubackgammon" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="MCTSGammon" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MCTSCore" type="462c0819:PsiDirectoryNode" />
+              <item name="MCTSGNUBackgammon" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="gnubackgammon" type="462c0819:PsiDirectoryNode" />
+              <item name="gnubackgammon" type="462c0819:PsiDirectoryNode" />
+              <item name="cli" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="MCTSGammon" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MCTSCore" type="462c0819:PsiDirectoryNode" />
+              <item name="MCTSGNUBackgammon" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="gnubackgammon" type="462c0819:PsiDirectoryNode" />
+              <item name="gui" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="MCTSGammon" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MCTSCore" type="462c0819:PsiDirectoryNode" />
+              <item name="MCTSGNUBackgammon" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="gnubackgammon" type="462c0819:PsiDirectoryNode" />
               <item name="mcts" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="MCTSGammon" type="b2602c69:ProjectViewProjectNode" />
               <item name="MCTSGNUBackgammon" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="MCTSGammon" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MCTSGNUBackgammon" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="MCTSGammon" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MCTSGNUBackgammon" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="gnubackgammon" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="MCTSGammon" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MCTSGNUBackgammon" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="gnubackgammon" type="462c0819:PsiDirectoryNode" />
-              <item name="gui" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="MCTSGammon" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MCTSGNUBackgammon" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="gnubackgammon" type="462c0819:PsiDirectoryNode" />
-              <item name="gui" type="462c0819:PsiDirectoryNode" />
-              <item name="utils" type="462c0819:PsiDirectoryNode" />
+              <item name="statistics" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/MCTSGNUBackgammon/src/META-INF/MANIFEST.MF" />
+    <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
@@ -395,12 +376,104 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Kotlin.GNUBackgammon">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    </configuration>
+    <configuration name="FullMovesSearchDoublingTest.testPerformance" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="MCTSBackgammon" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="pl.kkarolcz.mcts.mctsbackgammon.game.moves.search" />
+      <option name="MAIN_CLASS_NAME" value="pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.FullMovesSearchDoublingTest" />
+      <option name="METHOD_NAME" value="testPerformance" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <patterns />
+    </configuration>
+    <configuration name="FullMovesSearchNonDoublingTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="MCTSBackgammon" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="pl.kkarolcz.mcts.mctsbackgammon.game.moves.search" />
+      <option name="MAIN_CLASS_NAME" value="pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.FullMovesSearchNonDoublingTest" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <patterns />
+    </configuration>
+    <configuration name="FullMovesSearchNonDoublingTest.testPerformance" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="MCTSBackgammon" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="pl.kkarolcz.mcts.mctsbackgammon.game.moves.search" />
+      <option name="MAIN_CLASS_NAME" value="pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.FullMovesSearchNonDoublingTest" />
+      <option name="METHOD_NAME" value="testPerformance" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <patterns />
+    </configuration>
+    <configuration name="FullMovesSearchNonDoublingTest.testPerformance2" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="MCTSBackgammon" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="pl.kkarolcz.mcts.mctsbackgammon.game.moves.search" />
+      <option name="MAIN_CLASS_NAME" value="pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.FullMovesSearchNonDoublingTest" />
+      <option name="METHOD_NAME" value="testPerformance2" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <patterns />
     </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -463,6 +536,21 @@
       <option name="PROGRAM_PARAMETERS" />
       <predefined_log_file id="idea.log" enabled="true" />
     </configuration>
+    <list>
+      <item itemvalue="Kotlin.GNUBackgammon" />
+      <item itemvalue="JUnit.FullMovesSearchDoublingTest.testPerformance" />
+      <item itemvalue="JUnit.FullMovesSearchNonDoublingTest" />
+      <item itemvalue="JUnit.FullMovesSearchNonDoublingTest.testPerformance2" />
+      <item itemvalue="JUnit.FullMovesSearchNonDoublingTest.testPerformance" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.FullMovesSearchDoublingTest.testPerformance" />
+        <item itemvalue="JUnit.FullMovesSearchNonDoublingTest.testPerformance" />
+        <item itemvalue="JUnit.FullMovesSearchNonDoublingTest.testPerformance2" />
+        <item itemvalue="JUnit.FullMovesSearchNonDoublingTest" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -484,7 +572,9 @@
       <workItem from="1522671600481" duration="516000" />
       <workItem from="1522672151980" duration="395000" />
       <workItem from="1522672619807" duration="4000" />
-      <workItem from="1522673580517" duration="45501000" />
+      <workItem from="1522673580517" duration="52415000" />
+      <workItem from="1523383981415" duration="1611000" />
+      <workItem from="1524161102573" duration="5533000" />
     </task>
     <task id="LOCAL-00001" summary="Needed on another machine">
       <created>1522743440892</created>
@@ -493,11 +583,50 @@
       <option name="project" value="LOCAL" />
       <updated>1522743440892</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Final commit for now?&#10; &#10; * Added possibilities to choose algorithm for simulations&#10; * Minor fixes">
+      <created>1523019249341</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1523019249341</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
+  <component name="TestHistory">
+    <history-entry file="FullMovesSearchNonDoublingTest - 2018.04.08 at 13h 00m 44s.xml">
+      <configuration name="FullMovesSearchNonDoublingTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="FullMovesSearchNonDoublingTest_testPerformance2 - 2018.04.08 at 13h 13m 07s.xml">
+      <configuration name="FullMovesSearchNonDoublingTest.testPerformance2" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="FullMovesSearchNonDoublingTest_testPerformance2 - 2018.04.08 at 13h 13m 44s.xml">
+      <configuration name="FullMovesSearchNonDoublingTest.testPerformance2" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="FullMovesSearchNonDoublingTest_testPerformance2 - 2018.04.08 at 13h 14m 32s.xml">
+      <configuration name="FullMovesSearchNonDoublingTest.testPerformance2" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="FullMovesSearchNonDoublingTest_testPerformance - 2018.04.08 at 13h 14m 44s.xml">
+      <configuration name="FullMovesSearchNonDoublingTest.testPerformance" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="FullMovesSearchNonDoublingTest_testPerformance - 2018.04.08 at 13h 15m 41s.xml">
+      <configuration name="FullMovesSearchNonDoublingTest.testPerformance" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="FullMovesSearchNonDoublingTest_testPerformance - 2018.04.08 at 13h 15m 54s.xml">
+      <configuration name="FullMovesSearchNonDoublingTest.testPerformance" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="FullMovesSearchNonDoublingTest_testPerformance - 2018.04.08 at 13h 16m 29s.xml">
+      <configuration name="FullMovesSearchNonDoublingTest.testPerformance" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="FullMovesSearchDoublingTest_testPerformance - 2018.04.08 at 13h 17m 03s.xml">
+      <configuration name="FullMovesSearchDoublingTest.testPerformance" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="FullMovesSearchDoublingTest_testPerformance - 2018.04.08 at 22h 27m 58s.xml">
+      <configuration name="FullMovesSearchDoublingTest.testPerformance" configurationId="JUnit" />
+    </history-entry>
+  </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="52555000" />
+    <option name="totallyTimeSpent" value="66613000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -513,12 +642,11 @@
     <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="1" />
-      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.513986" side_tool="true" visible="true" weight="0.34178498" />
-      <window_info anchor="right" id="Maven Projects" order="4" weight="0.28296208" />
+      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.51448554" side_tool="true" weight="0.34178498" />
+      <window_info anchor="right" id="Maven Projects" order="4" visible="true" weight="0.2827173" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="3" />
-      <window_info anchor="bottom" content_ui="combo" id="Hierarchy" order="2" sideWeight="0.4995005" weight="0.2494929" />
       <window_info anchor="bottom" id="TeamCity" order="13" />
       <window_info anchor="right" id="Database" order="5" show_stripe_button="false" weight="0.32955465" />
       <window_info anchor="right" id="Structure" order="8" sideWeight="0.50133336" side_tool="true" weight="0.19757085" />
@@ -531,9 +659,9 @@
       <window_info id="Image Layers" order="1" />
       <window_info anchor="right" id="Capture Analysis" order="3" />
       <window_info anchor="bottom" id="Version Control" order="11" sideWeight="0.498002" weight="0.3296146" />
-      <window_info active="true" anchor="bottom" id="Run" order="3" sideWeight="0.48601398" visible="true" weight="0.34178498" />
-      <window_info anchor="bottom" id="Terminal" order="12" sideWeight="0.49959514" weight="0.3291592" />
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49866667" visible="true" weight="0.21428572" />
+      <window_info active="true" anchor="bottom" id="Run" order="3" sideWeight="0.4855145" visible="true" weight="0.34178498" />
+      <window_info anchor="bottom" id="Terminal" order="12" sideWeight="0.49959514" weight="0.3286004" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49866667" visible="true" weight="0.21828172" />
       <window_info anchor="bottom" id="Run with VisualVM" order="14" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.4965035" weight="0.3296146" />
       <window_info anchor="right" id="Theme Preview" order="6" />
@@ -543,6 +671,7 @@
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" content_ui="combo" id="Hierarchy" order="2" sideWeight="0.4995005" weight="0.2494929" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -563,11 +692,12 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Needed on another machine" />
-    <option name="LAST_COMMIT_MESSAGE" value="Needed on another machine" />
+    <MESSAGE value="Final commit for now?&#10; &#10; * Added possibilities to choose algorithm for simulations&#10; * Minor fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Final commit for now?&#10; &#10; * Added possibilities to choose algorithm for simulations&#10; * Minor fixes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="94" />
+      <option name="time" value="103" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="JetRunConfigurationType">
@@ -594,172 +724,53 @@
     </expressions>
     <expressions id="evaluateExpression">
       <expression>
-        <expression-string>round(log(possibleMovesCount.toDouble())).toInt()</expression-string>
+        <expression-string />
         <language-id>kotlin</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>round(log(possibleMovesCount.toDouble()))</expression-string>
+        <expression-string />
         <language-id>kotlin</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>simulationsLimit - childrenCount * childBudget</expression-string>
+        <expression-string>command.first()</expression-string>
         <language-id>kotlin</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>simulationsLimit / (childrenCount * Math.ceil(log2(childrenCount.toDouble())))</expression-string>
+        <expression-string>send(command.first())</expression-string>
         <language-id>kotlin</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>(childrenCount * Math.ceil(log2(childrenCount.toDouble())))</expression-string>
+        <expression-string>command</expression-string>
         <language-id>kotlin</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>log2(0.0)</expression-string>
+        <expression-string />
         <language-id>kotlin</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>log2(1.0)</expression-string>
+        <expression-string />
         <language-id>kotlin</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>log2(1)</expression-string>
+        <expression-string />
         <language-id>kotlin</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>log2(childrenCount.toDouble())</expression-string>
+        <expression-string />
         <language-id>kotlin</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/Application.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="33" selection-start-line="33" selection-end-line="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/board/BoardIndex.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="33" column="25" selection-start-line="33" selection-start-column="25" selection-end-line="33" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/Main.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="11" column="70" selection-start-line="11" selection-start-column="70" selection-end-line="11" selection-end-column="70" />
-          <folding>
-            <element signature="e#55#155#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/board/BoardIndex.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="594">
-          <caret line="33" column="25" selection-start-line="33" selection-start-column="25" selection-end-line="33" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/Application.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="33" selection-start-line="33" selection-end-line="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/board/BoardIndex.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="33" column="25" selection-start-line="33" selection-start-column="25" selection-end-line="33" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/Application.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="33" selection-start-line="33" selection-end-line="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MCTSCore/src/pl/kkarolcz/mcts/Result.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="22" column="21" lean-forward="true" selection-start-line="22" selection-start-column="21" selection-end-line="22" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gui/utils/DPIUtils.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-15">
-          <caret line="10" column="10" selection-start-line="10" selection-start-column="10" selection-end-line="10" selection-end-column="10" />
-          <caret line="9" column="3" lean-forward="true" selection-start-line="9" selection-start-column="3" selection-end-line="9" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/Main.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="31" selection-start-line="10" selection-start-column="31" selection-end-line="10" selection-end-column="31" />
-          <folding>
-            <element signature="e#55#155#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/BackgammonGamesProgress.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="9" column="21" selection-start-line="9" selection-start-column="21" selection-end-line="9" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Utils/src/pl/kkarolcz/utils/ByteMath.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="7" selection-start-line="7" selection-start-column="7" selection-end-line="7" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Utils/src/pl/kkarolcz/utils/Combinations.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="481">
-          <caret line="94" lean-forward="true" selection-start-line="94" selection-end-line="94" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/jetbrains/kotlin/kotlin-stdlib/1.2.31/kotlin-stdlib-1.2.31-sources.jar!/kotlin/Primitives.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="211">
-          <caret line="535" column="24" selection-start-line="535" selection-start-column="24" selection-end-line="535" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/jetbrains/kotlin/kotlin-stdlib/1.2.31/kotlin-stdlib-1.2.31-sources.jar!/kotlin/Collections.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="211">
-          <caret line="292" column="15" selection-start-line="292" selection-start-column="15" selection-end-line="292" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/BackgammonMovesProvider.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="9" column="10" selection-start-line="9" selection-start-column="10" selection-end-line="9" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/MCTSCore/src/pl/kkarolcz/mcts/node/selectionpolicies/UCTNodeSelectionPolicy.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
@@ -785,9 +796,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-597">
           <caret line="74" column="15" lean-forward="true" selection-start-line="74" selection-start-column="15" selection-end-line="74" selection-end-column="15" />
-          <folding>
-            <element signature="e#46#353#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -837,40 +845,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/SequentialHalvingV1.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="18" column="24" lean-forward="true" selection-start-line="18" selection-start-column="24" selection-end-line="18" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/SequentialHalvingV1.kt" />
     <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/BackgammonAI.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
           <caret line="9" column="75" selection-start-line="9" selection-start-column="28" selection-end-line="9" selection-end-column="75" />
-          <folding>
-            <element signature="e#49#302#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/MonteCarloTreeSearch.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
-          <folding>
-            <element signature="e#49#175#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/MCTSWithUCT.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" selection-start-line="11" selection-end-line="11" />
-          <folding>
-            <element signature="e#49#305#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -885,33 +864,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="10" column="6" selection-start-line="10" selection-start-column="6" selection-end-line="10" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/GamesProperties.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="36" lean-forward="true" selection-start-line="8" selection-start-column="36" selection-end-line="8" selection-end-column="36" />
-          <folding>
-            <element signature="e#69#234#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/GNUBackgammonMCTS.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="29" column="26" selection-start-line="29" selection-start-column="26" selection-end-line="29" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/BackgammonGame.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="18" column="27" selection-start-line="18" selection-start-column="27" selection-end-line="18" selection-end-column="27" />
-          <folding>
-            <element signature="e#46#346#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -933,10 +885,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="444">
           <caret line="310" column="25" selection-start-line="310" selection-start-column="25" selection-end-line="310" selection-end-column="25" />
-          <folding>
-            <element signature="e#11799#11800#0" expanded="true" />
-            <element signature="e#11880#11881#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -979,16 +927,10 @@
           </nodes>
           <notes />
           <edges />
-          <settings layout="Hierarchic Group" zoom="1.0" x="71.5" y="56.0" />
+          <settings layout="Hierarchic Group" zoom="1.0" x="72.0" y="56.0" />
           <SelectedNodes />
           <Categories />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MCTSCore/src/pl/kkarolcz/mcts/MCTSNode.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="614">
-          <caret line="85" lean-forward="true" selection-start-line="85" selection-end-line="85" />
+          <SCOPE>All</SCOPE>
         </state>
       </provider>
     </entry>
@@ -1017,9 +959,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
           <caret line="13" column="29" lean-forward="true" selection-start-line="13" selection-start-column="29" selection-end-line="13" selection-end-column="29" />
-          <folding>
-            <element signature="e#49#329#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1030,10 +969,72 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/moves/search/doubling/allmoves/FullMovesSearchDoubling.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="12" column="93" selection-start-line="12" selection-start-column="93" selection-end-line="12" selection-end-column="93" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/moves/search/doubling/AbstractMovesSearchDoubling.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="14" column="42" selection-start-line="14" selection-start-column="42" selection-end-line="14" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/moves/search/FullMovesSearchNonDoubling.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="24" selection-start-line="24" selection-end-line="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MCTSBackgammon/test/pl.kkarolcz.mcts.mctsbackgammon/game/moves/search/FullMovesSearchNonDoublingTest.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2278">
+          <caret line="144" column="25" selection-start-line="144" selection-start-column="25" selection-end-line="144" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MCTSBackgammon/test/pl.kkarolcz.mcts.mctsbackgammon/game/moves/search/FullMovesSearchDoublingTest.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="680">
+          <caret line="49" column="14" selection-start-line="49" selection-start-column="14" selection-end-line="49" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/MCTSWithUCT.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="11" selection-start-line="11" selection-end-line="11" />
+          <folding>
+            <element signature="e#49#305#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/MonteCarloTreeSearch.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="10" column="27" selection-start-line="10" selection-start-column="27" selection-end-line="10" selection-end-column="27" />
+          <folding>
+            <element signature="e#49#175#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MCTSCore/src/pl/kkarolcz/mcts/MCTSNode.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="663">
+          <caret line="39" selection-start-line="39" selection-end-line="39" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/ai/SequentialHalving.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
-          <caret line="24" column="60" selection-start-line="24" selection-start-column="60" selection-end-line="24" selection-end-column="60" />
+        <state relative-caret-position="901">
+          <caret line="57" column="36" selection-start-line="57" selection-start-column="36" selection-end-line="57" selection-end-column="36" />
           <folding>
             <element signature="e#49#249#0" expanded="true" />
           </folding>
@@ -1042,8 +1043,100 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/difficulty/GNUBackgammonDifficulty.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" column="52" lean-forward="true" selection-start-line="11" selection-start-column="52" selection-end-line="11" selection-end-column="52" />
+        <state relative-caret-position="102">
+          <caret line="6" column="23" selection-start-line="6" selection-start-column="23" selection-end-line="6" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/BackgammonGamesProgress.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="867">
+          <caret line="53" column="33" selection-start-line="53" selection-start-column="33" selection-end-line="53" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MCTSBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/game/BackgammonGame.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="21" column="33" selection-start-line="21" selection-start-column="33" selection-end-line="21" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/pom.xml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/META-INF/MANIFEST.MF">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/Main.kt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/GamesProperties.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="36" lean-forward="true" selection-start-line="8" selection-start-column="36" selection-end-line="8" selection-end-column="36" />
+          <folding>
+            <element signature="e#69#234#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/Application.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="410">
+          <caret line="60" column="65" lean-forward="true" selection-start-line="60" selection-start-column="65" selection-end-line="60" selection-end-column="65" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gui/MainWindow.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="107">
+          <caret line="16" column="6" selection-start-line="16" selection-start-column="6" selection-end-line="16" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/cli/GNUBackgammonCommandWriter.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="26" column="1" lean-forward="true" selection-start-line="26" selection-start-column="1" selection-end-line="26" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/cli/GNUBackgammonCommands.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="291">
+          <caret line="33" column="14" selection-start-line="33" selection-start-column="14" selection-end-line="33" selection-end-column="14" />
+          <folding>
+            <element signature="e#73#375#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/GNUBackgammon.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="218">
+          <caret line="41" column="15" selection-start-line="41" selection-start-column="15" selection-end-line="41" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/GNUBackgammonMCTS.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="320">
+          <caret line="60" column="26" selection-start-line="60" selection-start-column="26" selection-end-line="60" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gnubackgammon/cli/GNUBackgammonApplication.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="85" column="17" lean-forward="true" selection-start-line="85" selection-start-column="17" selection-end-line="85" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MCTSGNUBackgammon/src/pl/kkarolcz/mcts/mctsbackgammon/gnubackgammon/gui/GNUBackgammonBinaryFileChooser.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="28" column="70" selection-start-line="28" selection-start-column="70" selection-end-line="28" selection-end-column="70" />
         </state>
       </provider>
     </entry>
@@ -1053,10 +1146,12 @@
       <state key="ArtifactsStructureConfigurable.UI">
         <settings>
           <artifact-editor />
+          <last-edited>MCTSBackgammon:jar</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
                 <option value="0.2" />
+                <option value="0.5" />
               </list>
             </option>
           </splitter-proportions>

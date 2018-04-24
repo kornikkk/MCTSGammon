@@ -43,6 +43,10 @@ class GNUBackgammon(binaryPath: String) : Closeable {
         application.newGame()
     }
 
+    fun saveMatch() {
+        application.saveMatch()
+    }
+
     fun doMove(move: FullMove) {
         serverSocket.doMove(move)
     }

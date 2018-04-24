@@ -8,6 +8,8 @@ import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BAR_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.BoardIndex.Companion.BEAR_OFF_INDEX
 import pl.kkarolcz.mcts.mctsbackgammon.board.PlayerBoard
 import pl.kkarolcz.mcts.mctsbackgammon.game.moves.FullMove
+import pl.kkarolcz.mcts.mctsbackgammon.game.moves.search.doubling.allmoves.FullMovesSearchDoubling
+import pl.kkarolcz.mcts.mctsbackgammon.settings.TestSettings
 import java.util.*
 
 /**
@@ -136,17 +138,19 @@ class FullMovesSearchNonDoublingTest : AbstractAllFullMovesSearchTest() {
     @Ignore
     @Test
     fun testPerformance() {
-        val storeMoves = false
-        val allMoves = mutableListOf<FullMove>()
+        TestSettings.sortBoard = false
         val random = Random()
-        for (i in 1..100_000) {
+
+        var fullTime = 0L
+        val attempts = 10_000_000
+        for (i in 1..attempts) {
             val player1Checkers = PlayerBoard()
             val player1RandomCheckers = ByteArray(26)
 
             val player2Checkers = PlayerBoard()
             val player2RandomCheckers = ByteArray(26)
 
-            for (j in 1..15) {
+            for (j in 1..random.nextInt(15) + 1) {
                 player1RandomCheckers[random.nextInt(26)] = 1
                 player2RandomCheckers[random.nextInt(26)] = 1
             }
@@ -157,13 +161,16 @@ class FullMovesSearchNonDoublingTest : AbstractAllFullMovesSearchTest() {
             }
 
             val board = Board(player1Checkers, player2Checkers)
-            val dices = dice(1 + random.nextInt(6), 1 + random.nextInt(6))
-            val moves = FullMovesSearchNonDoubling(board, Player.MCTS, dices).findAll()
+            val die1 = 1 + random.nextInt(6)
+            val die2 = 1 + random.nextInt(6)
+            val dices = dice(die1, die2)
 
-            if (storeMoves)
-                allMoves.addAll(moves)
+            val startTime = System.nanoTime()
+            FullMovesSearchNonDoubling(board, Player.MCTS, dices).findAll()
+            val endTime = System.nanoTime()
+            fullTime += endTime - startTime
         }
-        return
+        println("Average time: ${fullTime / 1000 / attempts} μs")
     }
 
     @Ignore
@@ -176,7 +183,7 @@ class FullMovesSearchNonDoublingTest : AbstractAllFullMovesSearchTest() {
         val board = Board(player1Checkers, PlayerBoard())
         val dice = dice(1, 2)
 
-        val attempts = 100000
+        val attempts = 10_000_000
 
         val startTime = System.nanoTime()
         for (i in 1..attempts) {

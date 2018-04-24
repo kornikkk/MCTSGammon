@@ -59,6 +59,7 @@ class GNUBackgammonMCTS(private val gnuBackgammon: GNUBackgammon) {
         }
 
         override fun onGameFinished(winner: Player) {
+            gnuBackgammon.saveMatch()
             backgammonMCTS.endGame(winner)
             when {
                 gamesLeft > 0 -> startSingleGame()

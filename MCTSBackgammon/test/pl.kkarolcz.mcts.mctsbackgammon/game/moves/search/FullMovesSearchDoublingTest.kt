@@ -52,7 +52,7 @@ class FullMovesSearchDoublingTest : AbstractAllFullMovesSearchTest() {
         val random = Random()
 
         var fullTime = 0L
-        val attempts = 100_000
+        val attempts = 1_000_000
         for (i in 1..attempts) {
             val player1Checkers = PlayerBoard()
             val player1RandomCheckers = ByteArray(26)
